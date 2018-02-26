@@ -3,6 +3,7 @@ package com.example.demo.models;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,7 +18,7 @@ public class MaintenancePlan {
     Integer yearOfAction;
 
     @OneToMany(cascade={CascadeType.ALL})
-    List<MaintenanceTask> tasks;
+    List<MaintenanceTask> tasks = new ArrayList<>();
 
     @ManyToOne
     PlantInventoryItem plant;
