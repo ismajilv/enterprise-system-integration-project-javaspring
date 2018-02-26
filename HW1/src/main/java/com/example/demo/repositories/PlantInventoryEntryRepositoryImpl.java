@@ -17,6 +17,7 @@ public class PlantInventoryEntryRepositoryImpl implements PlantSearchRepository 
 	@PersistenceContext
 	EntityManager entityManager;
 
+
 	@Override
 	public boolean isThereAnyAvailableItem(PlantInventoryEntry entry, LocalDate start, LocalDate end) {
 		return entityManager.createQuery("select case when (count(pii) > 0) then true else false end from " +

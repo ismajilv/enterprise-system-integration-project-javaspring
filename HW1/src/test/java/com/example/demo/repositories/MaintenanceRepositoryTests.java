@@ -34,7 +34,7 @@ public class MaintenanceRepositoryTests {
 		MaintenanceTask task = new MaintenanceTask();
 		plan.getTasks().add(task);
 		task.setTypeOfWork(typeOfWork);
-		task.setPrice(Money.of(price));
+		task.setPrice(price);
 		maintenancePlanRepository.save(plan);
 	}
 
