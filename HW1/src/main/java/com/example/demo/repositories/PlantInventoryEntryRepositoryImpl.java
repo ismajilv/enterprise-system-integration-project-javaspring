@@ -1,7 +1,6 @@
 package com.example.demo.repositories;
 
-import com.example.demo.models.PlantInventoryEntry;
-import com.example.demo.models.PlantsWithCount;
+import com.example.demo.models.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +23,12 @@ public class PlantInventoryEntryRepositoryImpl implements PlantSearchRepository 
 
 	@Override
 	public List<PlantsWithCount> findAvailable(String name, LocalDate start, LocalDate end) {
-		return null;
+		return entityManager.createQuery("select new com.example.demo.models.PlantsWithCount(pii.plantInfo, count(pii)) " +
+						"from PlantInventoryItem pii where " +
+						"lower(pii.plantInfo.name) like lower(concat('%', ?1,'%')) " +
+						"and pii.id not in (select pr.plant.id from PlantReservation pr where " +
+						"pr.schedule.startDate <= ?3 and pr.schedule.endDate >= ?2) group by pii.plantInfo",
+				PlantsWithCount.class).setParameter(1,name).setParameter(2, start).setParameter(3, end).getResultList();
 	}
 
 }
