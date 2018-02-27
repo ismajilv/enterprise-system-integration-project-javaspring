@@ -58,6 +58,7 @@ public class InventoryRepositoryTests {
 		task.setDescription("description");
 		task.setReservation(plantReservation);
 		task.setMaintenancePlan(maintenancePlan);
+		maintenancePlan.getTasks().add(task);
 		return maintenanceTaskRepository.save(task);
 	}
 
@@ -84,7 +85,6 @@ public class InventoryRepositoryTests {
 		PlantReservation reservation1_2 = createReservationFor(inv1, from.minusDays(3), from.minusDays(2));
 		MaintenancePlan maintenancePlan1 = createMaintenancePlanFor(inv1, from.getYear());
 		MaintenanceTask task1 = createMaintenanceTaskFor(maintenancePlan1, reservation1_1);
-		maintenancePlan1.getTasks().add(task1);
 
 		// 2 repair 3 reservations
 		PlantInventoryEntry plant2 = allPlants.get(1);
@@ -103,14 +103,10 @@ public class InventoryRepositoryTests {
 		MaintenancePlan maintenancePlan2Not2018_2 = createMaintenancePlanFor(inv2, from.getYear() + 1);
 		MaintenanceTask task2Not2018_1 = createMaintenanceTaskFor(maintenancePlan2Not2018_1, reservationNotIn2018_1);
 		MaintenanceTask task2Not2018_2 = createMaintenanceTaskFor(maintenancePlan2Not2018_2, reservationNotIn2018_3);
-		maintenancePlan2Not2018_1.getTasks().add(task2Not2018_1);
-		maintenancePlan2Not2018_2.getTasks().add(task2Not2018_2);
 
 		MaintenancePlan maintenancePlan2 = createMaintenancePlanFor(inv2, from.getYear());
 		MaintenanceTask task2 = createMaintenanceTaskFor(maintenancePlan2, reservation2_1);
 		MaintenanceTask task2_2 = createMaintenanceTaskFor(maintenancePlan2, reservation2_2);
-		maintenancePlan2.getTasks().add(task2);
-		maintenancePlan2.getTasks().add(task2_2);
 
 		// 2 repair 3 reservations
 		PlantInventoryEntry plant3 = allPlants.get(2);
@@ -122,8 +118,6 @@ public class InventoryRepositoryTests {
 		MaintenancePlan maintenancePlan3 = createMaintenancePlanFor(inv3, from.getYear());
 		MaintenanceTask task3 = createMaintenanceTaskFor(maintenancePlan3, reservation3_1);
 		MaintenanceTask task3_2 = createMaintenanceTaskFor(maintenancePlan3, reservation3_2);
-		maintenancePlan3.getTasks().add(task3);
-		maintenancePlan3.getTasks().add(task3_2);
 
 		// 2 repair 4 reservations
 		PlantInventoryEntry plant4 = allPlants.get(3);
@@ -136,8 +130,6 @@ public class InventoryRepositoryTests {
 		MaintenancePlan maintenancePlan4 = createMaintenancePlanFor(inv4, from.getYear());
 		MaintenanceTask task4 = createMaintenanceTaskFor(maintenancePlan4, reservation4_1);
 		MaintenanceTask task4_2 = createMaintenanceTaskFor(maintenancePlan4, reservation4_2);
-		maintenancePlan4.getTasks().add(task4);
-		maintenancePlan4.getTasks().add(task4_2);
 
 		// 3 repair 3 reservations
 		PlantInventoryEntry plant5 = allPlants.get(4);
@@ -150,11 +142,7 @@ public class InventoryRepositoryTests {
 		MaintenanceTask task5 = createMaintenanceTaskFor(maintenancePlan5, reservation5_1);
 		MaintenanceTask task5_2 = createMaintenanceTaskFor(maintenancePlan5, reservation5_2);
 		MaintenanceTask task5_3 = createMaintenanceTaskFor(maintenancePlan5, reservation5_3);
-		maintenancePlan5.getTasks().add(task5);
-		maintenancePlan5.getTasks().add(task5_2);
-		maintenancePlan5.getTasks().add(task5_3);
-		System.out.println(maintenancePlan5.getTasks().size());
-
+		
 		List<PlantsWithRentalsAndRepairs> rentalsAndRepairs = plantInventoryEntryRepository.findRentalsAndRepairs(from.getYear());
 
 		assertThat(rentalsAndRepairs.stream().map(tuple -> tuple.getEntry()).collect(Collectors.toList()))
