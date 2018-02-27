@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 @Transactional(readOnly = true)
-public interface PlantsNotHiredRepository {
+public interface PlantInventoryItemRepositoryCustomQueries {
 
 	List<PlantInventoryItem> findPlantsNotHiredForPeriod(LocalDate start, LocalDate end);
 

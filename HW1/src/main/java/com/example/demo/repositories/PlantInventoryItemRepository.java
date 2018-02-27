@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PlantInventoryItemRepository extends JpaRepository<PlantInventoryItem, Long>, PlantsNotHiredRepository {
+public interface PlantInventoryItemRepository extends JpaRepository<PlantInventoryItem, Long>, PlantInventoryItemRepositoryCustomQueries {
 
 	List<PlantInventoryItem> findByPlantInfo(PlantInventoryEntry entry);
 

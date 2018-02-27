@@ -12,7 +12,7 @@ import static com.example.demo.models.EquipmentCondition.SERVICEABLE;
 
 @Repository
 @Transactional(readOnly = true)
-public class PlantInventoryEntryRepositoryImpl implements PlantSearchRepository {
+public class PlantInventoryEntryRepositoryImpl implements PlantInventoryEntryRepositoryCustomQueries {
 
 	@PersistenceContext
 	EntityManager entityManager;
@@ -38,6 +38,13 @@ public class PlantInventoryEntryRepositoryImpl implements PlantSearchRepository 
 						"pr.schedule.startDate <= ?3 and pr.schedule.endDate >= ?2) group by pii.plantInfo",
 				PlantsWithCount.class).setParameter(1, name).setParameter(2, start).setParameter(3, end)
 				.setParameter(4, SERVICEABLE).getResultList();
+	}
+
+	@Override
+	public List<PlantsWithRentalsAndRepairs> findRentalsAndRepairs() {
+		return entityManager.createQuery(
+				"select new com.example.demo.models.PlantsWithRentalsAndRepairs(pie, 0.0, 0.0) from PlantInventoryEntry pie",
+				PlantsWithRentalsAndRepairs.class).getResultList();
 	}
 
 }

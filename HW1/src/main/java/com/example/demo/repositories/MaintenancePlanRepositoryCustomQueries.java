@@ -5,7 +5,7 @@ import com.example.demo.utils.Pair;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface CorrectiveRepairsRepository {
+public interface MaintenancePlanRepositoryCustomQueries {
 
 	List<Pair<Integer, Long>> findCorrectiveRepairsByYearForPeriod(int startYear, int endYear);
 

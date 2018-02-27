@@ -7,7 +7,7 @@ import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.List;
 
-public class PlantInventoryItemRepositoryImpl implements PlantsNotHiredRepository {
+public class PlantInventoryItemRepositoryImpl implements PlantInventoryItemRepositoryCustomQueries {
 
 	@PersistenceContext
 	EntityManager entityManager;

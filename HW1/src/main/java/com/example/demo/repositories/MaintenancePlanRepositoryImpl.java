@@ -6,13 +6,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
 @Transactional(readOnly = true)
-public class MaintenancePlanRepositoryImpl implements CorrectiveRepairsRepository {
+public class MaintenancePlanRepositoryImpl implements MaintenancePlanRepositoryCustomQueries {
 
 
 	@Autowired
