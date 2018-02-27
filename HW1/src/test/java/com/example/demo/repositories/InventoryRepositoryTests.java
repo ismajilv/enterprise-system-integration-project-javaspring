@@ -192,8 +192,6 @@ public class InventoryRepositoryTests {
 
 		rentalsAndRepairs2.stream().map(tuple -> tuple.getRepairs())
 				.forEach(repairs -> assertEquals(new Long(0), repairs));
-
-
 	}
 
 // TODO saves time, but uncomment once rentals & repairs is ready

@@ -46,12 +46,14 @@ public class PlantInventoryEntryRepositoryImpl implements PlantInventoryEntryRep
 	@Override
 	public List<PlantsWithRentalsAndRepairs> findRentalsAndRepairs(int year) {
 		return entityManager.createQuery(
-				"select new com.example.demo.models.PlantsWithRentalsAndRepairs(pie, count(tasks), count(tasks)) " +
+				"select new com.example.demo.models.PlantsWithRentalsAndRepairs(pie, count(purchaseOrders), count(tasks)) " +
 						"from PlantInventoryEntry pie " +
+						"left join pie.purchaseOrders purchaseOrders on purchaseOrders.status = com.example.demo.models.POStatus.CLOSED and YEAR(purchaseOrders.issueDate) = ?1 " +
 						"left join pie.items items " +
 						"left join items.maintenancePlans maintenancePlans on maintenancePlans.yearOfAction = ?1 " +
 						"left join maintenancePlans.tasks tasks on tasks.typeOfWork = com.example.demo.models.TypeOfWork.CORRECTIVE " +
-						"group by pie", PlantsWithRentalsAndRepairs.class)
+						"group by pie " +
+						"order by count(purchaseOrders) DESC, count(tasks) ASC", PlantsWithRentalsAndRepairs.class)
 				.setParameter(1, year)
 				.getResultList();
 	}
