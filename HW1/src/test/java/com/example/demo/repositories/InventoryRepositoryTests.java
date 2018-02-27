@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -71,28 +72,105 @@ public class InventoryRepositoryTests {
 	@Test
 	public void findRentalsAndRepairs() {
 
-		LocalDate from = LocalDate.now();
-		LocalDate to = from.plusDays(2);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+		LocalDate from = LocalDate.parse("16/08/2018", formatter);
 
 		List<PlantInventoryEntry> allPlants = plantInventoryEntryRepository.findAll();
 
-		Collections.shuffle(allPlants);
-		allPlants = allPlants.subList(0, 5);
+		// 1 repair 2 reservation
+		PlantInventoryEntry plant1 = allPlants.get(0);
+		PlantInventoryItem inv1 = createPIItemFor(plant1, EquipmentCondition.SERVICEABLE);
 
-		for (PlantInventoryEntry plant: allPlants){
-			PlantInventoryItem plantInventoryItem = createPIItemFor(plant, EquipmentCondition.SERVICEABLE);
-			PlantReservation reservation = createReservationFor(plantInventoryItem, from, to);
-			MaintenancePlan maintenancePlan = createMaintenancePlanFor(plantInventoryItem, from.getYear());
-			MaintenanceTask task = createMaintenanceTaskFor(maintenancePlan, reservation);
-		}
+		PlantReservation reservation1_1 = createReservationFor(inv1, from, from.plusDays(1));
+		PlantReservation reservation1_2 = createReservationFor(inv1, from.minusDays(3), from.minusDays(2));
+		MaintenancePlan maintenancePlan1 = createMaintenancePlanFor(inv1, from.getYear());
+		MaintenanceTask task1 = createMaintenanceTaskFor(maintenancePlan1, reservation1_1);
 
-		List<PlantsWithRentalsAndRepairs> rentalsAndRepairs = plantInventoryEntryRepository.findRentalsAndRepairs(2017);
+		// 2 repair 3 reservations
+		PlantInventoryEntry plant2 = allPlants.get(1);
+		PlantInventoryItem inv2 = createPIItemFor(plant2, EquipmentCondition.SERVICEABLE);
+		PlantReservation reservation2_1 = createReservationFor(inv2, from, from.plusDays(1));
+		PlantReservation reservation2_2 = createReservationFor(inv2, from.minusDays(3), from.minusDays(2));
+		PlantReservation reservation2_3 = createReservationFor(inv2, from.plusDays(2), from.plusDays(3));
 
+		//extra reservations with different years
+		PlantReservation reservationNotIn2018_1 = createReservationFor(inv2, from.plusDays(4).minusYears(1), from.plusDays(5).minusYears(1));
+		PlantReservation reservationNotIn2018_2 = createReservationFor(inv2, from.plusDays(6).minusYears(1), from.plusDays(7).minusYears(1));
+		PlantReservation reservationNotIn2018_3 = createReservationFor(inv2, from.plusDays(4).plusYears(1), from.plusDays(5).plusYears(1));
+		PlantReservation reservationNotIn2018_4 = createReservationFor(inv2, from.plusDays(6).plusYears(1), from.plusDays(7).plusYears(1));
 
+		MaintenancePlan maintenancePlan2Not2018_1 = createMaintenancePlanFor(inv2, from.getYear() - 1);
+		MaintenancePlan maintenancePlan2Not2018_2 = createMaintenancePlanFor(inv2, from.getYear() + 1);
+		MaintenanceTask task2Not2018_1 = createMaintenanceTaskFor(maintenancePlan2Not2018_1, reservationNotIn2018_1);
+		MaintenanceTask task2Not2018_2 = createMaintenanceTaskFor(maintenancePlan2Not2018_2, reservationNotIn2018_3);
+
+		MaintenancePlan maintenancePlan2 = createMaintenancePlanFor(inv2, from.getYear());
+		MaintenanceTask task2 = createMaintenanceTaskFor(maintenancePlan2, reservation2_1);
+		MaintenanceTask task2_2 = createMaintenanceTaskFor(maintenancePlan2, reservation2_2);
+
+		// 2 repair 3 reservations
+		PlantInventoryEntry plant3 = allPlants.get(2);
+		PlantInventoryItem inv3 = createPIItemFor(plant3, EquipmentCondition.SERVICEABLE);
+		PlantReservation reservation3_1 = createReservationFor(inv3, from, from.plusDays(1));
+		PlantReservation reservation3_2 = createReservationFor(inv3, from.minusDays(3), from.minusDays(2));
+		PlantReservation reservation3_3 = createReservationFor(inv3, from.plusDays(2), from.plusDays(3));
+
+		MaintenancePlan maintenancePlan3 = createMaintenancePlanFor(inv3, from.getYear());
+		MaintenanceTask task3 = createMaintenanceTaskFor(maintenancePlan3, reservation3_1);
+		MaintenanceTask task3_2 = createMaintenanceTaskFor(maintenancePlan3, reservation3_2);
+
+		// 2 repair 4 reservations
+		PlantInventoryEntry plant4 = allPlants.get(3);
+		PlantInventoryItem inv4 = createPIItemFor(plant4, EquipmentCondition.SERVICEABLE);
+		PlantReservation reservation4_1 = createReservationFor(inv4, from, from.plusDays(1));
+		PlantReservation reservation4_2 = createReservationFor(inv4, from.minusDays(3), from.minusDays(2));
+		PlantReservation reservation4_3 = createReservationFor(inv4, from.plusDays(2), from.plusDays(3));
+		PlantReservation reservation4_4 = createReservationFor(inv4, from.plusDays(4), from.plusDays(5));
+
+		MaintenancePlan maintenancePlan4 = createMaintenancePlanFor(inv4, from.getYear());
+		MaintenanceTask task4 = createMaintenanceTaskFor(maintenancePlan4, reservation4_1);
+		MaintenanceTask task4_2 = createMaintenanceTaskFor(maintenancePlan4, reservation4_2);
+
+		// 3 repair 3 reservations
+		PlantInventoryEntry plant5 = allPlants.get(4);
+		PlantInventoryItem inv5 = createPIItemFor(plant5, EquipmentCondition.SERVICEABLE);
+		PlantReservation reservation5_1 = createReservationFor(inv5, from, from.plusDays(1));
+		PlantReservation reservation5_2 = createReservationFor(inv5, from.minusDays(3), from.minusDays(2));
+		PlantReservation reservation5_3 = createReservationFor(inv5, from.plusDays(2), from.plusDays(3));
+
+		MaintenancePlan maintenancePlan5 = createMaintenancePlanFor(inv5, from.getYear());
+		MaintenanceTask task5 = createMaintenanceTaskFor(maintenancePlan5, reservation5_1);
+		MaintenanceTask task5_2 = createMaintenanceTaskFor(maintenancePlan5, reservation5_2);
+		MaintenanceTask task5_3 = createMaintenanceTaskFor(maintenancePlan5, reservation5_3);
+
+		List<PlantsWithRentalsAndRepairs> rentalsAndRepairs = plantInventoryEntryRepository.findRentalsAndRepairs(from.getYear());
 
 		assertThat(rentalsAndRepairs.stream().map(tuple -> tuple.getEntry()).collect(Collectors.toList()))
 				.containsAll(allPlants)
 				.hasSize(15);
+
+		assertThat(maintenancePlanRepository.findAll()).hasSize(7);
+		assertThat(maintenanceTaskRepository.findAll()).hasSize(12);
+
+		for(PlantsWithRentalsAndRepairs plantsWithRentalsAndRepairs: rentalsAndRepairs) {
+			if(plantsWithRentalsAndRepairs.getEntry().getId().equals(plant1.getId())){
+				assertEquals(new Long(1), new Long(plantsWithRentalsAndRepairs.getRentals()));
+				assertEquals(new Long(2), new Long(plantsWithRentalsAndRepairs.getRepairs()));
+			} else if(plantsWithRentalsAndRepairs.getEntry().getId().equals(plant2.getId())) {
+				assertEquals(new Long(2), new Long(plantsWithRentalsAndRepairs.getRentals()));
+				assertEquals(new Long(3), new Long(plantsWithRentalsAndRepairs.getRepairs()));
+			} else if(plantsWithRentalsAndRepairs.getEntry().getId().equals(plant3.getId())) {
+				assertEquals(new Long(2), new Long(plantsWithRentalsAndRepairs.getRentals()));
+				assertEquals(new Long(3), new Long(plantsWithRentalsAndRepairs.getRepairs()));
+			} else if(plantsWithRentalsAndRepairs.getEntry().getId().equals(plant4.getId())) {
+				assertEquals(new Long(2), new Long(plantsWithRentalsAndRepairs.getRentals()));
+				assertEquals(new Long(4), new Long(plantsWithRentalsAndRepairs.getRepairs()));
+			} else {
+				assertEquals(new Long(3), new Long(plantsWithRentalsAndRepairs.getRentals()));
+				assertEquals(new Long(3), new Long(plantsWithRentalsAndRepairs.getRepairs()));
+			}
+
+		}
 
 		//make a copy of returned list
 		List<PlantsWithRentalsAndRepairs> copyOfList = new ArrayList<>();
@@ -107,10 +185,12 @@ public class InventoryRepositoryTests {
 		//two lists are defined to be equal if they contain the same elements in the same order.
 		assertEquals(copyOfList, rentalsAndRepairs);
 
-		rentalsAndRepairs.stream().map(tuple -> tuple.getRentals())
+		List<PlantsWithRentalsAndRepairs> rentalsAndRepairs2 = plantInventoryEntryRepository.findRentalsAndRepairs(2017);
+
+		rentalsAndRepairs2.stream().map(tuple -> tuple.getRentals())
 				.forEach(rentals -> assertEquals(new Long(0), rentals));
 
-		rentalsAndRepairs.stream().map(tuple -> tuple.getRepairs())
+		rentalsAndRepairs2.stream().map(tuple -> tuple.getRepairs())
 				.forEach(repairs -> assertEquals(new Long(0), repairs));
 
 
