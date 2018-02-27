@@ -12,8 +12,8 @@ public class PlantsWithRentalsAndRepairs {
 
 	PlantInventoryEntry entry;
 
-	Double avgRentalsPerYear;
+	Integer rentals;
 
-	Double avgRepairsPerYear;
+	Integer repairs;
 
 }

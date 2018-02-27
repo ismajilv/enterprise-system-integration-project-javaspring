@@ -13,6 +13,6 @@ public interface PlantInventoryEntryRepositoryCustomQueries {
 
 	List<PlantsWithCount> findAvailable(String name, LocalDate start, LocalDate end);
 
-	List<PlantsWithRentalsAndRepairs> findRentalsAndRepairs();
+	List<PlantsWithRentalsAndRepairs> findRentalsAndRepairs(int year);
 
 }

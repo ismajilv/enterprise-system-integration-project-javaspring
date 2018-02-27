@@ -11,9 +11,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,7 +46,7 @@ public class InventoryRepositoryTests {
 
 	@Test
 	public void findRentalsAndRepairs() {
-		List<PlantsWithRentalsAndRepairs> rentalsAndRepairs = plantInventoryEntryRepository.findRentalsAndRepairs();
+		List<PlantsWithRentalsAndRepairs> rentalsAndRepairs = plantInventoryEntryRepository.findRentalsAndRepairs(2017);
 
 		List<PlantInventoryEntry> allPlants = plantInventoryEntryRepository.findAll();
 
@@ -56,11 +54,11 @@ public class InventoryRepositoryTests {
 				.containsAll(allPlants)
 				.hasSize(15);
 
-		rentalsAndRepairs.stream().map(tuple -> tuple.getAvgRentalsPerYear())
-				.forEach(avg -> assertEquals(avg, new Double(0.0)));
+		rentalsAndRepairs.stream().map(tuple -> tuple.getRentals())
+				.forEach(rentals -> assertEquals(rentals, new Integer(0)));
 
-		rentalsAndRepairs.stream().map(tuple -> tuple.getAvgRepairsPerYear())
-				.forEach(avg -> assertEquals(avg, new Double(0.0)));
+		rentalsAndRepairs.stream().map(tuple -> tuple.getRepairs())
+				.forEach(repairs -> assertEquals(repairs, new Integer(0)));
 
 
 	}

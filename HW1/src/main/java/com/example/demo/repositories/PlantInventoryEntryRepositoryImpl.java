@@ -41,9 +41,9 @@ public class PlantInventoryEntryRepositoryImpl implements PlantInventoryEntryRep
 	}
 
 	@Override
-	public List<PlantsWithRentalsAndRepairs> findRentalsAndRepairs() {
+	public List<PlantsWithRentalsAndRepairs> findRentalsAndRepairs(int year) {
 		return entityManager.createQuery(
-				"select new com.example.demo.models.PlantsWithRentalsAndRepairs(pie, 0.0, 0.0) from PlantInventoryEntry pie",
+				"select new com.example.demo.models.PlantsWithRentalsAndRepairs(pie, 0, 0) from PlantInventoryEntry pie",
 				PlantsWithRentalsAndRepairs.class).getResultList();
 	}
 
