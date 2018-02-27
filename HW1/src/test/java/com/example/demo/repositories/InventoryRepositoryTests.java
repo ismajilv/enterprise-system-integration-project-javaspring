@@ -11,6 +11,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +55,19 @@ public class InventoryRepositoryTests {
 		assertThat(rentalsAndRepairs.stream().map(tuple -> tuple.getEntry()).collect(Collectors.toList()))
 				.containsAll(allPlants)
 				.hasSize(15);
+
+		//make a copy of returned list
+		List<PlantsWithRentalsAndRepairs> copyOfList = new ArrayList<>();
+		for(PlantsWithRentalsAndRepairs repairs: rentalsAndRepairs){
+			copyOfList.add(repairs);
+		}
+		//sort the copy list (original list not affected by the sort)
+		Collections.sort(copyOfList, (p1, p2) ->
+				p1.getRentals().compareTo(p2.getRentals()) != 0 ? p1.getRentals().compareTo(p2.getRentals()) : p1.getRepairs().compareTo(p2.getRepairs()));
+
+		//if copy equals original, then original was in correct order from start
+		//two lists are defined to be equal if they contain the same elements in the same order.
+		assertEquals(copyOfList, rentalsAndRepairs);
 
 		rentalsAndRepairs.stream().map(tuple -> tuple.getRentals())
 				.forEach(rentals -> assertEquals(rentals, new Integer(0)));
