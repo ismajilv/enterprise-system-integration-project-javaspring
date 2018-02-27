@@ -70,10 +70,10 @@ public class InventoryRepositoryTests {
 		assertEquals(copyOfList, rentalsAndRepairs);
 
 		rentalsAndRepairs.stream().map(tuple -> tuple.getRentals())
-				.forEach(rentals -> assertEquals(rentals, new Integer(0)));
+				.forEach(rentals -> assertEquals(new Long(0), rentals));
 
 		rentalsAndRepairs.stream().map(tuple -> tuple.getRepairs())
-				.forEach(repairs -> assertEquals(repairs, new Integer(0)));
+				.forEach(repairs -> assertEquals(new Long(0), repairs));
 
 
 	}

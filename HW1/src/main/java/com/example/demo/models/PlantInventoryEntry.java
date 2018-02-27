@@ -2,6 +2,8 @@ package com.example.demo.models;
 
 
 import lombok.Data;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -32,6 +34,10 @@ public class PlantInventoryEntry {
 
     @OneToMany(mappedBy = "plantInfo", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     List<PlantInventoryItem> items = new ArrayList<>();
+
+    @OneToMany(mappedBy = "plant", cascade=CascadeType.ALL)// , fetch = FetchType.EAGER)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    List<PurchaseOrder> purchaseOrders = new ArrayList<>();
 
     public boolean equals(Object o) {
         return (o instanceof PlantInventoryEntry) &&
