@@ -70,7 +70,7 @@ public class InventoryRepositoryTests {
 	}
 
 	@Test
-	public void findRentalsAndRepairs2() {
+	public void findRentalsAndRepairs() {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
 		LocalDate from = LocalDate.parse("16/08/2018", formatter);
