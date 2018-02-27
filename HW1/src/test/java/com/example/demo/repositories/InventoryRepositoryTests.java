@@ -10,6 +10,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +32,10 @@ public class InventoryRepositoryTests {
 	PlantInventoryItemRepository plantInventoryItemRepository;
 	@Autowired
 	PlantReservationRepository plantReservationRepository;
+	@Autowired
+	MaintenancePlanRepository maintenancePlanRepository;
+	@Autowired
+	MaintenanceTaskRepository maintenanceTaskRepository;
 
 	private PlantInventoryItem createPIItemFor(PlantInventoryEntry entry, EquipmentCondition condition) {
 		PlantInventoryItem item = new PlantInventoryItem();
@@ -39,18 +44,51 @@ public class InventoryRepositoryTests {
 		return plantInventoryItemRepository.save(item);
 	}
 
-	private void createReservationFor(PlantInventoryItem plantInventoryItem, LocalDate from, LocalDate to) {
+	private PlantReservation createReservationFor(PlantInventoryItem plantInventoryItem, LocalDate from, LocalDate to) {
 		PlantReservation reservation = new PlantReservation();
 		reservation.setPlant(plantInventoryItem);
 		reservation.setSchedule(BusinessPeriod.of(from, to)); // CHANGED
-		plantReservationRepository.save(reservation);
+		return plantReservationRepository.save(reservation);
+	}
+
+	private MaintenanceTask createMaintenanceTaskFor(MaintenancePlan maintenancePlan, PlantReservation plantReservation){
+		MaintenanceTask task = new MaintenanceTask();
+		task.setPrice(BigDecimal.TEN);
+		task.setTypeOfWork(TypeOfWork.OPERATIVE);
+		task.setDescription("description");
+		task.setReservation(plantReservation);
+		task.setMaintenancePlan(maintenancePlan);
+		return maintenanceTaskRepository.save(task);
+	}
+
+	private MaintenancePlan createMaintenancePlanFor(PlantInventoryItem plantInventoryItem, int year) {
+		MaintenancePlan maintenancePlan = new MaintenancePlan();
+		maintenancePlan.setPlant(plantInventoryItem);
+		maintenancePlan.setYearOfAction(year);
+		return maintenancePlanRepository.save(maintenancePlan);
 	}
 
 	@Test
 	public void findRentalsAndRepairs() {
-		List<PlantsWithRentalsAndRepairs> rentalsAndRepairs = plantInventoryEntryRepository.findRentalsAndRepairs(2017);
+
+		LocalDate from = LocalDate.now();
+		LocalDate to = from.plusDays(2);
 
 		List<PlantInventoryEntry> allPlants = plantInventoryEntryRepository.findAll();
+
+		Collections.shuffle(allPlants);
+		allPlants = allPlants.subList(0, 5);
+
+		for (PlantInventoryEntry plant: allPlants){
+			PlantInventoryItem plantInventoryItem = createPIItemFor(plant, EquipmentCondition.SERVICEABLE);
+			PlantReservation reservation = createReservationFor(plantInventoryItem, from, to);
+			MaintenancePlan maintenancePlan = createMaintenancePlanFor(plantInventoryItem, from.getYear());
+			MaintenanceTask task = createMaintenanceTaskFor(maintenancePlan, reservation);
+		}
+
+		List<PlantsWithRentalsAndRepairs> rentalsAndRepairs = plantInventoryEntryRepository.findRentalsAndRepairs(2017);
+
+
 
 		assertThat(rentalsAndRepairs.stream().map(tuple -> tuple.getEntry()).collect(Collectors.toList()))
 				.containsAll(allPlants)
