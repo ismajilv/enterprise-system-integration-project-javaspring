@@ -12,8 +12,8 @@ public class PlantsWithRentalsAndRepairs {
 
 	PlantInventoryEntry entry;
 
-	Integer rentals;
+	Long rentals;
 
-	Integer repairs;
+	Long repairs;
 
 }

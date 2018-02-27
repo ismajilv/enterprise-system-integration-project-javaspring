@@ -1,8 +1,11 @@
 package com.example.demo.repositories;
 
-import com.example.demo.models.*;
+import com.example.demo.models.PlantInventoryEntry;
+import com.example.demo.models.PlantsWithCount;
+import com.example.demo.models.PlantsWithRentalsAndRepairs;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
@@ -43,8 +46,14 @@ public class PlantInventoryEntryRepositoryImpl implements PlantInventoryEntryRep
 	@Override
 	public List<PlantsWithRentalsAndRepairs> findRentalsAndRepairs(int year) {
 		return entityManager.createQuery(
-				"select new com.example.demo.models.PlantsWithRentalsAndRepairs(pie, 0, 0) from PlantInventoryEntry pie",
-				PlantsWithRentalsAndRepairs.class).getResultList();
+				"select new com.example.demo.models.PlantsWithRentalsAndRepairs(pie, count(tasks), count(tasks)) " +
+						"from PlantInventoryEntry pie " +
+						"left join pie.items items " +
+						"left join items.maintenancePlans maintenancePlans on maintenancePlans.yearOfAction = ?1 " +
+						"left join maintenancePlans.tasks tasks on tasks.typeOfWork = com.example.demo.models.TypeOfWork.CORRECTIVE " +
+						"group by pie", PlantsWithRentalsAndRepairs.class)
+				.setParameter(1, year)
+				.getResultList();
 	}
 
 }

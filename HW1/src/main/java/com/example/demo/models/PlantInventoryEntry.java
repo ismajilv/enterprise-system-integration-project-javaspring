@@ -5,6 +5,9 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 //Information that will be stored in the database
 
@@ -13,7 +16,6 @@ import java.math.BigDecimal;
 @Entity
 @Data
 public class PlantInventoryEntry {
-
 
     @Id
     @GeneratedValue
@@ -27,5 +29,19 @@ public class PlantInventoryEntry {
 
     @Embedded
     Money price;
+
+    @OneToMany(mappedBy = "plantInfo", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+    List<PlantInventoryItem> items = new ArrayList<>();
+
+    public boolean equals(Object o) {
+        return (o instanceof PlantInventoryEntry) &&
+                (!Objects.isNull(((PlantInventoryEntry)o).getId())) &&
+                (((PlantInventoryEntry)o).getId().equals(this.getId()));
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 
 }

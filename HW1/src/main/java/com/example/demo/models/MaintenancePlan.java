@@ -17,7 +17,7 @@ public class MaintenancePlan {
     @Column
     Integer yearOfAction;
 
-    @OneToMany(cascade={CascadeType.ALL})
+    @OneToMany(mappedBy = "maintenancePlan", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     List<MaintenanceTask> tasks = new ArrayList<>();
 
 

@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 
 @Entity
 @Data
-
 public class MaintenanceTask {
 
     @Id
@@ -26,6 +25,7 @@ public class MaintenanceTask {
     @OneToOne
     PlantReservation reservation;
 
+    @ManyToOne
+    MaintenancePlan maintenancePlan;
+
 }
-
-

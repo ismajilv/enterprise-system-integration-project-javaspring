@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -21,5 +23,8 @@ public class PlantInventoryItem {
 
     @ManyToOne
     PlantInventoryEntry plantInfo;
+
+    @OneToMany(mappedBy = "plant", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+    List<MaintenancePlan> maintenancePlans = new ArrayList<>();
 
 }
