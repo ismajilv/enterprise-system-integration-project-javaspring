@@ -116,18 +116,18 @@ public class InventoryRepositoryTests {
 		createPurchaceOrder(plant2, rentals2, from, from.plusDays(10));
 
 		//extra reservations with different years
-		PlantReservation reservationNotIn2018_1 = createReservationFor(inv2, from.plusDays(4).minusYears(1), from.plusDays(5).minusYears(1));
-		PlantReservation reservationNotIn2018_2 = createReservationFor(inv2, from.plusDays(6).minusYears(1), from.plusDays(7).minusYears(1));
+		PlantReservation reservationNotIn2018_1 = createReservationFor(inv2, from.plusDays(4).minusYears(2), from.plusDays(5).minusYears(1));
+		PlantReservation reservationNotIn2018_2 = createReservationFor(inv2, from.plusDays(6).minusYears(2), from.plusDays(7).minusYears(1));
 		PlantReservation reservationNotIn2018_3 = createReservationFor(inv2, from.plusDays(4).plusYears(1), from.plusDays(5).plusYears(1));
 		PlantReservation reservationNotIn2018_4 = createReservationFor(inv2, from.plusDays(6).plusYears(1), from.plusDays(7).plusYears(1));
 
 		List<PlantReservation> rentals22 = new ArrayList<>();
 		rentals22.add(reservationNotIn2018_2);
-		createPurchaceOrder(plant2, rentals22, from, from.plusDays(10));
+		createPurchaceOrder(plant2, rentals22, from.minusYears(2), from.plusDays(10).minusYears(2));
 
 		List<PlantReservation> rentals23 = new ArrayList<>();
 		rentals23.add(reservationNotIn2018_4);
-		createPurchaceOrder(plant2, rentals23, from, from.plusDays(10));
+		createPurchaceOrder(plant2, rentals23, from.plusYears(1), from.plusDays(10).plusYears(1));
 
 		MaintenancePlan maintenancePlan2Not2018_1 = createMaintenancePlanFor(inv2, from.getYear() - 2);
 		MaintenancePlan maintenancePlan2Not2018_2 = createMaintenancePlanFor(inv2, from.getYear() + 1);
@@ -183,6 +183,19 @@ public class InventoryRepositoryTests {
 
 		List<PlantsWithRentalsAndRepairs> rentalsAndRepairs = plantInventoryEntryRepository.findRentalsAndRepairs(from.getYear());
 
+		Long i = -1L;
+		Long j = -1L;
+		for(PlantsWithRentalsAndRepairs plantsWithRentalsAndRepairs: rentalsAndRepairs) {
+			assertThat(plantsWithRentalsAndRepairs.getRentals() >= i);
+			assertThat(plantsWithRentalsAndRepairs.getRepairs() >= j);
+			if(plantsWithRentalsAndRepairs.getRentals() > i){
+				j = -1L;
+			} else {
+				j = plantsWithRentalsAndRepairs.getRepairs();
+			}
+			i = plantsWithRentalsAndRepairs.getRentals();
+		}
+
 		assertThat(rentalsAndRepairs.stream().map(tuple -> tuple.getEntry()).collect(Collectors.toList()))
 				.containsAll(allPlants)
 				.hasSize(15);
@@ -195,7 +208,7 @@ public class InventoryRepositoryTests {
 				assertEquals(new Long(1), new Long(plantsWithRentalsAndRepairs.getRentals()));
 				//assertEquals(new Long(maintenancePlan1.getTasks().size()), new Long(plantsWithRentalsAndRepairs.getRepairs()));
 			} else if(plantsWithRentalsAndRepairs.getEntry().getId().equals(plant2.getId())) {
-				//assertEquals(new Long(2), new Long(plantsWithRentalsAndRepairs.getRentals()));
+				assertEquals(new Long(2), new Long(plantsWithRentalsAndRepairs.getRentals()));
 				//assertEquals(new Long(3), new Long(plantsWithRentalsAndRepairs.getRepairs()));
 			} else if(plantsWithRentalsAndRepairs.getEntry().getId().equals(plant3.getId())) {
 				assertEquals(new Long(2), new Long(plantsWithRentalsAndRepairs.getRentals()));
