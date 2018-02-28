@@ -1,14 +1,17 @@
 package com.example.demo.models;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Data
+@ToString(exclude = {"maintenancePlans"})
 public class PlantInventoryItem {
 
     @Id
@@ -26,5 +29,11 @@ public class PlantInventoryItem {
 
     @OneToMany(mappedBy = "plant", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     List<MaintenancePlan> maintenancePlans = new ArrayList<>();
+
+    public boolean equals(Object o) {
+        return (o instanceof PlantInventoryItem) &&
+                (!Objects.isNull(((PlantInventoryItem)o).getId())) &&
+                (((PlantInventoryItem)o).getId().equals(this.getId()));
+    }
 
 }

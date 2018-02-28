@@ -2,6 +2,7 @@ package com.example.demo.models;
 
 
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -17,6 +18,7 @@ import java.util.Objects;
 
 @Entity
 @Data
+@ToString(exclude = {"items", "purchaseOrders"})
 public class PlantInventoryEntry {
 
     @Id

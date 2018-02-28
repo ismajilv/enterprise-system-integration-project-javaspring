@@ -1,6 +1,7 @@
 package com.example.demo.models;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Data
+@ToString(exclude = {"reservations"})
 public class PurchaseOrder {
     @Id @GeneratedValue
 
