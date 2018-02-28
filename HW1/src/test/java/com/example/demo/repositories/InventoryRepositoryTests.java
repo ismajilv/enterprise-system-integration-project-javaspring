@@ -206,19 +206,19 @@ public class InventoryRepositoryTests {
 		for(PlantsWithRentalsAndRepairs plantsWithRentalsAndRepairs: rentalsAndRepairs) {
 			if(plantsWithRentalsAndRepairs.getEntry().getId().equals(plant1.getId())){
 				assertEquals(new Long(1), new Long(plantsWithRentalsAndRepairs.getRentals()));
-				//assertEquals(new Long(maintenancePlan1.getTasks().size()), new Long(plantsWithRentalsAndRepairs.getRepairs()));
+				assertEquals(new Long(maintenancePlan1.getTasks().size()), new Long(plantsWithRentalsAndRepairs.getRepairs()));
 			} else if(plantsWithRentalsAndRepairs.getEntry().getId().equals(plant2.getId())) {
 				assertEquals(new Long(2), new Long(plantsWithRentalsAndRepairs.getRentals()));
-				//assertEquals(new Long(3), new Long(plantsWithRentalsAndRepairs.getRepairs()));
+				assertEquals(new Long(maintenancePlan2.getTasks().size()), new Long(plantsWithRentalsAndRepairs.getRepairs()));
 			} else if(plantsWithRentalsAndRepairs.getEntry().getId().equals(plant3.getId())) {
 				assertEquals(new Long(2), new Long(plantsWithRentalsAndRepairs.getRentals()));
-				//assertEquals(new Long(3), new Long(plantsWithRentalsAndRepairs.getRepairs()));
+				assertEquals(new Long(maintenancePlan3.getTasks().size()), new Long(plantsWithRentalsAndRepairs.getRepairs()));
 			} else if(plantsWithRentalsAndRepairs.getEntry().getId().equals(plant4.getId())) {
 				assertEquals(new Long(2), new Long(plantsWithRentalsAndRepairs.getRentals()));
-				//assertEquals(new Long(4), new Long(plantsWithRentalsAndRepairs.getRepairs()));
+				assertEquals(new Long(maintenancePlan4.getTasks().size()), new Long(plantsWithRentalsAndRepairs.getRepairs()));
 			} else if(plantsWithRentalsAndRepairs.getEntry().getId().equals(plant5.getId())){
 				assertEquals(new Long(0), new Long(plantsWithRentalsAndRepairs.getRentals()));
-				//assertEquals(new Long(3), new Long(plantsWithRentalsAndRepairs.getRepairs()));
+				assertEquals(new Long(maintenancePlan5.getTasks().size()), new Long(plantsWithRentalsAndRepairs.getRepairs()));
 			}
 
 		}
