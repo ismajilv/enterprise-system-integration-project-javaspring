@@ -20,7 +20,8 @@ public class MaintenanceTask {
     @Enumerated(EnumType.STRING)
     TypeOfWork typeOfWork;
 
-    BigDecimal price;
+    @Embedded
+    Money price;
 
     @OneToOne
     PlantReservation reservation;

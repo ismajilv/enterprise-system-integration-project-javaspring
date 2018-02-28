@@ -30,8 +30,9 @@ public class MaintenancePlanRepositoryImpl implements MaintenancePlanRepositoryC
 
 	@Override
 	public List<Pair<Integer, BigDecimal>> findCorrectiveRepairCostsByYear(int startYear, int endYear) {
-		return entityManager.createQuery("select new com.example.demo.utils.Pair(mp.yearOfAction, sum(mt.price)) from MaintenancePlan mp JOIN mp.tasks mt " + ""
-				+ "" + "where mp.yearOfAction >= ?1 and mp.yearOfAction <= ?2 and mt.typeOfWork = com.example.demo.models.TypeOfWork.CORRECTIVE group by mp.yearOfAction ORDER BY mp.yearOfAction")
+		return entityManager.createQuery("select new com.example.demo.utils.Pair(mp.yearOfAction, sum(mt.price.total)) from MaintenancePlan mp JOIN mp.tasks mt " + ""
+				+ "" + "where mp.yearOfAction >= ?1 and mp.yearOfAction <= ?2 and mt.typeOfWork = com.example.demo.models.TypeOfWork.CORRECTIVE " +
+				"group by mp.yearOfAction ORDER BY mp.yearOfAction")
 				.setParameter(1, startYear)
 				.setParameter(2, endYear)
 				.getResultList();

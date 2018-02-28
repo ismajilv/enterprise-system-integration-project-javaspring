@@ -32,9 +32,10 @@ public class MaintenanceRepositoryTests {
 		plan.setYearOfAction(year);
 		plan.setPlant(item);
 		MaintenanceTask task = new MaintenanceTask();
+		task.setMaintenancePlan(plan);
 		plan.getTasks().add(task);
 		task.setTypeOfWork(typeOfWork);
-		task.setPrice(price);
+		task.setPrice(Money.of(price));
 		maintenancePlanRepository.save(plan);
 	}
 
