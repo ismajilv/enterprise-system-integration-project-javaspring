@@ -8,6 +8,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,16 +18,8 @@ public class PurchaseOrder {
     @Id @GeneratedValue
     Long id;
 
-    public static PurchaseOrder of(PlantInventoryEntry plant, BusinessPeriod rentalPeriod) {
-        PurchaseOrder po = new PurchaseOrder();
-        po.plant = plant;
-        po.rentalPeriod = rentalPeriod;
-        po.status = POStatus.OPEN;
-        return po;
-    }
-
     @OneToMany
-    List<PlantReservation> reservations;
+    List<PlantReservation> reservations = new ArrayList<>();
     @ManyToOne
     PlantInventoryEntry plant;
 
@@ -41,4 +34,47 @@ public class PurchaseOrder {
 
     @Embedded
     BusinessPeriod rentalPeriod;
+
+    @ElementCollection
+    List<POExtension> extensions = new ArrayList<>();
+
+    public static PurchaseOrder of(PlantInventoryEntry plant, BusinessPeriod rentalPeriod) {
+        PurchaseOrder po = new PurchaseOrder();
+        po.plant = plant;
+        po.rentalPeriod = rentalPeriod;
+        po.status = POStatus.PENDING;
+        return po;
+    }
+
+    public void requestExtension(POExtension extension) {
+        extensions.add(extension);
+        status = POStatus.PENDING_EXTENSION;
+    }
+
+    public LocalDate pendingExtensionEndDate() {
+        if (extensions.size() > 0) {
+            POExtension openExtension = extensions.get(extensions.size() - 1);
+            return openExtension.getEndDate();
+        }
+        return null;
+    }
+
+    public void acceptExtension(PlantReservation reservation) {
+        reservations.add(reservation);
+        status = POStatus.OPEN;
+        rentalPeriod = BusinessPeriod.of(rentalPeriod.getStartDate(), reservation.getSchedule().getEndDate());
+        // UPDATE PO total!!
+    }
+
+    public void registerFirstAllocation(PlantReservation reservation) {
+        reservations.add(reservation);
+        status = POStatus.OPEN;
+        rentalPeriod = BusinessPeriod.of(reservation.getSchedule().getStartDate(), reservation.getSchedule().getEndDate());
+        // UPDATE PO total!!
+    }
+
+    public void reject() {
+        status = POStatus.REJECTED;
+    }
+
 }

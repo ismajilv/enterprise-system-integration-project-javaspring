@@ -1,3 +1,3 @@
 package com.rentit.sales.domain.model;
 
-public enum POStatus { PENDING, REJECTED, OPEN, CLOSED }
+public enum POStatus { PENDING, REJECTED, OPEN, CLOSED, PENDING_EXTENSION }
