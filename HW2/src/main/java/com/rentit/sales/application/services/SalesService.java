@@ -37,6 +37,21 @@ public class SalesService {
         return purchaseOrderRepository.getOne(id);
     }
 
+    public PurchaseOrder rejectPurchaseOrder(Long id){
+        PurchaseOrder po = findPurchaseOrder(id);
+        po.reject();
+        po = purchaseOrderRepository.save(po);
+        return po;
+    }
+
+    public PurchaseOrder acceptPurchaseOrder(Long id, Long reservationId){
+        PurchaseOrder po = findPurchaseOrder(id);
+        PlantReservation reservation = plantReservationRepository.getOne(reservationId);
+        po.registerFirstAllocation(reservation);
+        po = purchaseOrderRepository.save(po);
+        return po;
+    }
+
     public PurchaseOrder createPurchaseOrder(Long plantId, LocalDate startDate, LocalDate endDate) throws PlantNotFoundException {
         PlantInventoryEntry plant = plantInventoryEntryRepository.getOne(plantId);
         PurchaseOrder po = PurchaseOrder.of(

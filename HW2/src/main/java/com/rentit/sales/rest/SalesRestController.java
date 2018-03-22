@@ -54,10 +54,9 @@ public class SalesRestController {
     }
 
     @PostMapping("/orders/{poId}/reject/")
-    public ResponseEntity<?> acceptPurchaseOrder(@PathVariable("poId") Long poId)  throws URISyntaxException, PlantNotFoundException {
-        final PurchaseOrder po = salesService.findPurchaseOrder(poId);
+    public ResponseEntity<?> rejectPurchaseOrder(@PathVariable("poId") Long poId)  throws URISyntaxException, PlantNotFoundException {
+        final PurchaseOrder po = salesService.rejectPurchaseOrder(poId);
         PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
-        poDTO.setStatus(POStatus.REJECTED);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
         return new ResponseEntity<>(
@@ -68,10 +67,8 @@ public class SalesRestController {
 
     @PostMapping("/orders/{poId}/accept/{piiId}")
     public ResponseEntity<?> acceptPurchaseOrder(@PathVariable("poId") Long poId, @PathVariable("piiId") Long piiId)  throws URISyntaxException, PlantNotFoundException {
-        final PurchaseOrder po = salesService.findPurchaseOrder(poId);
+        final PurchaseOrder po = salesService.acceptPurchaseOrder(poId, 1L);
         PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
-        poDTO.setStatus(POStatus.OPEN);
-        //reservation TODO
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
         return new ResponseEntity<>(
