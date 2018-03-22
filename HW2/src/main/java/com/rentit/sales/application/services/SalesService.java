@@ -46,22 +46,25 @@ public class SalesService {
         // TODO validate PO
         po = purchaseOrderRepository.save(po);
 
-        List<PlantInventoryItem> items = inventoryRepository.findAvailableItems(plant, startDate, endDate);
+// batch allocation ->
+//        List<PlantInventoryItem> items = inventoryRepository.findAvailableItems(plant, startDate, endDate);
+//
+//        if (!items.isEmpty()) {
+//            PlantReservation reservation = new PlantReservation();
+//            reservation.setPlant(items.get(0));
+//            reservation.setSchedule(BusinessPeriod.of(startDate, endDate));
+//            plantReservationRepository.save(reservation);
+//
+//            po.registerFirstAllocation(reservation); // single responsibility vs ddd business intention trade-off
+//
+//            // validate PO
+//            purchaseOrderRepository.save(po);
+//        } else {
+//            po.reject();
+//            purchaseOrderRepository.save(po);
+//        }
 
-        if (!items.isEmpty()) {
-            PlantReservation reservation = new PlantReservation();
-            reservation.setPlant(items.get(0));
-            reservation.setSchedule(BusinessPeriod.of(startDate, endDate));
-            plantReservationRepository.save(reservation);
-
-            po.registerFirstAllocation(reservation); // single responsibility vs ddd business intention trade-off
-
-            // validate PO
-            purchaseOrderRepository.save(po);
-        } else {
-            po.reject();
-            purchaseOrderRepository.save(po);
-        }
+        purchaseOrderRepository.save(po);
 
         return po; // not dto
     }

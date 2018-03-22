@@ -49,13 +49,21 @@ public class SalesRestController {
 
     @GetMapping("/orders/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PurchaseOrder fetchPurchaseOrder(@PathVariable("id") Long id) {
-        return salesService.findPurchaseOrder(id);
+    public ResponseEntity<?> fetchPurchaseOrder(@PathVariable("id") Long id) {
+        final PurchaseOrder foundPO = salesService.findPurchaseOrder(id);
+        PurchaseOrderDTO dto = purchaseOrderAssembler.toResource(foundPO);
+        HttpHeaders headers = new HttpHeaders();
+//        headers.setLocation(new URI(dto.getRequiredLink("self").getHref()));
+
+        return new ResponseEntity<>(
+                new Resource<PurchaseOrderDTO>(dto),
+                headers,
+                HttpStatus.OK);
     }
 
     @PostMapping("/orders")
     public ResponseEntity<?> createPurchaseOrder(@RequestBody PurchaseOrderDTO partialPODTO) throws URISyntaxException, PlantNotFoundException {
-        PurchaseOrder newlyCreatedPO = salesService.createPurchaseOrder(partialPODTO.get_id(), partialPODTO.getRentalPeriod().getStartDate(), partialPODTO.getRentalPeriod().getEndDate());
+        PurchaseOrder newlyCreatedPO = salesService.createPurchaseOrder(partialPODTO.getPlant().get_id(), partialPODTO.getRentalPeriod().getStartDate(), partialPODTO.getRentalPeriod().getEndDate());
 
         PurchaseOrderDTO dto = purchaseOrderAssembler.toResource(newlyCreatedPO);
         HttpHeaders headers = new HttpHeaders();
