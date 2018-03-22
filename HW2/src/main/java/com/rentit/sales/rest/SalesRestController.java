@@ -1,13 +1,18 @@
 package com.rentit.sales.rest;
 
 import com.rentit.common.application.exceptions.PlantNotFoundException;
+import com.rentit.common.domain.model.BusinessPeriod;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.application.services.InventoryService;
 import com.rentit.inventory.application.services.PlantInventoryEntryAssembler;
+import com.rentit.inventory.domain.model.PlantInventoryItem;
+import com.rentit.inventory.domain.model.PlantReservation;
+import com.rentit.inventory.domain.repository.PlantInventoryItemRepository;
 import com.rentit.sales.application.dto.POExtensionDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.services.PurchaseOrderAssembler;
 import com.rentit.sales.application.services.SalesService;
+import com.rentit.sales.domain.model.POStatus;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -45,6 +51,33 @@ public class SalesRestController {
             @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         return inventoryService.findAvailable(plantName, startDate, endDate);
+    }
+
+    @PostMapping("/orders/{poId}/reject/")
+    public ResponseEntity<?> acceptPurchaseOrder(@PathVariable("poId") Long poId)  throws URISyntaxException, PlantNotFoundException {
+        final PurchaseOrder po = salesService.findPurchaseOrder(poId);
+        PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
+        poDTO.setStatus(POStatus.REJECTED);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
+        return new ResponseEntity<>(
+                new Resource<PurchaseOrderDTO>(poDTO),
+                headers,
+                HttpStatus.OK);
+    }
+
+    @PostMapping("/orders/{poId}/accept/{piiId}")
+    public ResponseEntity<?> acceptPurchaseOrder(@PathVariable("poId") Long poId, @PathVariable("piiId") Long piiId)  throws URISyntaxException, PlantNotFoundException {
+        final PurchaseOrder po = salesService.findPurchaseOrder(poId);
+        PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
+        poDTO.setStatus(POStatus.OPEN);
+        //reservation TODO
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
+        return new ResponseEntity<>(
+                new Resource<PurchaseOrderDTO>(poDTO),
+                headers,
+                HttpStatus.OK);
     }
 
     @GetMapping("/orders/{id}")
