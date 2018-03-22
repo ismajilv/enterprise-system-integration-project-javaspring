@@ -1,9 +1,47 @@
 package com.rentit.inventory.rest;
 
+import com.rentit.inventory.application.dto.PlantInventoryItemDTO;
+import com.rentit.inventory.application.services.PlantInventoryEntryAssembler;
+import com.rentit.inventory.application.services.PlantInventoryItemAssembler;
+import com.rentit.inventory.domain.model.PlantInventoryEntry;
+import com.rentit.inventory.domain.model.PlantInventoryItem;
+import com.rentit.inventory.domain.repository.InventoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/pitems")
 public class PlantInventoryItemRestController {
+
+    @Autowired
+    InventoryRepository inventoryRepository;
+
+    @Autowired
+    PlantInventoryItemAssembler plantInventoryItemAssembler;
+
+    @GetMapping("/items")
+    public List<PlantInventoryItemDTO> findAvailableIventoryItems(
+            @RequestParam(name = "name") String plant,
+            @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) {
+        List<PlantInventoryEntry> entries = inventoryRepository.findAvailablePlants(plant, startDate, endDate);
+        List<PlantInventoryItem> items = new ArrayList<>();
+        for(PlantInventoryEntry entry: entries) {
+            items.addAll(inventoryRepository.findAvailableItems(entry, startDate, endDate));
+        }
+        return items.stream().map(pii -> plantInventoryItemAssembler.toResource(pii)).collect(Collectors.toList());
+    }
+
+
+
 }
