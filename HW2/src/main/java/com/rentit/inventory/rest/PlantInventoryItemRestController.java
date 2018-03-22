@@ -6,6 +6,7 @@ import com.rentit.inventory.application.services.PlantInventoryItemAssembler;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.inventory.domain.model.PlantInventoryItem;
 import com.rentit.inventory.domain.repository.InventoryRepository;
+import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,19 +27,19 @@ public class PlantInventoryItemRestController {
     InventoryRepository inventoryRepository;
 
     @Autowired
+    PlantInventoryEntryRepository plantInventoryEntryRepository;
+
+    @Autowired
     PlantInventoryItemAssembler plantInventoryItemAssembler;
 
     @GetMapping("/items")
     public List<PlantInventoryItemDTO> findAvailableInventoryItems(
-            @RequestParam(name = "name") String plant,
+            @RequestParam(name = "pieId") Long pieId,
             @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
     ) {
-        List<PlantInventoryEntry> entries = inventoryRepository.findAvailablePlants(plant, startDate, endDate);
-        List<PlantInventoryItem> items = new ArrayList<>();
-        for(PlantInventoryEntry entry: entries) {
-            items.addAll(inventoryRepository.findAvailableItems(entry, startDate, endDate));
-        }
+        PlantInventoryEntry plant = plantInventoryEntryRepository.getOne(pieId);
+        List<PlantInventoryItem> items = inventoryRepository.findAvailableItems(plant, startDate, endDate);
         return items.stream().map(pii -> plantInventoryItemAssembler.toResource(pii)).collect(Collectors.toList());
     }
 
