@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class SalesService {
@@ -40,26 +39,26 @@ public class SalesService {
     public PurchaseOrder rejectPurchaseOrder(Long id){
         PurchaseOrder po = findPurchaseOrder(id);
         po.reject();
-        po = purchaseOrderRepository.save(po);
-        return po;
+        return save(po);
     }
 
-    public PurchaseOrder acceptPurchaseOrder(Long id, Long reservationId){
-        PurchaseOrder po = findPurchaseOrder(id);
-        PlantReservation reservation = plantReservationRepository.getOne(reservationId);
+    public PurchaseOrder acceptPurchaseOrder(Long poId, Long piiId){
+        PurchaseOrder po = findPurchaseOrder(poId);
+        PlantInventoryItem pii = plantInventoryItemRepository.getOne(piiId);
+        PlantReservation reservation = new PlantReservation();
+        reservation.setPlant(pii);
+        reservation.setSchedule(po.getRentalPeriod());
+        reservation = plantReservationRepository.save(reservation);
         po.registerFirstAllocation(reservation);
-        po = purchaseOrderRepository.save(po);
-        return po;
+        return save(po);
     }
 
-    public PurchaseOrder createPurchaseOrder(Long plantId, LocalDate startDate, LocalDate endDate) throws PlantNotFoundException {
+    public PurchaseOrder preparePurchaseOrderForSave(Long plantId, LocalDate startDate, LocalDate endDate) throws PlantNotFoundException {
         PlantInventoryEntry plant = plantInventoryEntryRepository.getOne(plantId);
         PurchaseOrder po = PurchaseOrder.of(
                 plant,
                 BusinessPeriod.of(startDate, endDate));
 
-        // TODO validate PO
-        po = purchaseOrderRepository.save(po);
 
 // batch allocation ->
 //        List<PlantInventoryItem> items = inventoryRepository.findAvailableItems(plant, startDate, endDate);
@@ -79,8 +78,12 @@ public class SalesService {
 //            purchaseOrderRepository.save(po);
 //        }
 
-        purchaseOrderRepository.save(po);
 
         return po; // not dto
     }
+
+    public PurchaseOrder save(PurchaseOrder purchaseOrder) {
+        return purchaseOrderRepository.save(purchaseOrder);
+    }
+
 }
