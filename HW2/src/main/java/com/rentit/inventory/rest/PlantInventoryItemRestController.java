@@ -29,7 +29,7 @@ public class PlantInventoryItemRestController {
     PlantInventoryItemAssembler plantInventoryItemAssembler;
 
     @GetMapping("/items")
-    public List<PlantInventoryItemDTO> findAvailableIventoryItems(
+    public List<PlantInventoryItemDTO> findAvailableInventoryItems(
             @RequestParam(name = "name") String plant,
             @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
