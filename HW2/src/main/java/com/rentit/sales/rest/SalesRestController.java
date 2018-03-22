@@ -1,19 +1,16 @@
 package com.rentit.sales.rest;
 
 import com.rentit.common.application.exceptions.PlantNotFoundException;
-import com.rentit.common.domain.model.BusinessPeriod;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.application.services.InventoryService;
 import com.rentit.inventory.application.services.PlantInventoryEntryAssembler;
-import com.rentit.inventory.domain.model.PlantInventoryItem;
-import com.rentit.inventory.domain.model.PlantReservation;
-import com.rentit.inventory.domain.repository.PlantInventoryItemRepository;
 import com.rentit.sales.application.dto.POExtensionDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.services.PurchaseOrderAssembler;
 import com.rentit.sales.application.services.SalesService;
 import com.rentit.sales.domain.model.POStatus;
 import com.rentit.sales.domain.model.PurchaseOrder;
+import com.rentit.sales.domain.validator.PurchaseOrderValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.Resource;
@@ -21,6 +18,7 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -96,7 +94,21 @@ public class SalesRestController {
 
     @PostMapping("/orders")
     public ResponseEntity<?> createPurchaseOrder(@RequestBody PurchaseOrderDTO partialPODTO) throws URISyntaxException, PlantNotFoundException {
-        PurchaseOrder newlyCreatedPO = salesService.createPurchaseOrder(partialPODTO.getPlant().get_id(), partialPODTO.getRentalPeriod().getStartDate(), partialPODTO.getRentalPeriod().getEndDate());
+        PurchaseOrder preparedForSavePO = salesService.preparePurchaseOrderForSave(partialPODTO.getPlant().get_id(), partialPODTO.getRentalPeriod().getStartDate(), partialPODTO.getRentalPeriod().getEndDate());
+
+        DataBinder binder = new DataBinder(preparedForSavePO);
+
+        binder.addValidators(new PurchaseOrderValidator());
+        binder.validate();
+
+        if (binder.getBindingResult().hasErrors()) {
+            return new ResponseEntity<>(
+                    new Resources<>(binder.getBindingResult().getAllErrors()),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        // not ideal breaking save into two parts, but beats having web in service layer
+        PurchaseOrder newlyCreatedPO = salesService.save(preparedForSavePO);
 
         PurchaseOrderDTO dto = purchaseOrderAssembler.toResource(newlyCreatedPO);
         HttpHeaders headers = new HttpHeaders();

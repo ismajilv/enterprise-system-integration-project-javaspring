@@ -3,8 +3,6 @@ package com.rentit.sales.application.services;
 import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.common.domain.model.BusinessPeriod;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
-import com.rentit.inventory.domain.model.PlantInventoryItem;
-import com.rentit.inventory.domain.model.PlantReservation;
 import com.rentit.inventory.domain.repository.InventoryRepository;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import com.rentit.inventory.domain.repository.PlantInventoryItemRepository;
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class SalesService {
@@ -37,14 +34,12 @@ public class SalesService {
         return purchaseOrderRepository.getOne(id);
     }
 
-    public PurchaseOrder createPurchaseOrder(Long plantId, LocalDate startDate, LocalDate endDate) throws PlantNotFoundException {
+    public PurchaseOrder preparePurchaseOrderForSave(Long plantId, LocalDate startDate, LocalDate endDate) throws PlantNotFoundException {
         PlantInventoryEntry plant = plantInventoryEntryRepository.getOne(plantId);
         PurchaseOrder po = PurchaseOrder.of(
                 plant,
                 BusinessPeriod.of(startDate, endDate));
 
-        // TODO validate PO
-        po = purchaseOrderRepository.save(po);
 
 // batch allocation ->
 //        List<PlantInventoryItem> items = inventoryRepository.findAvailableItems(plant, startDate, endDate);
@@ -64,8 +59,12 @@ public class SalesService {
 //            purchaseOrderRepository.save(po);
 //        }
 
-        purchaseOrderRepository.save(po);
 
         return po; // not dto
     }
+
+    public PurchaseOrder save(PurchaseOrder purchaseOrder) {
+        return purchaseOrderRepository.save(purchaseOrder);
+    }
+
 }
