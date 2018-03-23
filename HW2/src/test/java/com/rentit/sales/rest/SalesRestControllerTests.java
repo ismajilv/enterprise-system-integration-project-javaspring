@@ -6,6 +6,7 @@ import com.rentit.RentitApplication;
 import com.rentit.common.application.dto.BusinessPeriodDTO;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.application.dto.PlantInventoryItemDTO;
+import com.rentit.inventory.application.dto.PlantReservationDTO;
 import com.rentit.inventory.domain.model.PlantInventoryItem;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
@@ -31,6 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.rentit.sales.domain.model.POStatus.OPEN;
 import static com.rentit.sales.domain.model.POStatus.PENDING;
@@ -165,9 +167,15 @@ public class SalesRestControllerTests {
         assertThat(acceptedPO.getRentalPeriod().getEndDate().isAfter(acceptedPO.getRentalPeriod().getStartDate()));
         // period must be in the future
         assertThat(acceptedPO.getRentalPeriod().getStartDate().isAfter(LocalDate.now().minusDays(1)));
+
+        // must have a reservation associated with order by now
+		PlantReservationDTO reservation = findReservationForPO(acceptedPO.getPlant().get_id());
+		assertNotNull(reservation.getSchedule());
+		assertEquals(reservation.getSchedule().getStartDate(), acceptedPO.getRentalPeriod().getStartDate());
+		assertEquals(reservation.getSchedule().getEndDate(), acceptedPO.getRentalPeriod().getEndDate());
     }
 
-    @Test
+	@Test
     public void testCreatePOWithNonExistingPlant() throws Exception {
         PurchaseOrderDTO order = new PurchaseOrderDTO();
         PlantInventoryEntryDTO plantToBeReserved = new PlantInventoryEntryDTO();
@@ -212,6 +220,20 @@ public class SalesRestControllerTests {
     }
 
     //<editor-fold desc="Helpers">
+
+	private PlantReservationDTO findReservationForPO(Long plantInfoId) throws Exception {
+		MvcResult createdPOAsMvcResult = mockMvc.perform(get("/api/reservations"))
+				.andExpect(status().is2xxSuccessful())
+				.andReturn();
+
+		List<PlantReservationDTO> reservations = mapper.readValue(createdPOAsMvcResult.getResponse().getContentAsString(), new TypeReference<List<PlantReservationDTO>>() {});
+		List<PlantReservationDTO> ret = reservations.stream().filter(r -> r.getPlantInfo().getPlantInfo().get_id().equals(plantInfoId)).collect(Collectors.toList());
+
+		if (ret.size() != 1) throw new IllegalStateException();
+
+		return ret.get(0);
+	}
+
     public PlantInventoryEntryDTO findAnyPlant() throws Exception {
         MvcResult result = mockMvc.perform(get("/api/sales/plants?name=Exc&startDate=2017-04-14&endDate=2017-04-25")).andReturn();
 
