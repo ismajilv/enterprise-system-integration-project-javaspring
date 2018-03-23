@@ -1,0 +1,35 @@
+http://localhost:8090/api/test/addData
+
+http://localhost:8090/api/sales/plants?name=exc&startDate=2018-03-20&endDate=2018-03-24
+
+http://localhost:8090/plants
+
+http://localhost:8090/api/sales/orders
+
+{
+"plant": {
+"_id": 3
+},
+"rentalPeriod": {
+"startDate": "2018-04-01",
+"endDate": "2018-04-08"
+}
+}
+
+http://localhost:8090/api/sales/orders/9
+
+
+
+
+		// TODO refactor into separate validator when needed elsewhere
+//		if (isNull(p.getRentalPeriod())) {
+//			errors.rejectValue("rentalPeriod", "null", "Purchase order has null for rental period");
+//		} else if (isNull(p.getRentalPeriod().getStartDate())) {
+//			errors.rejectValue("rentalPeriod", "missing.startDate", "Purchase order has rental period that is missing start date");
+//		} else if (isNull(p.getRentalPeriod().getEndDate())) {
+//			errors.rejectValue("rentalPeriod", "missing.endDate", "Purchase order has rental period that is missing end date");
+//		} else if (p.getRentalPeriod().getEndDate().isBefore(p.getRentalPeriod().getStartDate())) {
+//			errors.rejectValue("rentalPeriod", "endDate.before.startDate", "Purchase order has rental period with start date before end date");
+//		}
+
+
