@@ -2,8 +2,11 @@ package com.rentit.sales.rest;
 
 import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
+import com.rentit.inventory.application.dto.PlantInventoryItemDTO;
 import com.rentit.inventory.application.services.InventoryService;
 import com.rentit.inventory.application.services.PlantInventoryEntryAssembler;
+import com.rentit.inventory.domain.model.PlantInventoryEntry;
+import com.rentit.inventory.domain.model.PlantInventoryItem;
 import com.rentit.sales.application.dto.POExtensionDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.services.PurchaseOrderAssembler;
@@ -52,8 +55,20 @@ public class SalesRestController {
     }
 
     @PostMapping("/orders/{poId}/reject/")
-    public ResponseEntity<?> rejectPurchaseOrder(@PathVariable("poId") Long poId)  throws URISyntaxException, PlantNotFoundException {
+    public ResponseEntity<?> rejectPurchaseOrder(@PathVariable("poId") Long poId)  throws URISyntaxException {
         final PurchaseOrder po = salesService.rejectPurchaseOrder(poId);
+
+        DataBinder binder = new DataBinder(po);
+
+        binder.addValidators(new PurchaseOrderValidator());
+        binder.validate();
+
+        if (binder.getBindingResult().hasErrors()) {
+            return new ResponseEntity<>(
+                    new Resources<>(binder.getBindingResult().getAllErrors()),
+                    HttpStatus.BAD_REQUEST);
+        }
+
         PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
@@ -63,10 +78,28 @@ public class SalesRestController {
                 HttpStatus.OK);
     }
 
-    @PostMapping("/orders/{poId}/accept/{piiId}")
-    public ResponseEntity<?> acceptPurchaseOrder(@PathVariable("poId") Long poId, @PathVariable("piiId") Long piiId)  throws URISyntaxException, PlantNotFoundException {
+    @PostMapping("/orders/{poId}/accept/")
+    public ResponseEntity<?> acceptPurchaseOrder(@RequestBody Long piiId, @PathVariable("poId") Long poId)  throws URISyntaxException, PlantNotFoundException {
+
+        final PlantInventoryItem pii = inventoryService.findPlantInventoryItem(piiId);
+        if (pii == null) {
+            throw new PlantNotFoundException(piiId);
+        }
         final PurchaseOrder po = salesService.acceptPurchaseOrder(poId, piiId);
+
+        DataBinder binder = new DataBinder(po);
+
+        binder.addValidators(new PurchaseOrderValidator());
+        binder.validate();
+
+        if (binder.getBindingResult().hasErrors()) {
+            return new ResponseEntity<>(
+                    new Resources<>(binder.getBindingResult().getAllErrors()),
+                    HttpStatus.BAD_REQUEST);
+        }
+
         PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
         return new ResponseEntity<>(
@@ -91,6 +124,11 @@ public class SalesRestController {
 
     @PostMapping("/orders")
     public ResponseEntity<?> createPurchaseOrder(@RequestBody PurchaseOrderDTO partialPODTO) throws URISyntaxException, PlantNotFoundException {
+
+        PlantInventoryEntry pie = inventoryService.findPlantInventoryEntry(partialPODTO.getPlant().get_id());
+        if (pie == null){
+            throw new PlantNotFoundException(partialPODTO.getPlant().get_id());
+        }
         PurchaseOrder preparedForSavePO = salesService.preparePurchaseOrderForSave(partialPODTO.getPlant().get_id(), partialPODTO.getRentalPeriod().getStartDate(), partialPODTO.getRentalPeriod().getEndDate());
 
         DataBinder binder = new DataBinder(preparedForSavePO);
