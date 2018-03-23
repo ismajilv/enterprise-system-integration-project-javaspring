@@ -7,6 +7,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import java.time.LocalDate;
+
 import static java.util.Objects.isNull;
 
 public class PurchaseOrderValidator implements Validator {
@@ -42,6 +44,11 @@ public class PurchaseOrderValidator implements Validator {
 
 		switch (po.getStatus()) {
 			case PENDING:
+				if (!isNull(po.getRentalPeriod())
+						&& !isNull(po.getRentalPeriod().getStartDate())
+						&& po.getRentalPeriod().getStartDate().isBefore(LocalDate.now())) {
+					errors.rejectValue("rentalPeriod", "past", "Purchase order must be for future");
+				}
 				break;
 			case OPEN:
 			case CLOSED:

@@ -54,7 +54,7 @@ public class SalesRestController {
         return inventoryService.findAvailable(plantName, startDate, endDate);
     }
 
-    @PostMapping("/orders/{poId}/reject/")
+    @PostMapping("/orders/{poId}/reject")
     public ResponseEntity<?> rejectPurchaseOrder(@PathVariable("poId") Long poId)  throws URISyntaxException {
         final PurchaseOrder po = salesService.rejectPurchaseOrder(poId);
 
@@ -78,7 +78,7 @@ public class SalesRestController {
                 HttpStatus.OK);
     }
 
-    @PostMapping("/orders/{poId}/accept/")
+    @PostMapping("/orders/{poId}/accept")
     public ResponseEntity<?> acceptPurchaseOrder(@RequestBody Long piiId, @PathVariable("poId") Long poId)  throws URISyntaxException, PlantNotFoundException {
 
         if (!inventoryService.isPlantInventoryItemExisting(piiId)) {
@@ -171,8 +171,7 @@ public class SalesRestController {
     }
 
     @ExceptionHandler(PlantNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public void handPlantNotFoundException(PlantNotFoundException ex) {
-        // Code To handle Exception
+    public ResponseEntity<Object> handPlantNotFoundException(PlantNotFoundException ex) {
+        return new ResponseEntity<Object>(ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
 }
