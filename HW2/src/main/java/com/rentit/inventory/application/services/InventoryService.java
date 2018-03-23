@@ -37,4 +37,8 @@ public class InventoryService {
     }
 
     public PlantInventoryEntry findPlantInventoryEntry(Long id) { return  plantInventoryEntryRepository.getOne(id);}
+
+    public Boolean isPlantInventoryItemExisting(Long id) { return  inventoryRepository.isPlantInventoryItemExisting(id);}
+
+    public Boolean isPlantInventoryEntryExisting(Long id) { return  inventoryRepository.isPlantInventoryEntryExisting(id);}
 }

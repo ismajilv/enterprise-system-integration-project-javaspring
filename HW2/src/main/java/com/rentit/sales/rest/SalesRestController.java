@@ -81,8 +81,7 @@ public class SalesRestController {
     @PostMapping("/orders/{poId}/accept/")
     public ResponseEntity<?> acceptPurchaseOrder(@RequestBody Long piiId, @PathVariable("poId") Long poId)  throws URISyntaxException, PlantNotFoundException {
 
-        final PlantInventoryItem pii = inventoryService.findPlantInventoryItem(piiId);
-        if (pii == null) {
+        if (!inventoryService.isPlantInventoryItemExisting(piiId)) {
             throw new PlantNotFoundException(piiId);
         }
         final PurchaseOrder po = salesService.acceptPurchaseOrder(poId, piiId);
@@ -125,10 +124,10 @@ public class SalesRestController {
     @PostMapping("/orders")
     public ResponseEntity<?> createPurchaseOrder(@RequestBody PurchaseOrderDTO partialPODTO) throws URISyntaxException, PlantNotFoundException {
 
-        PlantInventoryEntry pie = inventoryService.findPlantInventoryEntry(partialPODTO.getPlant().get_id());
-        if (pie == null){
+        if(!inventoryService.isPlantInventoryEntryExisting(partialPODTO.getPlant().get_id())) {
             throw new PlantNotFoundException(partialPODTO.getPlant().get_id());
         }
+
         PurchaseOrder preparedForSavePO = salesService.preparePurchaseOrderForSave(partialPODTO.getPlant().get_id(), partialPODTO.getRentalPeriod().getStartDate(), partialPODTO.getRentalPeriod().getEndDate());
 
         DataBinder binder = new DataBinder(preparedForSavePO);
