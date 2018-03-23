@@ -29,6 +29,7 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.afford;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -52,6 +53,15 @@ public class SalesRestController {
             @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         return inventoryService.findAvailable(plantName, startDate, endDate);
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<?> getPending() {
+        List<PurchaseOrder> pendingOrders = salesService.findPendingOrders();
+
+        List<PurchaseOrderDTO> ret = pendingOrders.stream().map(po -> purchaseOrderAssembler.toResource(po)).collect(Collectors.toList());
+
+        return new ResponseEntity<>(new Resources<>(ret), HttpStatus.OK);
     }
 
     @PostMapping("/orders/{poId}/reject")
