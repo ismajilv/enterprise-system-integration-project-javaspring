@@ -1,0 +1,19 @@
+package com.buildit.common.domain.model;
+
+import lombok.*;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import java.time.LocalDate;
+
+@Embeddable
+@Value
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
+@AllArgsConstructor(staticName = "of")
+public class BusinessPeriod {
+    @Column(name = "start_date")
+    LocalDate startDate;
+
+    @Column(name = "end_date")
+    LocalDate endDate;
+}
