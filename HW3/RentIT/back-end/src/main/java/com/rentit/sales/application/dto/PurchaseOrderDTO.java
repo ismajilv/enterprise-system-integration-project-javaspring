@@ -10,7 +10,7 @@ import javax.persistence.Column;
 import java.math.BigDecimal;
 
 @Data
-public class PurchaseOrderDTO {
+public class PurchaseOrderDTO extends ResourceSupport{
     Long _id;
     PlantInventoryEntryDTO plant;
     BusinessPeriodDTO rentalPeriod;

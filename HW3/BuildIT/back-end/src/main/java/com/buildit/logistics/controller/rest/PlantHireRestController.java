@@ -26,9 +26,16 @@ public class PlantHireRestController {
         return null;
     }
 
+    @GetMapping("/requests/{id}")
+    public Resource<?> getRequest(@PathVariable(name = "id") Long requestId){
+//        TODO: return plant hire requests with given id
+        return null;
+    }
+
     @PatchMapping("/request-management/requests/{id}")
-    public Resource<?> approveHireRequest(@PathVariable(name = "id") Long id){
-//        TODO: update the state of the plant hire request to ACCEPTED
+    public Resource<?> approveHireRequest(@PathVariable(name = "id") Long id,
+                                          @RequestBody PlantHireRequestDTO updatedRequest){
+//        TODO: update the state of the plant hire request to ACCEPTED, generate and send new PO to RentIT
         return null;
     }
 

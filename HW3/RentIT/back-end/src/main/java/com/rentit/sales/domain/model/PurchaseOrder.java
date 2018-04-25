@@ -8,6 +8,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,17 +64,20 @@ public class PurchaseOrder {
         reservations.add(reservation);
         status = POStatus.OPEN;
         rentalPeriod = BusinessPeriod.of(rentalPeriod.getStartDate(), reservation.getSchedule().getEndDate());
-        // UPDATE PO total!!
+        Long nrOfDaysExtendedFor = ChronoUnit.DAYS.between(reservation.getSchedule().getStartDate(), reservation.getSchedule().getEndDate());
+        total = total.add(new BigDecimal(nrOfDaysExtendedFor));
     }
 
     public void registerFirstAllocation(PlantReservation reservation) {
         reservations.add(reservation);
         status = POStatus.OPEN;
         rentalPeriod = BusinessPeriod.of(reservation.getSchedule().getStartDate(), reservation.getSchedule().getEndDate());
-        // UPDATE PO total!!
+        Long nrOfDaysRented = ChronoUnit.DAYS.between(rentalPeriod.getStartDate(), rentalPeriod.getEndDate());
+        total = plant.getPrice().multiply(new BigDecimal(nrOfDaysRented));
     }
 
     public void reject() {
         status = POStatus.REJECTED;
     }
+
 }

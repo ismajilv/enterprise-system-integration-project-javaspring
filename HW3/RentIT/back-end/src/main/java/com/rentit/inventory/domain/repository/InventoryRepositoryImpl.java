@@ -44,4 +44,15 @@ public class InventoryRepositoryImpl implements CustomInventoryRepository {
                 .setParameter(3, endDate)
                 .getSingleResult();
     }
+
+
+    @Override
+    public  Boolean isPlantInventoryItemExisting(Long id){
+        return  em.createQuery("select case when (count(i) > 0)  then true else false end from PlantInventoryItem i where i.id = ?1", Boolean.class).setParameter(1,id).getSingleResult();
+    }
+
+    @Override
+    public  Boolean isPlantInventoryEntryExisting(Long id){
+        return  em.createQuery("select case when (count(e) > 0)  then true else false end from PlantInventoryEntry e where e.id = ?1", Boolean.class).setParameter(1,id).getSingleResult();
+    }
 }

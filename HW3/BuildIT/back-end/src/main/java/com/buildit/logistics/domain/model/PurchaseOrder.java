@@ -1,5 +1,6 @@
 package com.buildit.logistics.domain.model;
 
+import com.buildit.logistics.domain.enums.POStatus;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -17,4 +18,7 @@ public class PurchaseOrder {
 
     @Column(name = "hyperlink")
     URI href;
+
+    @Column(name = "status")
+    POStatus status;
 }

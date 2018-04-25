@@ -7,10 +7,15 @@ import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PlantInventoryEntryAssembler {
+public class PlantInventoryEntryAssembler extends ResourceAssemblerSupport<PlantInventoryEntry, PlantInventoryEntryDTO> {
 
+    public PlantInventoryEntryAssembler() {
+        super(InventoryRestController.class, PlantInventoryEntryDTO.class);
+    }
+
+    @Override
     public PlantInventoryEntryDTO toResource(PlantInventoryEntry plant) {
-        PlantInventoryEntryDTO dto = new PlantInventoryEntryDTO();
+        PlantInventoryEntryDTO dto = createResourceWithId(plant.getId(), plant);
         dto.set_id(plant.getId());
         dto.setName(plant.getName());
         dto.setDescription(plant.getDescription());

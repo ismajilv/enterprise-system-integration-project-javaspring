@@ -37,32 +37,58 @@ public class SalesService {
         return purchaseOrderRepository.getOne(id);
     }
 
-    public PurchaseOrder createPurchaseOrder(Long plantId, LocalDate startDate, LocalDate endDate) throws PlantNotFoundException {
+    public PurchaseOrder rejectPurchaseOrder(Long id){
+        PurchaseOrder po = findPurchaseOrder(id);
+        po.reject();
+        return save(po);
+    }
+
+    public PurchaseOrder acceptPurchaseOrder(Long poId, Long piiId){
+        PurchaseOrder po = findPurchaseOrder(poId);
+        PlantInventoryItem pii = plantInventoryItemRepository.getOne(piiId);
+        PlantReservation reservation = new PlantReservation();
+        reservation.setPlant(pii);
+        reservation.setSchedule(po.getRentalPeriod());
+        reservation = plantReservationRepository.save(reservation);
+        po.registerFirstAllocation(reservation);
+        return save(po);
+    }
+
+    public PurchaseOrder preparePurchaseOrderForSave(Long plantId, LocalDate startDate, LocalDate endDate) throws PlantNotFoundException {
         PlantInventoryEntry plant = plantInventoryEntryRepository.getOne(plantId);
         PurchaseOrder po = PurchaseOrder.of(
                 plant,
                 BusinessPeriod.of(startDate, endDate));
 
-        // Validate PO
-        purchaseOrderRepository.save(po);
 
-        List<PlantInventoryItem> items = inventoryRepository.findAvailableItems(plant, startDate, endDate);
+// batch allocation ->
+//        List<PlantInventoryItem> items = inventoryRepository.findAvailableItems(plant, startDate, endDate);
+//
+//        if (!items.isEmpty()) {
+//            PlantReservation reservation = new PlantReservation();
+//            reservation.setPlant(items.get(0));
+//            reservation.setSchedule(BusinessPeriod.of(startDate, endDate));
+//            plantReservationRepository.save(reservation);
+//
+//            po.registerFirstAllocation(reservation); // single responsibility vs ddd business intention trade-off
+//
+//            // validate PO
+//            purchaseOrderRepository.save(po);
+//        } else {
+//            po.reject();
+//            purchaseOrderRepository.save(po);
+//        }
 
-        if (!items.isEmpty()) {
-            PlantReservation reservation = new PlantReservation();
-            reservation.setPlant(items.get(0));
-            reservation.setSchedule(BusinessPeriod.of(startDate, endDate));
-            plantReservationRepository.save(reservation);
 
-            po.registerFirstAllocation(reservation);
-            // Validate PO
-            purchaseOrderRepository.save(po);
-
-        } else {
-            po.reject();
-            purchaseOrderRepository.save(po);
-        }
-
-        return po;
+        return po; // not dto
     }
+
+    public PurchaseOrder save(PurchaseOrder purchaseOrder) {
+        return purchaseOrderRepository.save(purchaseOrder);
+    }
+
+    public List<PurchaseOrder> findPendingOrders() {
+        return purchaseOrderRepository.findPendingPurchaseOrders();
+    }
+
 }

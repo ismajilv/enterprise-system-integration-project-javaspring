@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import java.math.BigDecimal;
 
 @Data
-public class PlantInventoryEntryDTO {
+public class PlantInventoryEntryDTO extends ResourceSupport {
     Long _id;
     String name;
     String description;

@@ -64,21 +64,21 @@ public class CreationOfPurchaseOrderSteps {
 
     @Given("^the following plant catalog$")
     public void the_following_plant_catalog(List<PlantInventoryEntry> entries) throws Throwable {
-//        plantInventoryEntryRepository.save(entries);
+        plantInventoryEntryRepository.saveAll(entries);
     }
-
-    @Given("^the following inventory$")
-    public void the_following_inventory(DataTable table) throws Throwable {
-        for (Map<String, String> row: table.asMaps(String.class, String.class))
-            plantInventoryItemRepository.save(
-                    PlantInventoryItem.of(
-                            Long.parseLong(row.get("id")),
-                            row.get("serialNumber"),
-                            EquipmentCondition.valueOf(row.get("equipmentCondition")),
-                            plantInventoryEntryRepository.getOne(Long.parseLong(row.get("plantInfo")))
-                    )
-            );
-    }
+// TODO doesn't compile
+//    @Given("^the following inventory$")
+//    public void the_following_inventory(DataTable table) throws Throwable {
+//        for (Map<String, String> row: table.asMaps(String.class, String.class))
+//            plantInventoryItemRepository.save(
+//                    PlantInventoryItem.of(
+//                            Long.parseLong(row.get("id")),
+//                            row.get("serialNumber"),
+//                            EquipmentCondition.valueOf(row.get("equipmentCondition")),
+//                            plantInventoryEntryRepository.findOne(Long.parseLong(row.get("plantInfo")))
+//                    )
+//            );
+//    }
 
     @Given("^a customer is in the \"([^\"]*)\" web page$")
     public void a_customer_is_in_the_web_page(String pageTitle) throws Throwable {
