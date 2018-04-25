@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Data
@@ -28,8 +29,9 @@ public class PlantHireRequest {
     @Column(name = "rental_cost", precision = 8, scale = 2)
     BigDecimal rentalCost;
 
-    @Column(name = "creator_name")
-    String creatorName;
+    @Embedded
+    @Column(name = "created_by")
+    Creator creator;
 
     @JoinColumn(name = "plant_id")
     @OneToOne
@@ -38,4 +40,7 @@ public class PlantHireRequest {
     @JoinColumn(name = "purchase_order_id")
     @OneToOne
     PurchaseOrder purchaseOrder;
+
+    @OneToMany
+    List<Comment> comments;
 }

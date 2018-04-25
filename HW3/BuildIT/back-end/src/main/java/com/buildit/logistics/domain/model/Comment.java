@@ -13,8 +13,4 @@ public class Comment {
     Long id;
 
     String comment;
-
-    @ManyToOne
-    @JoinColumn(name = "request_id")
-    PlantHireRequest request;
 }

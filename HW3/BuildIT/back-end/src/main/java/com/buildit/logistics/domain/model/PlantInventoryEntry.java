@@ -3,6 +3,7 @@ package com.buildit.logistics.domain.model;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +19,8 @@ public class PlantInventoryEntry {
     Long id;
 
     @Column(name = "hyperlink")
-    URI href;
+    @URL
+    String href;
 
     @Column(name = "plant_name")
     String name;
