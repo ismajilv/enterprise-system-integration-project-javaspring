@@ -1,4 +1,4 @@
-package com.buildit.logistics.domain.model;
+package com.buildit.procurement.domain.model;
 
 import lombok.Data;
 
@@ -7,10 +7,11 @@ import javax.persistence.*;
 @Entity
 @Data
 public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "comment_id")
     Long id;
 
-    String comment;
+    String contents;
+
 }

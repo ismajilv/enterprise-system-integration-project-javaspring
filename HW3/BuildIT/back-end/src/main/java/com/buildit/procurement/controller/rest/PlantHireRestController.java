@@ -1,12 +1,10 @@
-package com.buildit.logistics.controller.rest;
+package com.buildit.procurement.controller.rest;
 
-import com.buildit.logistics.application.dto.PlantHireRequestDTO;
-import com.buildit.logistics.application.dto.RentItPurchaseOrderDTO;
-import com.buildit.logistics.application.services.PlantHireServices;
+import com.buildit.procurement.application.dto.PlantHireRequestDTO;
+import com.buildit.procurement.application.dto.RentItPurchaseOrderDTO;
+import com.buildit.procurement.application.services.ProcurementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +15,7 @@ import java.time.LocalDate;
 public class PlantHireRestController {
 
     @Autowired
-    PlantHireServices plantHireServices;
+    ProcurementService plantHireServices;
 
     @GetMapping("/plants")
     public ResponseEntity<?> findAvailablePlants(

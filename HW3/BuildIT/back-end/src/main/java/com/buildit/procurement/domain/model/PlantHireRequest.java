@@ -1,7 +1,7 @@
-package com.buildit.logistics.domain.model;
+package com.buildit.procurement.domain.model;
 
 import com.buildit.common.domain.model.BusinessPeriod;
-import com.buildit.logistics.domain.enums.PHRStatus;
+import com.buildit.procurement.domain.enums.PHRStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,28 +14,32 @@ public class PlantHireRequest {
 
     @Id
     @GeneratedValue
-    @Column(name = "request_id")
     Long id;
 
-    String address;
-
     @Embedded
-    @Column(name = "rental_period")
     BusinessPeriod rentalPeriod;
 
     @Enumerated(EnumType.STRING)
     PHRStatus status;
 
-    @Column(name = "rental_cost", precision = 8, scale = 2)
+    @Column(precision = 8, scale = 2)
     BigDecimal rentalCost;
 
-    @Embedded
-    @Column(name = "created_by")
-    Creator creator;
+    @JoinColumn(name = "construction_site_id")
+    @OneToOne
+    ConstructionSite constructionSite;
+
+    @JoinColumn(name = "requesting_site_engineer_id")
+    @OneToOne
+    Employee requestingSiteEngineer;
 
     @JoinColumn(name = "plant_id")
     @OneToOne
     PlantInventoryEntry plant;
+
+    @JoinColumn(name = "supplier_id")
+    @OneToOne
+    Supplier supplier;
 
     @JoinColumn(name = "purchase_order_id")
     @OneToOne
@@ -43,4 +47,5 @@ public class PlantHireRequest {
 
     @OneToMany
     List<Comment> comments;
+
 }
