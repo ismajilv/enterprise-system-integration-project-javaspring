@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Entity
 @Data
 public class PlantHireRequest {
@@ -31,6 +33,20 @@ public class PlantHireRequest {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     PHRStatus status;
+
+    public void setStatus(PHRStatus newStatus) {
+        if (!isNull(status)) {
+            switch (status) {
+                case PENDING:
+                    this.status = newStatus;
+                    break;
+                default:
+                    throw new IllegalStateException(String.format("Illegal status change, cannot go from %s to %s", status, newStatus));
+            }
+        } else {
+            this.status = newStatus;
+        }
+    }
     //</editor-fold>
 
     //<editor-fold desc="Externals">

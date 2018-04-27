@@ -1,5 +1,6 @@
 package com.buildit.common.domain.model;
 
+import com.buildit.common.application.dto.BusinessPeriodDTO;
 import lombok.*;
 
 import javax.persistence.Column;

@@ -1,6 +1,8 @@
 package com.buildit.test;
 
+import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.common.domain.model.Money;
+import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.application.services.*;
 import com.buildit.procurement.domain.model.ConstructionSite;
 import com.buildit.procurement.domain.model.PlantHireRequest;
@@ -47,18 +49,20 @@ public class TestDataProvider {
 						"BOBCAT E19CAB"
 				);
 
-		PlantHireRequest plantHireRequest =
+		PlantHireRequestDTO plantHireRequest =
 
 				plantHireRequestService.addRequest(
 						constructionSite.getId(),
 						supplier.getId(),
 						plant.getId(),
-						LocalDate.now().plusDays(1),
-						LocalDate.now().plusDays(5),
+						BusinessPeriod.of(
+								LocalDate.now().plusDays(1),
+								LocalDate.now().plusDays(5)
+						),
 						Money.of(BigDecimal.TEN));
 
 		commentService.addComment(
-				plantHireRequest.getId(),
+				plantHireRequest.get_id(),
 				"This excavator is too expensive, take a smaller one"
 		);
 	}

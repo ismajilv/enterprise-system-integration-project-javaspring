@@ -2,6 +2,8 @@ package com.buildit.procurement.application.services;
 
 import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.common.domain.model.Money;
+import com.buildit.procurement.application.dto.CommentDTO;
+import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.domain.enums.PHRStatus;
 import com.buildit.procurement.domain.model.ConstructionSite;
 import com.buildit.procurement.domain.model.PlantHireRequest;
@@ -13,7 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PlantHireRequestService {
@@ -30,7 +34,10 @@ public class PlantHireRequestService {
 	@Autowired
 	PlantInventoryEntryService plantInventoryEntryService;
 
-	public PlantHireRequest addRequest(Long constructionSiteId, Long supplierId, String plantHref, LocalDate start, LocalDate end, Money rentalCost) {
+	@Autowired
+	PlantHireRequestAssembler assembler;
+
+	public PlantHireRequestDTO addRequest(Long constructionSiteId, Long supplierId, String plantHref, BusinessPeriod rentalPeriod, Money rentalCost) {
 		ConstructionSite constructionSite = constructionSiteService.getById(constructionSiteId);
 		Supplier supplier = supplierService.getById(supplierId);
 		PlantInventoryEntry plant = plantInventoryEntryService.getByHref(plantHref);
@@ -40,14 +47,14 @@ public class PlantHireRequestService {
 		plantHireRequest.setStatus(PHRStatus.PENDING);
 		plantHireRequest.setConstructionSite(constructionSite);
 		plantHireRequest.setComments(new ArrayList<>());
-		plantHireRequest.setRentalPeriod(BusinessPeriod.of(start, end));
+		plantHireRequest.setRentalPeriod(rentalPeriod);
 		plantHireRequest.setSupplier(supplier);
 		plantHireRequest.setPlant(plant);
 		plantHireRequest.setRentalCost(rentalCost);
 
-		plantHireRequestRepository.save(plantHireRequest);
+		plantHireRequest = plantHireRequestRepository.save(plantHireRequest);
 
-		return plantHireRequest;
+		return assembler.toResource(plantHireRequest);
 	}
 
 	public PlantHireRequest getById(Long id) {
@@ -60,4 +67,32 @@ public class PlantHireRequestService {
 		return maybePlantHireRequest.get();
 	}
 
+	public List<PlantHireRequestDTO> getAll() {
+		List<PlantHireRequest> all = plantHireRequestRepository.findAll();
+
+		return all.stream().map(phr -> assembler.toResource(phr)).collect(Collectors.toList());
+	}
+
+	public PlantHireRequestDTO accept(Long id) {
+		PlantHireRequest request = getById(id);
+
+		// TODO generate and send a new PO to RentIT
+
+		request.setStatus(PHRStatus.ACCEPTED);
+
+		request = plantHireRequestRepository.save(request);
+
+		return assembler.toResource(request);
+	}
+
+	public PlantHireRequestDTO reject(Long id) {
+		PlantHireRequest request = getById(id);
+
+		request.setStatus(PHRStatus.REJECTED);
+
+		request = plantHireRequestRepository.save(request);
+
+		return assembler.toResource(request);
+	}
+	
 }

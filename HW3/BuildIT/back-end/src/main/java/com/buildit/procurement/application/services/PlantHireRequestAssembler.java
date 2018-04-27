@@ -57,6 +57,8 @@ public class PlantHireRequestAssembler extends ResourceAssemblerSupport<PlantHir
 
         dto.setRentalCost(moneyAssembler.toResource(plantHireRequest.getRentalCost()));
 
+        dto.setStatus(plantHireRequest.getStatus());
+
         return dto;
     }
 

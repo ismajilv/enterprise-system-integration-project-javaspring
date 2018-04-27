@@ -2,6 +2,7 @@ package com.buildit.procurement.application.dto;
 
 import com.buildit.common.application.dto.BusinessPeriodDTO;
 import com.buildit.common.application.dto.MoneyDTO;
+import com.buildit.procurement.domain.enums.PHRStatus;
 import com.buildit.procurement.domain.model.ConstructionSite;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,6 @@ public class PlantHireRequestDTO  extends ResourceSupport {
 
 	MoneyDTO rentalCost;
 
-	// TODO add other fields & to assembler
+	PHRStatus status;
 
 }
