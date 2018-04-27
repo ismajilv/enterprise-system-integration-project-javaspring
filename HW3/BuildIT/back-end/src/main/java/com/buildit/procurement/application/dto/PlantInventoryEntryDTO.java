@@ -10,6 +10,6 @@ public class PlantInventoryEntryDTO  extends ResourceSupport {
 
 	String href;
 
-	// TODO add other fields & to assembler
+	String name;
 
 }

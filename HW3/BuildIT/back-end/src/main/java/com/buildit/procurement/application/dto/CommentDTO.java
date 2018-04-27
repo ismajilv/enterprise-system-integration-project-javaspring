@@ -8,6 +8,6 @@ public class CommentDTO extends ResourceSupport  {
 
 	Long _id;
 
-	// TODO add other fields & to assembler
+	String contents;
 
 }

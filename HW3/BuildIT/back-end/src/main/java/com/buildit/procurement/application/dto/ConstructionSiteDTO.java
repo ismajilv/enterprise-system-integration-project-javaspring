@@ -10,6 +10,6 @@ public class ConstructionSiteDTO extends ResourceSupport {
 
     Long _id;
 
-    // TODO add other fields & to assembler
+    String address;
 
 }

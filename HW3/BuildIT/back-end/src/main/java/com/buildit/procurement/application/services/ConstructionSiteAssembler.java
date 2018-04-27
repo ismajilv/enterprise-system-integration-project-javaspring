@@ -1,9 +1,7 @@
 package com.buildit.procurement.application.services;
 
-import com.buildit.procurement.application.dto.CommentDTO;
 import com.buildit.procurement.application.dto.ConstructionSiteDTO;
-import com.buildit.procurement.controller.rest.PlantHireRestController;
-import com.buildit.procurement.domain.model.Comment;
+import com.buildit.procurement.web.controller.PlantHireRestController;
 import com.buildit.procurement.domain.model.ConstructionSite;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
@@ -20,6 +18,7 @@ public class ConstructionSiteAssembler extends ResourceAssemblerSupport<Construc
         ConstructionSiteDTO dto = createResourceWithId(constructionSite.getId(), constructionSite);
 
         dto.set_id(constructionSite.getId());
+        dto.setAddress(constructionSite.getAddress());
 
         return dto;
     }

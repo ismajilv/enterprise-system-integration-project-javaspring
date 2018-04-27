@@ -11,9 +11,11 @@ import java.time.LocalDate;
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 @AllArgsConstructor(staticName = "of")
 public class BusinessPeriod {
-    @Column(name = "start_date")
+
+    @Column(name = "start_date", nullable = false)
     LocalDate startDate;
 
-    @Column(name = "end_date")
+    @Column(name = "end_date", nullable = false)
     LocalDate endDate;
+
 }

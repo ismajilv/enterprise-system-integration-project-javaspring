@@ -1,10 +1,8 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.EmployeeDTO;
-import com.buildit.procurement.application.dto.PlantHireRequestDTO;
-import com.buildit.procurement.controller.rest.PlantHireRestController;
+import com.buildit.procurement.web.controller.PlantHireRestController;
 import com.buildit.procurement.domain.model.Employee;
-import com.buildit.procurement.domain.model.PlantHireRequest;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
 

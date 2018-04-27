@@ -1,4 +1,4 @@
-package com.buildit.procurement.controller.rest;
+package com.buildit.procurement.web.controller;
 
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.application.dto.RentItPurchaseOrderDTO;

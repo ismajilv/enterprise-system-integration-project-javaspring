@@ -14,9 +14,9 @@ import javax.persistence.Id;
 @AllArgsConstructor(staticName = "of")
 public class PlantInventoryEntry {
 
-    @Id // It's the identifier
+    @Id // href is the identifier
     @URL
-    String href;
+    String id;
 
     String name;
 

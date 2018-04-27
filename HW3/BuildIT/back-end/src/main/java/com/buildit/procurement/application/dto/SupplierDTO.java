@@ -10,6 +10,6 @@ public class SupplierDTO extends ResourceSupport {
 
 	Long _id;
 
-	// TODO add other fields & to assembler
+	String name;
 
 }

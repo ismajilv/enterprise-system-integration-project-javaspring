@@ -12,6 +12,10 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
+    @JoinColumn(name = "plant_hire_request_id")
+    @ManyToOne(optional = false)
+    PlantHireRequest plantHireRequest;
+
     String contents;
 
 }
