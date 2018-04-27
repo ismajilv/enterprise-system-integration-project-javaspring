@@ -4,7 +4,7 @@
             <catalog-query @submitCatalogQuery="handleCatalogQuery"></catalog-query>
         </b-tab-item>
         <b-tab-item label="Select plant">
-            <query-result :plants="plants" @selectPlant="handlePlantSelection"></query-result>
+            <query-result :plants= "plants"></query-result>
         </b-tab-item>
         <b-tab-item label="Review order">
             <order-data :order="order" @submitPurchaseOrder="handlePOCreation"></order-data>
@@ -45,7 +45,7 @@ export default {
                     startDate: moment(String(query.startDate)).format("YYYY-MM-DD"),
                     endDate: moment(String(query.endDate)).format("YYYY-MM-DD")
                 };
-                axios.get("http://localhost:8090/api/sales/plants", {params: params})
+                axios.get("http://localhost:8090/api/sales/plants?name=Exc&startDate=2016-03-14&endDate=2016-03-25", {params: params})
                     .then(response => {
                         console.log(response);
                         this.order.rentalPeriod.startDate = params.startDate;

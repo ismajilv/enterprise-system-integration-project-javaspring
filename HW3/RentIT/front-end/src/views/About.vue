@@ -7,7 +7,12 @@
 // import OpenOrders from '@/components/allocation/OpenOrders.vue'
 
 export default {
-  name: 'about'
+  name: 'about',
+  data () {
+    return {
+      msg: 'Welcome to Your Vue.js App'
+    }
+  }
 }
 
 </script>
