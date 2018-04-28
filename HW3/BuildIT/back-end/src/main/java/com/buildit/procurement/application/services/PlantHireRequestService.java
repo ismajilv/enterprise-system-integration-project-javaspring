@@ -3,6 +3,7 @@ package com.buildit.procurement.application.services;
 import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.common.domain.model.Money;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
+import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
 import com.buildit.procurement.domain.enums.PHRStatus;
 import com.buildit.procurement.domain.model.ConstructionSite;
 import com.buildit.procurement.domain.model.PlantHireRequest;
@@ -12,6 +13,7 @@ import com.buildit.procurement.domain.repository.PlantHireRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,10 +37,12 @@ public class PlantHireRequestService {
 	@Autowired
 	PlantHireRequestAssembler assembler;
 
-	public PlantHireRequestDTO addRequest(Long constructionSiteId, Long supplierId, String plantHref, BusinessPeriod rentalPeriod, Money rentalCost) {
-		ConstructionSite constructionSite = constructionSiteService.getById(constructionSiteId);
-		Supplier supplier = supplierService.getById(supplierId);
-		PlantInventoryEntry plant = plantInventoryEntryService.getByHref(plantHref);
+	public PlantHireRequestDTO addRequest(Long constructionSiteId, Long supplierId, String plantHref, BusinessPeriod rentalPeriod) {
+		ConstructionSite constructionSite = constructionSiteService.readModel(constructionSiteId);
+		Supplier supplier = supplierService.readModel(supplierId);
+		PlantInventoryEntryDTO plantDTO = plantInventoryEntryService.fetchByHref(plantHref);
+		BigDecimal rentalCost = plantDTO.getPricePerDay().getTotal().multiply(BigDecimal.valueOf(rentalPeriod.getNoOfDays()));
+		PlantInventoryEntry plant = plantInventoryEntryService.readOrCreateModel(plantHref);
 
 		PlantHireRequest plantHireRequest = new PlantHireRequest();
 
@@ -48,7 +52,7 @@ public class PlantHireRequestService {
 		plantHireRequest.setRentalPeriod(rentalPeriod);
 		plantHireRequest.setSupplier(supplier);
 		plantHireRequest.setPlant(plant);
-		plantHireRequest.setRentalCost(rentalCost);
+		plantHireRequest.setRentalCost(Money.of(rentalCost));
 
 		plantHireRequest = plantHireRequestRepository.save(plantHireRequest);
 

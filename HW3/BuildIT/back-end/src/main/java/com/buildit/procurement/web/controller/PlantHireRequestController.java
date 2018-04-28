@@ -51,8 +51,7 @@ public class PlantHireRequestController {
 				createRequest.getConstructionSiteId(),
 				createRequest.getSupplierId(),
 				createRequest.getPlantHref(),
-				createRequest.getRentalPeriod().toModel(),
-				createRequest.getRentalCost().toModel()
+				createRequest.getRentalPeriod().toModel()
 		);
 
 		return transformIntoResponse(newlyCreatedPHR, HttpStatus.CREATED);

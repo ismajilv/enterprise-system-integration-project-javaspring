@@ -1,22 +1,26 @@
 package com.buildit.procurement.application.dto;
 
 import com.buildit.common.application.dto.BusinessPeriodDTO;
-import com.buildit.common.application.dto.MoneyDTO;
 import lombok.Data;
 import org.springframework.hateoas.ResourceSupport;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 public class CreatePlantHireRequestDTO extends ResourceSupport {
 
-	// TODO add validations
-	Long constructionSiteId;
+	@Min(1)
+	long constructionSiteId;
 
-	Long supplierId;
+	@Min(1)
+	long supplierId;
 
+	@Size(min = 10)
 	String plantHref;
 
+	@NotNull
 	BusinessPeriodDTO rentalPeriod;
-
-	MoneyDTO rentalCost; // TODO query from RentIt in service?
 
 }

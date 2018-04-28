@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.ResourceSupport;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
@@ -15,9 +16,11 @@ import java.time.LocalDate;
 @AllArgsConstructor(staticName = "of")
 public class BusinessPeriodDTO extends ResourceSupport {
 
+	@NotNull
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	LocalDate startDate;
 
+	@NotNull
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	LocalDate endDate;
 

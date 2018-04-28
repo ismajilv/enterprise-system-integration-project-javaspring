@@ -5,6 +5,7 @@ import com.buildit.procurement.domain.model.Supplier;
 import com.buildit.procurement.domain.repository.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,7 @@ public class SupplierService {
 	@Autowired
 	SupplierAssembler assembler;
 
+	@Transactional
 	public Supplier create(String name) {
 		Supplier supplier = new Supplier();
 
@@ -29,7 +31,8 @@ public class SupplierService {
 		return supplier;
 	}
 
-	public Supplier getById(Long id) {
+	@Transactional(readOnly = true)
+	public Supplier readModel(Long id) {
 		Optional<Supplier> maybeSupplier = repository.findById(id);
 
 		if (!maybeSupplier.isPresent()) {
@@ -39,14 +42,14 @@ public class SupplierService {
 		return maybeSupplier.get();
 	}
 
-	public SupplierDTO read(Long id) {
-		return assembler.toResource(getById(id));
+	@Transactional(readOnly = true)
+	public List<SupplierDTO> readAll() {
+		return assembler.toResources(repository.findAll());
 	}
 
-	public List<SupplierDTO> readAll() {
-		List<Supplier> all = repository.findAll();
-
-		return all.stream().map(s -> assembler.toResource(s)).collect(Collectors.toList());
+	@Transactional(readOnly = true)
+	public SupplierDTO readOne(Long id) {
+		return assembler.toResource(readModel(id));
 	}
 
 }

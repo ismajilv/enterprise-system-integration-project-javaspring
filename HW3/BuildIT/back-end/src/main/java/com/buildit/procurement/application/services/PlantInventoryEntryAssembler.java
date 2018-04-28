@@ -19,6 +19,7 @@ public class PlantInventoryEntryAssembler extends ResourceAssemblerSupport<Plant
 
 		dto.setHref(plantInventoryEntry.getId());
 		dto.setName(plantInventoryEntry.getName());
+		dto.setPricePerDay(null); // price does not get stored, as it will be stale data
 
 		return dto;
 	}

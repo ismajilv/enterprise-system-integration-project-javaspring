@@ -6,6 +6,7 @@ import com.buildit.procurement.domain.model.PlantHireRequest;
 import com.buildit.procurement.domain.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ public class CommentService {
 	@Autowired
 	PlantHireRequestService plantHireRequestService;
 
+	@Transactional
 	public CommentDTO create(Long plantHireRequestId, String text) {
 		PlantHireRequest plantHireRequest = plantHireRequestService.getById(plantHireRequestId);
 
@@ -38,9 +40,11 @@ public class CommentService {
 		return assembler.toResource(comment);
 	}
 
+	@Transactional(readOnly = true)
 	public List<CommentDTO> readAll() {
 		List<Comment> all = repository.findAll();
 
 		return all.stream().map(c -> assembler.toResource(c)).collect(Collectors.toList());
 	}
+
 }
