@@ -1,6 +1,6 @@
 package com.buildit.procurement.domain.enums;
 
-public enum ExternalPurchaseOrderStatus {
+public enum RentItPurchaseOrderStatus {
 
 	PENDING_APPROVE,
 

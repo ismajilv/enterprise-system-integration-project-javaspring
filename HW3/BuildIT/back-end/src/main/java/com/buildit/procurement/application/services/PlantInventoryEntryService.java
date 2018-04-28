@@ -20,7 +20,7 @@ public class PlantInventoryEntryService {
 	PlantInventoryEntryAssembler assembler;
 
 	@Autowired
-	ExternalIntegrationsService integrationService;
+	RentItService integrationService;
 
 	public Collection<PlantInventoryEntryDTO> getAll() {
 		return integrationService.queryPlantCatalog();

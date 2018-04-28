@@ -2,23 +2,22 @@ package com.buildit.procurement.application.services;
 
 import com.buildit.common.application.dto.MoneyDTO;
 import com.buildit.common.domain.model.BusinessPeriod;
-import com.buildit.procurement.application.dto.ExternalCreatePORequestDTO;
-import com.buildit.procurement.application.dto.ExternalPurchaseOrderDTO;
 import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
-import com.buildit.procurement.domain.enums.ExternalPurchaseOrderStatus;
+import com.buildit.procurement.application.dto.RentItCreatePORequestDTO;
+import com.buildit.procurement.application.dto.RentItPurchaseOrderDTO;
+import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import static java.util.Objects.isNull;
 
-// TODO should be queried from different RentIts
+// TODO data should be queried externally from different RentIts
 @Service
-public class ExternalIntegrationsService {
+public class RentItService {
 
 	// mock querying from RentIt for now
 	private Map<String, PlantInventoryEntryDTO> href2Plant = new HashMap<>();
@@ -68,10 +67,10 @@ public class ExternalIntegrationsService {
 		return maybePlantInventoryEntry;
 	}
 
-	public ExternalPurchaseOrderDTO createPO(ExternalCreatePORequestDTO request) {
-		return ExternalPurchaseOrderDTO.of(
-				"http://ramirent.ee:5999/api/orders-list/" + new Random().nextInt(10000),
-				ExternalPurchaseOrderStatus.PENDING_APPROVE
+	public RentItPurchaseOrderDTO createPurchaseOrder(RentItCreatePORequestDTO request) {
+		return RentItPurchaseOrderDTO.of(
+				"http://ramirent.ee:5999/api/orders-list/584",
+				RentItPurchaseOrderStatus.PENDING_APPROVE
 		);
 	}
 

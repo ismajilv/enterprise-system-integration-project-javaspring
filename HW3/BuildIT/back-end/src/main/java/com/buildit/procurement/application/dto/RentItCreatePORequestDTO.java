@@ -9,7 +9,7 @@ import org.springframework.hateoas.ResourceSupport;
 @Data
 @NoArgsConstructor(force = true)
 @AllArgsConstructor(staticName = "of")
-public class ExternalCreatePORequestDTO extends ResourceSupport {
+public class RentItCreatePORequestDTO extends ResourceSupport {
 
 	String plantHref;
 

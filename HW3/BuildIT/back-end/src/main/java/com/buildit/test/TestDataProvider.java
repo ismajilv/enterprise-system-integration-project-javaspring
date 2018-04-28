@@ -54,6 +54,8 @@ public class TestDataProvider {
 
 		EmployeeDTO employee1 = employeeService.create(Role.SITE_ENGINEER, "James", "Dean");
 
+		EmployeeDTO employee2 = employeeService.create(Role.WORKS_ENGINEER, "Tom", "Cruise");
+
 		PlantHireRequestDTO pendingPlantHireRequest =
 
 				plantHireRequestService.addRequest(

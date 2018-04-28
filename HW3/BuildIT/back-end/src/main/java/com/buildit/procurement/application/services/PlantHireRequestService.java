@@ -4,10 +4,10 @@ import com.buildit.common.application.service.BusinessPeriodAssembler;
 import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.common.domain.model.Employee;
 import com.buildit.common.domain.model.Money;
-import com.buildit.procurement.application.dto.ExternalCreatePORequestDTO;
-import com.buildit.procurement.application.dto.ExternalPurchaseOrderDTO;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
+import com.buildit.procurement.application.dto.RentItCreatePORequestDTO;
+import com.buildit.procurement.application.dto.RentItPurchaseOrderDTO;
 import com.buildit.procurement.domain.enums.PHRStatus;
 import com.buildit.procurement.domain.enums.POStatus;
 import com.buildit.procurement.domain.enums.Role;
@@ -47,7 +47,7 @@ public class PlantHireRequestService {
 	BusinessPeriodAssembler businessPeriodAssembler;
 
 	@Autowired
-	ExternalIntegrationsService externalIntegrationsService;
+	RentItService rentItService;
 
 	@Autowired
 	PurchaseOrderService purchaseOrderService;
@@ -159,12 +159,12 @@ public class PlantHireRequestService {
 
 		PlantHireRequest request = readModel(id);
 
-		ExternalCreatePORequestDTO rentItPO = ExternalCreatePORequestDTO.of(
+		RentItCreatePORequestDTO rentItPO = RentItCreatePORequestDTO.of(
 				request.getPlant().getHref(),
 				businessPeriodAssembler.toResource(request.getRentalPeriod())
 		);
 
-		ExternalPurchaseOrderDTO createdPO = externalIntegrationsService.createPO(rentItPO);
+		RentItPurchaseOrderDTO createdPO = rentItService.createPurchaseOrder(rentItPO);
 
 		POStatus status = createdPO.getStatus().convertToLocal();
 

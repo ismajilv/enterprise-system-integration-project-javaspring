@@ -85,9 +85,26 @@ To reject, send a POST to http://localhost:8080/api/requests/{id}/reject
 
 POST to http://localhost:8080/api/requests/3/accept
 
+How to notify of purchase order decision from RentIt
+------------
+
+Send a POST to http://localhost:8080/callbacks/orderStateChanged
+
+JSON contents should be RentIt self href together with the new status.
+
+**JSON with sample data**
+
+~~~json
+{
+"href": "http://ramirent.ee:5999/api/orders-list/584",
+"value": "APPROVED"
+}
+~~~
+
 TODOs
 ------------
 
 Here is a list of ongoing issues:
 
-  * Do integrations in ExternalIntegrationsService;
+  * Documentation about design decisions;
+  * Do integrations in RentItIntegrationsService;
