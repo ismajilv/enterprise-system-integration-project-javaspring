@@ -43,7 +43,19 @@ public class PlantHireRequestController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Resource<PlantHireRequestDTO>> readOne(@PathVariable Long id) {
-		return transformIntoResponse(service.getByIdAsDTO(id), HttpStatus.OK);
+		return transformIntoResponse(service.readOne(id), HttpStatus.OK);
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<Resource<PlantHireRequestDTO>> update(@PathVariable Long id, @RequestBody CreatePlantHireRequestDTO updateRequest) {
+		PlantHireRequestDTO updatedPHR = service.updateRequest(
+				id,
+				updateRequest.getConstructionSiteId(),
+				updateRequest.getSupplierId(),
+				updateRequest.getPlantHref(),
+				updateRequest.getRentalPeriod().toModel());
+
+		return transformIntoResponse(updatedPHR, HttpStatus.OK);
 	}
 
 	@PostMapping
@@ -52,8 +64,7 @@ public class PlantHireRequestController {
 				createRequest.getConstructionSiteId(),
 				createRequest.getSupplierId(),
 				createRequest.getPlantHref(),
-				createRequest.getRentalPeriod().toModel()
-		);
+				createRequest.getRentalPeriod().toModel());
 
 		return transformIntoResponse(newlyCreatedPHR, HttpStatus.CREATED);
 	}
@@ -117,6 +128,11 @@ public class PlantHireRequestController {
 		requestDTO.getSupplier().getLinks().add(linkTo(
 				methodOn(SupplierController.class)
 						.readOne(requestDTO.getSupplier().get_id()))
+				.withSelfRel());
+		requestDTO.getRequestingSiteEngineer().removeLinks();
+		requestDTO.getRequestingSiteEngineer().getLinks().add(linkTo(
+				methodOn(EmployeeController.class)
+						.readOne(requestDTO.getRequestingSiteEngineer().get_id()))
 				.withSelfRel());
 
 		requestDTO.getPlant().removeLinks();

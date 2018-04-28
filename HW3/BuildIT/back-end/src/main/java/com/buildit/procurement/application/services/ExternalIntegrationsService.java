@@ -1,6 +1,7 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.common.application.dto.MoneyDTO;
+import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.procurement.application.dto.ExternalCreatePORequestDTO;
 import com.buildit.procurement.application.dto.ExternalPurchaseOrderDTO;
 import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
@@ -48,8 +49,13 @@ public class ExternalIntegrationsService {
 		href2Plant.put(plant3.getHref(), plant3);
 	}
 
-	public Collection<PlantInventoryEntryDTO> readAllExternal() {
+	// TODO may need parameters
+	public Collection<PlantInventoryEntryDTO> queryPlantCatalog() {
 		return href2Plant.values();
+	}
+
+	public boolean isAvailableDuringPeriod(String href, BusinessPeriod period) {
+		return true;
 	}
 
 	public PlantInventoryEntryDTO readOneExternal(String href) {

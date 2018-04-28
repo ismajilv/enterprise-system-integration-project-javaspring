@@ -6,6 +6,7 @@ import com.buildit.procurement.domain.model.PurchaseOrder;
 import com.buildit.procurement.domain.repository.PurchaseOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class PurchaseOrderService {
 	@Autowired
 	PurchaseOrderAssembler assembler;
 
+	@Transactional
 	public PurchaseOrder create(String href, POStatus status) {
 		PurchaseOrder purchaseOrder = new PurchaseOrder();
 
@@ -29,6 +31,7 @@ public class PurchaseOrderService {
 		return purchaseOrder;
 	}
 
+	@Transactional(readOnly = true)
 	public List<PurchaseOrderDTO> readAll() {
 		return assembler.toResources(repository.findAll());
 	}

@@ -25,7 +25,7 @@ public class CommentService {
 
 	@Transactional
 	public CommentDTO create(Long plantHireRequestId, String text) {
-		PlantHireRequest plantHireRequest = plantHireRequestService.getById(plantHireRequestId);
+		PlantHireRequest plantHireRequest = plantHireRequestService.readModel(plantHireRequestId);
 
 		Comment comment = new Comment();
 

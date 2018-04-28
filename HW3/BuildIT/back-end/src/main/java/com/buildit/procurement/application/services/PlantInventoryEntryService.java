@@ -23,7 +23,7 @@ public class PlantInventoryEntryService {
 	ExternalIntegrationsService integrationService;
 
 	public Collection<PlantInventoryEntryDTO> getAll() {
-		return integrationService.readAllExternal();
+		return integrationService.queryPlantCatalog();
 	}
 
 	public PlantInventoryEntryDTO fetchByHref(String href) {
@@ -41,7 +41,7 @@ public class PlantInventoryEntryService {
 
 			plant = PlantInventoryEntry.of(href, fetched.getName());
 
-			repository.save(plant);
+			plant = repository.save(plant);
 		} else {
 			plant = maybePlantInventoryEntry.get();
 		}

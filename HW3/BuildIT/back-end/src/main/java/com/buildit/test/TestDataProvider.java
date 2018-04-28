@@ -1,8 +1,10 @@
 package com.buildit.test;
 
+import com.buildit.common.application.dto.EmployeeDTO;
 import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.application.services.*;
+import com.buildit.procurement.domain.enums.Role;
 import com.buildit.procurement.domain.model.ConstructionSite;
 import com.buildit.procurement.domain.model.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class TestDataProvider {
 	@Autowired
 	PlantInventoryEntryService plantInventoryEntryService;
 
+	@Autowired
+	EmployeeService employeeService;
+
 	@PostConstruct
 	public void init() {
 		System.out.println("== Adding test data ==");
@@ -46,6 +51,8 @@ public class TestDataProvider {
 		Supplier supplierRamirent = supplierService.create("Ramirent");
 
 		Supplier supplierCramo = supplierService.create("Cramo");
+
+		EmployeeDTO employee1 = employeeService.create(Role.SITE_ENGINEER, "James", "Dean");
 
 		PlantHireRequestDTO pendingPlantHireRequest =
 

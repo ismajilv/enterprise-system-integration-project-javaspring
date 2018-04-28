@@ -1,6 +1,7 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.common.application.service.BusinessPeriodAssembler;
+import com.buildit.common.application.service.EmployeeAssembler;
 import com.buildit.common.application.service.MoneyAssembler;
 import com.buildit.procurement.application.dto.CommentDTO;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
@@ -38,6 +39,9 @@ public class PlantHireRequestAssembler extends ResourceAssemblerSupport<PlantHir
 	@Autowired
 	PurchaseOrderAssembler purchaseOrderAssembler;
 
+	@Autowired
+	EmployeeAssembler employeeAssembler;
+
 	public PlantHireRequestAssembler() {
 		super(PlantHireRequestController.class, PlantHireRequestDTO.class);
 
@@ -64,8 +68,14 @@ public class PlantHireRequestAssembler extends ResourceAssemblerSupport<PlantHir
 
 		dto.setStatus(plantHireRequest.getStatus());
 
+		dto.setRequestingSiteEngineer(employeeAssembler.toResource(plantHireRequest.getRequestingSiteEngineer()));
+
 		if (!isNull(plantHireRequest.getPurchaseOrder())) {
 			dto.setPurchaseOrder(purchaseOrderAssembler.toResource(plantHireRequest.getPurchaseOrder()));
+		}
+
+		if (!isNull(plantHireRequest.getApprovingWorksEngineer())) {
+			dto.setApprovingWorksEngineer(employeeAssembler.toResource(plantHireRequest.getApprovingWorksEngineer()));
 		}
 
 		return dto;

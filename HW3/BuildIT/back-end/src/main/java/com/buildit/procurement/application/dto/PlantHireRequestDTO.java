@@ -1,6 +1,7 @@
 package com.buildit.procurement.application.dto;
 
 import com.buildit.common.application.dto.BusinessPeriodDTO;
+import com.buildit.common.application.dto.EmployeeDTO;
 import com.buildit.common.application.dto.MoneyDTO;
 import com.buildit.procurement.domain.enums.PHRStatus;
 import lombok.Data;
@@ -28,5 +29,9 @@ public class PlantHireRequestDTO extends ResourceSupport {
 	PHRStatus status;
 
 	PurchaseOrderDTO purchaseOrder;
+
+	EmployeeDTO requestingSiteEngineer;
+
+	EmployeeDTO approvingWorksEngineer;
 
 }

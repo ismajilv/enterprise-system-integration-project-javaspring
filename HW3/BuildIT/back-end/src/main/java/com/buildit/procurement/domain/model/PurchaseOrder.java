@@ -1,7 +1,7 @@
 package com.buildit.procurement.domain.model;
 
 import com.buildit.procurement.domain.enums.POStatus;
-import lombok.*;
+import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
