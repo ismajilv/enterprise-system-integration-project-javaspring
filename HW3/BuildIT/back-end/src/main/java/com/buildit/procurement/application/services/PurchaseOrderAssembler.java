@@ -15,10 +15,11 @@ public class PurchaseOrderAssembler extends ResourceAssemblerSupport<PurchaseOrd
 	}
 
 	@Override
-	public PurchaseOrderDTO toResource(PurchaseOrder plantInventoryEntry) {
-		PurchaseOrderDTO dto = createResourceWithId(plantInventoryEntry.getHref(), plantInventoryEntry);
+	public PurchaseOrderDTO toResource(PurchaseOrder order) {
+		PurchaseOrderDTO dto = createResourceWithId(order.getHref(), order);
 
-		dto.setHref(plantInventoryEntry.getHref());
+		dto.setHref(order.getHref());
+		dto.setStatus(order.getStatus());
 
 		return dto;
 	}

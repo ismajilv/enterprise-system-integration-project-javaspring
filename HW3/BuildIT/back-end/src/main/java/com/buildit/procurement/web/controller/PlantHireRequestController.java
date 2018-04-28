@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -119,6 +120,10 @@ public class PlantHireRequestController {
 				.withSelfRel());
 
 		requestDTO.getPlant().removeLinks();
+
+		if (!isNull(requestDTO.getPurchaseOrder())) {
+			requestDTO.getPurchaseOrder().removeLinks();
+		}
 
 		Link selfRel = linkTo(
 				methodOn(PlantHireRequestController.class)

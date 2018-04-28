@@ -1,14 +1,15 @@
 package com.buildit.procurement.application.services;
 
+import com.buildit.common.application.service.BusinessPeriodAssembler;
 import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.common.domain.model.Money;
+import com.buildit.procurement.application.dto.ExternalPurchaseOrderDTO;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
+import com.buildit.procurement.application.dto.ExternalCreatePORequestDTO;
 import com.buildit.procurement.domain.enums.PHRStatus;
-import com.buildit.procurement.domain.model.ConstructionSite;
-import com.buildit.procurement.domain.model.PlantHireRequest;
-import com.buildit.procurement.domain.model.PlantInventoryEntry;
-import com.buildit.procurement.domain.model.Supplier;
+import com.buildit.procurement.domain.enums.POStatus;
+import com.buildit.procurement.domain.model.*;
 import com.buildit.procurement.domain.repository.PlantHireRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,15 @@ public class PlantHireRequestService {
 
 	@Autowired
 	PlantHireRequestAssembler assembler;
+
+	@Autowired
+	BusinessPeriodAssembler businessPeriodAssembler;
+
+	@Autowired
+	ExternalIntegrationsService externalIntegrationsService;
+
+	@Autowired
+	PurchaseOrderService purchaseOrderService;
 
 	public PlantHireRequestDTO addRequest(Long constructionSiteId, Long supplierId, String plantHref, BusinessPeriod rentalPeriod) {
 		ConstructionSite constructionSite = constructionSiteService.readModel(constructionSiteId);
@@ -82,8 +92,19 @@ public class PlantHireRequestService {
 	public PlantHireRequestDTO accept(Long id) {
 		PlantHireRequest request = getById(id);
 
-		// TODO generate and send a new PO to RentIT
+		ExternalCreatePORequestDTO rentItPO = ExternalCreatePORequestDTO.of(
+				request.getPlant().getHref(),
+				businessPeriodAssembler.toResource(request.getRentalPeriod())
+		);
 
+		ExternalPurchaseOrderDTO createdPO = externalIntegrationsService.createPO(rentItPO);
+
+		POStatus status = createdPO.getStatus().convertToLocal();
+		
+		PurchaseOrder purchaseOrder = purchaseOrderService.create(createdPO.getPoHref(), status);
+
+		request.setPurchaseOrder(purchaseOrder);
+		
 		request.setStatus(PHRStatus.ACCEPTED);
 
 		request = plantHireRequestRepository.save(request);

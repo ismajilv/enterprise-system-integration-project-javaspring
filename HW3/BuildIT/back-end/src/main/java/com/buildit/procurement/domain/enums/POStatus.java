@@ -6,7 +6,7 @@ public enum POStatus {
 
 	REJECTED,
 
-	CLOSED,
+	APPROVED,
 
 	OPEN
 

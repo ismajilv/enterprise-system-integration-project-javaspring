@@ -27,4 +27,6 @@ public class PlantHireRequestDTO extends ResourceSupport {
 
 	PHRStatus status;
 
+	PurchaseOrderDTO purchaseOrder;
+
 }

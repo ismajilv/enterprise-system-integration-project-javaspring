@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Service
 public class PlantHireRequestAssembler extends ResourceAssemblerSupport<PlantHireRequest, PlantHireRequestDTO> {
 
@@ -32,6 +34,9 @@ public class PlantHireRequestAssembler extends ResourceAssemblerSupport<PlantHir
 
 	@Autowired
 	MoneyAssembler moneyAssembler;
+
+	@Autowired
+	PurchaseOrderAssembler purchaseOrderAssembler;
 
 	public PlantHireRequestAssembler() {
 		super(PlantHireRequestController.class, PlantHireRequestDTO.class);
@@ -58,6 +63,10 @@ public class PlantHireRequestAssembler extends ResourceAssemblerSupport<PlantHir
 		dto.setRentalCost(moneyAssembler.toResource(plantHireRequest.getRentalCost()));
 
 		dto.setStatus(plantHireRequest.getStatus());
+
+		if (!isNull(plantHireRequest.getPurchaseOrder())) {
+			dto.setPurchaseOrder(purchaseOrderAssembler.toResource(plantHireRequest.getPurchaseOrder()));
+		}
 
 		return dto;
 	}

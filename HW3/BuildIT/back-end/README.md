@@ -66,5 +66,4 @@ TODOs
 
 Here is a list of ongoing issues:
 
-  * Plants should be queried in PlantInventoryEntryService;
-  * When PHR is accepted, generate and send a new PO to RentIT;
+  * Do integrations in ExternalIntegrationsService;
