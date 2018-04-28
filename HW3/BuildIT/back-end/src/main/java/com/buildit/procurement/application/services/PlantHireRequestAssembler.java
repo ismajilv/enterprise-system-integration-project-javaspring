@@ -4,8 +4,8 @@ import com.buildit.common.application.service.BusinessPeriodAssembler;
 import com.buildit.common.application.service.MoneyAssembler;
 import com.buildit.procurement.application.dto.CommentDTO;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
-import com.buildit.procurement.web.controller.PlantHireRestController;
 import com.buildit.procurement.domain.model.PlantHireRequest;
+import com.buildit.procurement.web.controller.PlantHireRequestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class PlantHireRequestAssembler extends ResourceAssemblerSupport<PlantHir
     MoneyAssembler moneyAssembler;
 
     public PlantHireRequestAssembler() {
-        super(PlantHireRestController.class, PlantHireRequestDTO.class);
+        super(PlantHireRequestController.class, PlantHireRequestDTO.class);
 
     }
 

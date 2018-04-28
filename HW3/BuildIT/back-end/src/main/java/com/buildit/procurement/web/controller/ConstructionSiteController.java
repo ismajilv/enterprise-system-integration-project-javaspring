@@ -1,37 +1,49 @@
 package com.buildit.procurement.web.controller;
 
-import com.buildit.procurement.application.dto.CommentDTO;
 import com.buildit.procurement.application.dto.ConstructionSiteDTO;
-import com.buildit.procurement.application.services.CommentAssembler;
-import com.buildit.procurement.application.services.ConstructionSiteAssembler;
-import com.buildit.procurement.domain.model.Comment;
-import com.buildit.procurement.domain.model.ConstructionSite;
-import com.buildit.procurement.domain.repository.CommentRepository;
-import com.buildit.procurement.domain.repository.ConstructionSiteRepository;
-import org.apache.tomcat.util.bcel.Const;
+import com.buildit.procurement.application.services.ConstructionSiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/site")
+@RequestMapping("/api/sites")
 public class ConstructionSiteController {
 
     @Autowired
-    ConstructionSiteRepository constructionSiteRepository;
-
-    @Autowired
-    ConstructionSiteAssembler constructionSiteAssembler;
+    ConstructionSiteService service;
 
     @GetMapping
-    public List<ConstructionSiteDTO> getAll() {
-        List<ConstructionSite> all = constructionSiteRepository.findAll();
+    public List<ConstructionSiteDTO> readAll() {
+        List<ConstructionSiteDTO> sites = service.readAll();
 
-        return all.stream().map(cs -> constructionSiteAssembler.toResource(cs)).collect(Collectors.toList());
+        sites.forEach(site -> fixLinks(site));
+
+        return sites;
+    }
+
+    @GetMapping("/{id}")
+    public ConstructionSiteDTO readOne(@PathVariable Long id) {
+        ConstructionSiteDTO site = service.read(id);
+
+        fixLinks(site);
+
+        return site;
+    }
+
+    private void fixLinks(ConstructionSiteDTO site) {
+        site.removeLinks();
+        site.getLinks().add(linkTo(
+                methodOn(ConstructionSiteController.class)
+                        .readOne(site.get_id()))
+                .withSelfRel());
     }
 
 }

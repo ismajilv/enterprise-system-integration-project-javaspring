@@ -1,7 +1,7 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.CommentDTO;
-import com.buildit.procurement.web.controller.PlantHireRestController;
+import com.buildit.procurement.web.controller.PlantHireRequestController;
 import com.buildit.procurement.domain.model.Comment;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class CommentAssembler extends ResourceAssemblerSupport<Comment, CommentDTO> {
 
     public CommentAssembler() {
-        super(PlantHireRestController.class, CommentDTO.class);
+        super(PlantHireRequestController.class, CommentDTO.class);
     }
 
     @Override

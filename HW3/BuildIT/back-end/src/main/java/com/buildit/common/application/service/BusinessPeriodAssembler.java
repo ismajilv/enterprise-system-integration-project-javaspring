@@ -4,7 +4,7 @@ import com.buildit.common.application.dto.BusinessPeriodDTO;
 import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.procurement.application.dto.CommentDTO;
 import com.buildit.procurement.domain.model.Comment;
-import com.buildit.procurement.web.controller.PlantHireRestController;
+import com.buildit.procurement.web.controller.PlantHireRequestController;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class BusinessPeriodAssembler extends ResourceAssemblerSupport<BusinessPeriod, BusinessPeriodDTO> {
 
     public BusinessPeriodAssembler() {
-        super(PlantHireRestController.class, BusinessPeriodDTO.class);
+        super(PlantHireRequestController.class, BusinessPeriodDTO.class);
     }
 
     @Override

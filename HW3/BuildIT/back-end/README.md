@@ -15,8 +15,8 @@ How to create a plant hire request
 
 Sample HTTP queries to prepare for creation of a plant hire request:
 
-  * Site: GET http://localhost:8080/api/site , pick a site and extract its ID;
-  * Supplier: GET http://localhost:8080/api/supplier , pick a supplier;
+  * Site: GET http://localhost:8080/api/sites , pick a site and extract its ID;
+  * Supplier: GET http://localhost:8080/api/suppliers , pick a supplier;
   * Plant: GET http://localhost:8080/api/plants , pick a plant and extract href;
 
 To create plant hire request, send a POST to http://localhost:8080/api/requests
@@ -41,11 +41,11 @@ To create plant hire request, send a POST to http://localhost:8080/api/requests
 How to add a comment to a plant hire request
 ------------
 
-Send a POST to http://localhost:8080/api/requests/{id}/comments with text in JSON field "value".
+Send a POST to http://localhost:8080/api/requests/{id}/addComment with text in JSON field "value".
 
 **URL and payload for sample data**
 
-http://localhost:8080/api/requests/3/comments
+http://localhost:8080/api/requests/3/addComment
 
 ~~~json
 {

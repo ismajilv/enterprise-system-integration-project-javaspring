@@ -1,7 +1,8 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.EmployeeDTO;
-import com.buildit.procurement.web.controller.PlantHireRestController;
+import com.buildit.procurement.domain.model.PlantHireRequest;
+import com.buildit.procurement.web.controller.PlantHireRequestController;
 import com.buildit.procurement.domain.model.Employee;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class EmployeeAssembler extends ResourceAssemblerSupport<Employee, EmployeeDTO> {
 
     public EmployeeAssembler() {
-        super(PlantHireRestController.class, EmployeeDTO.class);
+        super(PlantHireRequestController.class, EmployeeDTO.class);
 
     }
 

@@ -1,7 +1,7 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
-import com.buildit.procurement.web.controller.PlantHireRestController;
+import com.buildit.procurement.web.controller.PlantHireRequestController;
 import com.buildit.procurement.domain.model.PlantInventoryEntry;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class PlantInventoryEntryAssembler extends ResourceAssemblerSupport<PlantInventoryEntry, PlantInventoryEntryDTO> {
 
     public PlantInventoryEntryAssembler() {
-        super(PlantHireRestController.class, PlantInventoryEntryDTO.class);
+        super(PlantHireRequestController.class, PlantInventoryEntryDTO.class);
     }
 
     @Override

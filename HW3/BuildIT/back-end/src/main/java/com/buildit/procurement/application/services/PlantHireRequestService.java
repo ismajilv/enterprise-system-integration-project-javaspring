@@ -57,6 +57,10 @@ public class PlantHireRequestService {
 		return assembler.toResource(plantHireRequest);
 	}
 
+	public PlantHireRequestDTO getByIdAsDTO(Long id) {
+		return assembler.toResource(getById(id));
+	}
+
 	public PlantHireRequest getById(Long id) {
 		Optional<PlantHireRequest> maybePlantHireRequest = plantHireRequestRepository.findById(id);
 
@@ -94,5 +98,5 @@ public class PlantHireRequestService {
 
 		return assembler.toResource(request);
 	}
-	
+
 }

@@ -1,7 +1,7 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.PurchaseOrderDTO;
-import com.buildit.procurement.web.controller.PlantHireRestController;
+import com.buildit.procurement.web.controller.PlantHireRequestController;
 import com.buildit.procurement.domain.model.PurchaseOrder;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class PurchaseOrderAssembler extends ResourceAssemblerSupport<PurchaseOrder, PurchaseOrderDTO> {
 
     public PurchaseOrderAssembler() {
-        super(PlantHireRestController.class, PurchaseOrderDTO.class);
+        super(PlantHireRequestController.class, PurchaseOrderDTO.class);
 
     }
 

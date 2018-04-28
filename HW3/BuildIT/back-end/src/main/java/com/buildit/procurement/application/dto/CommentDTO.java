@@ -10,4 +10,14 @@ public class CommentDTO extends ResourceSupport  {
 
 	String contents;
 
+	@Override
+	public boolean hasLinks() {
+		return false;
+	}
+
+	@Override
+	public boolean hasLink(String rel) {
+		return false;
+	}
+
 }

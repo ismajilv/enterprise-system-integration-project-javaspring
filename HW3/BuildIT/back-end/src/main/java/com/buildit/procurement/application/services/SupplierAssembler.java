@@ -4,7 +4,7 @@ import com.buildit.procurement.application.dto.CommentDTO;
 import com.buildit.procurement.application.dto.SupplierDTO;
 import com.buildit.procurement.domain.model.Comment;
 import com.buildit.procurement.domain.model.Supplier;
-import com.buildit.procurement.web.controller.PlantHireRestController;
+import com.buildit.procurement.web.controller.PlantHireRequestController;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class SupplierAssembler extends ResourceAssemblerSupport<Supplier, SupplierDTO> {
 
     public SupplierAssembler() {
-        super(PlantHireRestController.class, SupplierDTO.class);
+        super(PlantHireRequestController.class, SupplierDTO.class);
     }
 
     @Override
