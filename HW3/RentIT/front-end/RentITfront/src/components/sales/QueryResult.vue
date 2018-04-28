@@ -9,15 +9,12 @@
         </tr>
     </thead>
     <tbody>
-        <tr v-for="plant in plants" :key="plant._id">
-            <td>{{plant.name}}</td>
-            <td>{{plant.description}}</td>
-            <td class="has-text-right">{{plant.price}}</td>
+        <tr v-for="plant in plants" :key="plant.id">
+            <td>{{ plant.name }}</td>
+            <td>{{ plant.description }}</td>
+            <td class="has-text-right">{{ plant.price }}</td>
             <td>
-                <a class="button is-link is-small is-outlined"
-                    @click="submit(plant)">
-                    Select plant
-                </a>
+                <a class="button is-link is-small is-outlined">Select plant</a>
             </td>
         </tr>
     </tbody>
@@ -26,12 +23,11 @@
 
 <script>
 export default {
-    name: "QueryResult",
-    props: ["plants"],
-    methods: {
-        submit: function(plant) {
-            this.$emit("selectPlant", plant);
-        }
-    }
+  name: "QueryResult",
+  props: ["plants"]
 }
 </script>
+
+<style>
+
+</style>
