@@ -17,33 +17,33 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RequestMapping("/api/sites")
 public class ConstructionSiteController {
 
-    @Autowired
-    ConstructionSiteService service;
+	@Autowired
+	ConstructionSiteService service;
 
-    @GetMapping
-    public List<ConstructionSiteDTO> readAll() {
-        List<ConstructionSiteDTO> sites = service.readAll();
+	@GetMapping
+	public List<ConstructionSiteDTO> readAll() {
+		List<ConstructionSiteDTO> sites = service.readAll();
 
-        sites.forEach(site -> fixLinks(site));
+		sites.forEach(site -> fixLinks(site));
 
-        return sites;
-    }
+		return sites;
+	}
 
-    @GetMapping("/{id}")
-    public ConstructionSiteDTO readOne(@PathVariable Long id) {
-        ConstructionSiteDTO site = service.read(id);
+	@GetMapping("/{id}")
+	public ConstructionSiteDTO readOne(@PathVariable Long id) {
+		ConstructionSiteDTO site = service.read(id);
 
-        fixLinks(site);
+		fixLinks(site);
 
-        return site;
-    }
+		return site;
+	}
 
-    private void fixLinks(ConstructionSiteDTO site) {
-        site.removeLinks();
-        site.getLinks().add(linkTo(
-                methodOn(ConstructionSiteController.class)
-                        .readOne(site.get_id()))
-                .withSelfRel());
-    }
+	private void fixLinks(ConstructionSiteDTO site) {
+		site.removeLinks();
+		site.getLinks().add(linkTo(
+				methodOn(ConstructionSiteController.class)
+						.readOne(site.get_id()))
+				.withSelfRel());
+	}
 
 }

@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.hateoas.ResourceSupport;
 
 @Data
-public class CommentDTO extends ResourceSupport  {
+public class CommentDTO extends ResourceSupport {
 
 	Long _id;
 

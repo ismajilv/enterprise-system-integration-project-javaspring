@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -28,126 +27,126 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RequestMapping("/api/requests")
 public class PlantHireRequestController {
 
-    @Autowired
-    PlantHireRequestService service;
+	@Autowired
+	PlantHireRequestService service;
 
-    @Autowired
-    CommentService commentService;
+	@Autowired
+	CommentService commentService;
 
-    @GetMapping
-    public ResponseEntity<Resources<PlantHireRequestDTO>> readAll() {
-        List<PlantHireRequestDTO> requests = service.getAll();
+	@GetMapping
+	public ResponseEntity<Resources<PlantHireRequestDTO>> readAll() {
+		List<PlantHireRequestDTO> requests = service.getAll();
 
-        return transformIntoResponse(requests);
-    }
+		return transformIntoResponse(requests);
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Resource<PlantHireRequestDTO>> readOne(@PathVariable Long id) {
-        return transformIntoResponse(service.getByIdAsDTO(id), HttpStatus.OK);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<Resource<PlantHireRequestDTO>> readOne(@PathVariable Long id) {
+		return transformIntoResponse(service.getByIdAsDTO(id), HttpStatus.OK);
+	}
 
-    @PostMapping
-    public ResponseEntity<Resource<PlantHireRequestDTO>> create(@RequestBody @Valid CreatePlantHireRequestDTO createRequest) {
-        PlantHireRequestDTO newlyCreatedPHR = service.addRequest(
-                createRequest.getConstructionSiteId(),
-                createRequest.getSupplierId(),
-                createRequest.getPlantHref(),
-                createRequest.getRentalPeriod().toModel(),
-                createRequest.getRentalCost().toModel()
-        );
+	@PostMapping
+	public ResponseEntity<Resource<PlantHireRequestDTO>> create(@RequestBody @Valid CreatePlantHireRequestDTO createRequest) {
+		PlantHireRequestDTO newlyCreatedPHR = service.addRequest(
+				createRequest.getConstructionSiteId(),
+				createRequest.getSupplierId(),
+				createRequest.getPlantHref(),
+				createRequest.getRentalPeriod().toModel(),
+				createRequest.getRentalCost().toModel()
+		);
 
-        return transformIntoResponse(newlyCreatedPHR, HttpStatus.CREATED);
-    }
+		return transformIntoResponse(newlyCreatedPHR, HttpStatus.CREATED);
+	}
 
-    @PostMapping("/{id}/addComment")
-    public CommentDTO addComment(@PathVariable Long id, @RequestBody StringDTO textDTO) {
-        CommentDTO comment = commentService.create(id, textDTO.getValue());
+	@PostMapping("/{id}/addComment")
+	public CommentDTO addComment(@PathVariable Long id, @RequestBody StringDTO textDTO) {
+		CommentDTO comment = commentService.create(id, textDTO.getValue());
 
-        comment.removeLinks();
+		comment.removeLinks();
 
-        return comment;
-    }
+		return comment;
+	}
 
-    @PostMapping("/{id}/accept")
-    public ResponseEntity<Resource<PlantHireRequestDTO>> accept(@PathVariable Long id) {
-        PlantHireRequestDTO acceptedRequest = service.accept(id);
+	@PostMapping("/{id}/accept")
+	public ResponseEntity<Resource<PlantHireRequestDTO>> accept(@PathVariable Long id) {
+		PlantHireRequestDTO acceptedRequest = service.accept(id);
 
-        return transformIntoResponse(acceptedRequest, HttpStatus.OK);
-    }
+		return transformIntoResponse(acceptedRequest, HttpStatus.OK);
+	}
 
-    @PostMapping("/{id}/reject")
-    public ResponseEntity<Resource<PlantHireRequestDTO>> reject(@PathVariable Long id) {
-        PlantHireRequestDTO rejectedRequest = service.reject(id);
+	@PostMapping("/{id}/reject")
+	public ResponseEntity<Resource<PlantHireRequestDTO>> reject(@PathVariable Long id) {
+		PlantHireRequestDTO rejectedRequest = service.reject(id);
 
-        return transformIntoResponse(rejectedRequest, HttpStatus.OK);
-    }
+		return transformIntoResponse(rejectedRequest, HttpStatus.OK);
+	}
 
-    private ResponseEntity<Resources<PlantHireRequestDTO>> transformIntoResponse(Collection<PlantHireRequestDTO> requestDTOs) {
-        Collection<PlantHireRequestDTO> requestDTOsWithLinksFixed =
-                requestDTOs
-                        .stream()
-                        .map(dto -> fixLinks(dto))
-                        .collect(Collectors.toList());
+	private ResponseEntity<Resources<PlantHireRequestDTO>> transformIntoResponse(Collection<PlantHireRequestDTO> requestDTOs) {
+		Collection<PlantHireRequestDTO> requestDTOsWithLinksFixed =
+				requestDTOs
+						.stream()
+						.map(dto -> fixLinks(dto))
+						.collect(Collectors.toList());
 
-        return new ResponseEntity<>(
-                new Resources<PlantHireRequestDTO>(requestDTOsWithLinksFixed),
-                new HttpHeaders(),
-                HttpStatus.OK
-        );
-    }
+		return new ResponseEntity<>(
+				new Resources<PlantHireRequestDTO>(requestDTOsWithLinksFixed),
+				new HttpHeaders(),
+				HttpStatus.OK
+		);
+	}
 
-    private ResponseEntity<Resource<PlantHireRequestDTO>> transformIntoResponse(PlantHireRequestDTO requestDTO, HttpStatus status) {
-        PlantHireRequestDTO requestDTOWithLinksFixed = fixLinks(requestDTO);
+	private ResponseEntity<Resource<PlantHireRequestDTO>> transformIntoResponse(PlantHireRequestDTO requestDTO, HttpStatus status) {
+		PlantHireRequestDTO requestDTOWithLinksFixed = fixLinks(requestDTO);
 
-        return new ResponseEntity<Resource<PlantHireRequestDTO>>(
-                new Resource<PlantHireRequestDTO>(requestDTOWithLinksFixed),
-                new HttpHeaders(),
-                status
-        );
-    }
+		return new ResponseEntity<Resource<PlantHireRequestDTO>>(
+				new Resource<PlantHireRequestDTO>(requestDTOWithLinksFixed),
+				new HttpHeaders(),
+				status
+		);
+	}
 
-    private PlantHireRequestDTO fixLinks(PlantHireRequestDTO requestDTO) {
-        requestDTO.removeLinks();
-        requestDTO.getComments().forEach(c -> c.removeLinks());
-        requestDTO.getSite().removeLinks();
-        requestDTO.getSite().getLinks().add(linkTo(
-                methodOn(ConstructionSiteController.class)
-                        .readOne(requestDTO.getSite().get_id()))
-                .withSelfRel());
-        requestDTO.getSupplier().removeLinks();
-        requestDTO.getSupplier().getLinks().add(linkTo(
-                methodOn(SupplierController.class)
-                        .readOne(requestDTO.getSupplier().get_id()))
-                .withSelfRel());
+	private PlantHireRequestDTO fixLinks(PlantHireRequestDTO requestDTO) {
+		requestDTO.removeLinks();
+		requestDTO.getComments().forEach(c -> c.removeLinks());
+		requestDTO.getSite().removeLinks();
+		requestDTO.getSite().getLinks().add(linkTo(
+				methodOn(ConstructionSiteController.class)
+						.readOne(requestDTO.getSite().get_id()))
+				.withSelfRel());
+		requestDTO.getSupplier().removeLinks();
+		requestDTO.getSupplier().getLinks().add(linkTo(
+				methodOn(SupplierController.class)
+						.readOne(requestDTO.getSupplier().get_id()))
+				.withSelfRel());
 
-        requestDTO.getPlant().removeLinks();
+		requestDTO.getPlant().removeLinks();
 
-        Link selfRel = linkTo(
-                methodOn(PlantHireRequestController.class)
-                        .readOne(requestDTO.get_id()))
-                .withSelfRel();
+		Link selfRel = linkTo(
+				methodOn(PlantHireRequestController.class)
+						.readOne(requestDTO.get_id()))
+				.withSelfRel();
 
-        Link acceptRel = linkTo(
-                methodOn(PlantHireRequestController.class)
-                        .accept(requestDTO.get_id()))
-                .withRel("accept");
+		Link acceptRel = linkTo(
+				methodOn(PlantHireRequestController.class)
+						.accept(requestDTO.get_id()))
+				.withRel("accept");
 
-        Link rejectRel = linkTo(
-                methodOn(PlantHireRequestController.class)
-                        .reject(requestDTO.get_id()))
-                .withRel("reject");
+		Link rejectRel = linkTo(
+				methodOn(PlantHireRequestController.class)
+						.reject(requestDTO.get_id()))
+				.withRel("reject");
 
-        Link addCommentRel = linkTo(
-                methodOn(PlantHireRequestController.class)
-                        .addComment(requestDTO.get_id(), null))
-                .withRel("addComment");
+		Link addCommentRel = linkTo(
+				methodOn(PlantHireRequestController.class)
+						.addComment(requestDTO.get_id(), null))
+				.withRel("addComment");
 
-        requestDTO.getLinks().add(selfRel);
-        requestDTO.getLinks().add(acceptRel);
-        requestDTO.getLinks().add(rejectRel);
-        requestDTO.getLinks().add(addCommentRel);
+		requestDTO.getLinks().add(selfRel);
+		requestDTO.getLinks().add(acceptRel);
+		requestDTO.getLinks().add(rejectRel);
+		requestDTO.getLinks().add(addCommentRel);
 
-        return requestDTO;
-    }
+		return requestDTO;
+	}
 
 }

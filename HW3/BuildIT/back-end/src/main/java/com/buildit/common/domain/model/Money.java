@@ -11,13 +11,13 @@ import java.math.BigDecimal;
 
 @Embeddable
 @Value // only getters and no setters (cannot change attributes)
-@NoArgsConstructor(force=true,access= AccessLevel.PRIVATE)
-@AllArgsConstructor(staticName="of")
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
+@AllArgsConstructor(staticName = "of")
 public class Money {
 
 	// String currency; TBD later
 
-	@Column(precision=8,scale=2, nullable = false)
+	@Column(precision = 8, scale = 2, nullable = false)
 	BigDecimal total;
 
 }

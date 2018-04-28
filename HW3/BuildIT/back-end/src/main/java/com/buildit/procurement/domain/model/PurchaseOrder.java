@@ -1,13 +1,14 @@
 package com.buildit.procurement.domain.model;
 
 import com.buildit.procurement.domain.enums.POStatus;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.net.URI;
 
 // TODO - VALUE OBJECT?
 @Entity
@@ -16,10 +17,10 @@ import java.net.URI;
 @AllArgsConstructor(staticName = "of")
 public class PurchaseOrder {
 
-    @Id // It's the identifier
-    @URL
-    String href;
+	@Id // It's the identifier
+	@URL
+	String href;
 
-    POStatus status;
+	POStatus status;
 
 }

@@ -1,9 +1,11 @@
 package com.buildit.procurement.domain.model;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -14,10 +16,10 @@ import javax.persistence.Id;
 @AllArgsConstructor(staticName = "of")
 public class PlantInventoryEntry {
 
-    @Id // href is the identifier
-    @URL
-    String id;
+	@Id // href is the identifier
+	@URL
+	String id;
 
-    String name;
+	String name;
 
 }

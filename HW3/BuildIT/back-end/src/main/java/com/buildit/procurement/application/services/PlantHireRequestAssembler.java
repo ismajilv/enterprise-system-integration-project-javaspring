@@ -15,51 +15,51 @@ import java.util.List;
 @Service
 public class PlantHireRequestAssembler extends ResourceAssemblerSupport<PlantHireRequest, PlantHireRequestDTO> {
 
-    @Autowired
-    CommentAssembler commentAssembler;
+	@Autowired
+	CommentAssembler commentAssembler;
 
-    @Autowired
-    ConstructionSiteAssembler constructionSiteAssembler;
+	@Autowired
+	ConstructionSiteAssembler constructionSiteAssembler;
 
-    @Autowired
-    BusinessPeriodAssembler businessPeriodAssembler;
+	@Autowired
+	BusinessPeriodAssembler businessPeriodAssembler;
 
-    @Autowired
-    SupplierAssembler supplierAssembler;
+	@Autowired
+	SupplierAssembler supplierAssembler;
 
-    @Autowired
-    PlantInventoryEntryAssembler plantInventoryEntryAssembler;
+	@Autowired
+	PlantInventoryEntryAssembler plantInventoryEntryAssembler;
 
-    @Autowired
-    MoneyAssembler moneyAssembler;
+	@Autowired
+	MoneyAssembler moneyAssembler;
 
-    public PlantHireRequestAssembler() {
-        super(PlantHireRequestController.class, PlantHireRequestDTO.class);
+	public PlantHireRequestAssembler() {
+		super(PlantHireRequestController.class, PlantHireRequestDTO.class);
 
-    }
+	}
 
-    @Override
-    public PlantHireRequestDTO toResource(PlantHireRequest plantHireRequest) {
-        PlantHireRequestDTO dto = createResourceWithId(plantHireRequest.getId(), plantHireRequest);
+	@Override
+	public PlantHireRequestDTO toResource(PlantHireRequest plantHireRequest) {
+		PlantHireRequestDTO dto = createResourceWithId(plantHireRequest.getId(), plantHireRequest);
 
-        dto.set_id(plantHireRequest.getId());
+		dto.set_id(plantHireRequest.getId());
 
-        List<CommentDTO> commentDTOs = commentAssembler.toResources(plantHireRequest.getComments());
-        dto.setComments(commentDTOs);
+		List<CommentDTO> commentDTOs = commentAssembler.toResources(plantHireRequest.getComments());
+		dto.setComments(commentDTOs);
 
-        dto.setSite(constructionSiteAssembler.toResource(plantHireRequest.getConstructionSite()));
+		dto.setSite(constructionSiteAssembler.toResource(plantHireRequest.getConstructionSite()));
 
-        dto.setRentalPeriod(businessPeriodAssembler.toResource(plantHireRequest.getRentalPeriod()));
+		dto.setRentalPeriod(businessPeriodAssembler.toResource(plantHireRequest.getRentalPeriod()));
 
-        dto.setSupplier(supplierAssembler.toResource(plantHireRequest.getSupplier()));
+		dto.setSupplier(supplierAssembler.toResource(plantHireRequest.getSupplier()));
 
-        dto.setPlant(plantInventoryEntryAssembler.toResource(plantHireRequest.getPlant()));
+		dto.setPlant(plantInventoryEntryAssembler.toResource(plantHireRequest.getPlant()));
 
-        dto.setRentalCost(moneyAssembler.toResource(plantHireRequest.getRentalCost()));
+		dto.setRentalCost(moneyAssembler.toResource(plantHireRequest.getRentalCost()));
 
-        dto.setStatus(plantHireRequest.getStatus());
+		dto.setStatus(plantHireRequest.getStatus());
 
-        return dto;
-    }
+		return dto;
+	}
 
 }

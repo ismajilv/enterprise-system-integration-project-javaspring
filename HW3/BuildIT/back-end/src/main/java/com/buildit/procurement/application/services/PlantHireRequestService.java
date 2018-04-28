@@ -2,7 +2,6 @@ package com.buildit.procurement.application.services;
 
 import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.common.domain.model.Money;
-import com.buildit.procurement.application.dto.CommentDTO;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.domain.enums.PHRStatus;
 import com.buildit.procurement.domain.model.ConstructionSite;
@@ -13,7 +12,6 @@ import com.buildit.procurement.domain.repository.PlantHireRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
