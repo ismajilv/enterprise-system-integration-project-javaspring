@@ -10,6 +10,9 @@ import java.util.List;
 @Repository
 public interface PlantInventoryEntryRepository extends JpaRepository<PlantInventoryEntry, Long> {
 
+    @Query("select p from PlantInventoryEntry p where p.id = ?1")
+    PlantInventoryEntry findOneById(Long id);
+
     List<PlantInventoryEntry> findByNameContaining(String str);
 
     @Query("select p from PlantInventoryEntry p where p.name like %?1%")
