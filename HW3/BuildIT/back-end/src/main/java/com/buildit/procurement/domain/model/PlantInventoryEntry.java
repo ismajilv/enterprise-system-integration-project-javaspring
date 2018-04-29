@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -18,8 +19,9 @@ public class PlantInventoryEntry {
 
 	@Id // href is the identifier
 	@URL
-	String id;
+	String href;
 
+	@Column(nullable = false)
 	String name;
 
 }

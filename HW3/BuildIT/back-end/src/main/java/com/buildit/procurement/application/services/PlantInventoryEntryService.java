@@ -5,6 +5,7 @@ import com.buildit.procurement.domain.model.PlantInventoryEntry;
 import com.buildit.procurement.domain.repository.PlantInventoryEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -18,27 +19,34 @@ public class PlantInventoryEntryService {
 	@Autowired
 	PlantInventoryEntryAssembler assembler;
 
-	public PlantInventoryEntry getByHref(String href) {
+	@Autowired
+	RentItService integrationService;
+
+	public Collection<PlantInventoryEntryDTO> getAll() {
+		return integrationService.queryPlantCatalog();
+	}
+
+	public PlantInventoryEntryDTO fetchByHref(String href) {
+		return integrationService.readOneExternal(href);
+	}
+
+	@Transactional
+	public PlantInventoryEntry readOrCreateModel(String href) {
 		Optional<PlantInventoryEntry> maybePlantInventoryEntry = repository.findById(href);
 
+		PlantInventoryEntry plant;
+
 		if (!maybePlantInventoryEntry.isPresent()) {
-			throw new IllegalArgumentException("Cannot find plant inventory entry by href: " + href);
+			PlantInventoryEntryDTO fetched = fetchByHref(href);
+
+			plant = PlantInventoryEntry.of(href, fetched.getName());
+
+			plant = repository.save(plant);
+		} else {
+			plant = maybePlantInventoryEntry.get();
 		}
 
-		return maybePlantInventoryEntry.get();
-	}
-
-	public PlantInventoryEntry create(String href, String name) {
-		PlantInventoryEntry plant = PlantInventoryEntry.of(href, name);
-
-		repository.save(plant);
-
 		return plant;
-	}
-
-	// TODO should be queried from different RentIts and assembled together
-	public Collection<PlantInventoryEntryDTO> getAll() {
-		return assembler.toResources(repository.findAll());
 	}
 
 }

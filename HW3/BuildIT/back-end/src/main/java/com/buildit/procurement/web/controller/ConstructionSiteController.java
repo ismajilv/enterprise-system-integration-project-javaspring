@@ -31,7 +31,7 @@ public class ConstructionSiteController {
 
 	@GetMapping("/{id}")
 	public ConstructionSiteDTO readOne(@PathVariable Long id) {
-		ConstructionSiteDTO site = service.read(id);
+		ConstructionSiteDTO site = service.readOne(id);
 
 		fixLinks(site);
 

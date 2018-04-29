@@ -25,18 +25,39 @@ To create plant hire request, send a POST to http://localhost:8080/api/requests
 
 ~~~json
 {
-	"constructionSiteId": 1,
-	"supplierId": 2,
+	"constructionSiteId": 2,
+	"supplierId": 4,
 	"plantHref": "http://ramirent.ee:9550/api/plants/2",
 	"rentalPeriod" : {
 	    "startDate" : "2018-04-29",
 	    "endDate" : "2018-05-03"
-	},
-	"rentalCost":{
-	    "total" : 10.00
 	}
 }
 ~~~
+
+How to update a plant hire request
+------------
+
+The same content as for create, but you only need to provide the fields that need to be updated. 
+
+To update plant hire request, send a PUT to http://localhost:8080/api/requests/{id}
+
+**Payload and address for sample data**
+
+PUT to http://localhost:8080/api/requests/7
+
+~~~json
+{
+	"constructionSiteId": 2,
+	"supplierId": 4,
+	"plantHref": "http://ramirent.ee:9550/api/plants/2",
+	"rentalPeriod" : {
+	    "startDate" : "2018-05-29",
+	    "endDate" : "2018-07-03"
+	}
+}
+~~~
+
 
 How to add a comment to a plant hire request
 ------------
@@ -64,12 +85,26 @@ To reject, send a POST to http://localhost:8080/api/requests/{id}/reject
 
 POST to http://localhost:8080/api/requests/3/accept
 
+How to notify of purchase order decision from RentIt
+------------
+
+Send a POST to http://localhost:8080/callbacks/orderStateChanged
+
+JSON contents should be RentIt self href together with the new status.
+
+**JSON with sample data**
+
+~~~json
+{
+"href": "http://ramirent.ee:5999/api/orders-list/584",
+"value": "APPROVED"
+}
+~~~
+
 TODOs
 ------------
 
 Here is a list of ongoing issues:
 
-  * Links must be generated correctly!
-  * Supplier should really be the one of plant;
-  * Plant should be queried by href in request creation and not fetched from repo;
-  * When PHR is accepted, generate and send a new PO to RentIT;
+  * Documentation about design decisions;
+  * Do integrations in RentItIntegrationsService;

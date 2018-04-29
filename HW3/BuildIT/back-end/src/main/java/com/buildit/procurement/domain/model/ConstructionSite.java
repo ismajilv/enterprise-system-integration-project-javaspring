@@ -2,10 +2,7 @@ package com.buildit.procurement.domain.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -15,6 +12,7 @@ public class ConstructionSite {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	Long id;
 
+	@Column(nullable = false)
 	String address;
 
 }

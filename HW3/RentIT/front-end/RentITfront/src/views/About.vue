@@ -1,18 +1,16 @@
 <template>
   <div class="about">
+    <h2> Our about page</h2>
   </div>
 </template>
+
 <script>
-// @ is an alias to /src
-// import OpenOrders from '@/components/allocation/OpenOrders.vue'
-
 export default {
-  name: 'about',
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
-    }
-  }
-}
+  name: "about"
 
+}
 </script>
+
+<style>
+
+</style>

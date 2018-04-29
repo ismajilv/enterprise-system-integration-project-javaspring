@@ -31,7 +31,7 @@ public class SupplierController {
 
 	@GetMapping("/{id}")
 	public SupplierDTO readOne(@PathVariable Long id) {
-		SupplierDTO supplier = service.read(id);
+		SupplierDTO supplier = service.readOne(id);
 
 		fixLinks(supplier);
 

@@ -1,76 +1,54 @@
 <template>
     <b-tabs type="is-toggle" expanded v-model="activeTab">
         <b-tab-item label="Query catalog">
-            <catalog-query @submitCatalogQuery="handleCatalogQuery"></catalog-query>
+          <catalog-query @submitCatalogQuery="handleCatalogQuery"></catalog-query>
         </b-tab-item>
         <b-tab-item label="Select plant">
-            <query-result :plants= "plants"></query-result>
+          <query-result :plants= "plants"></query-result>
         </b-tab-item>
         <b-tab-item label="Review order">
-            <order-data :order="order" @submitPurchaseOrder="handlePOCreation"></order-data>
         </b-tab-item>
     </b-tabs>
 </template>
 
 <script>
-import CatalogQuery from "./CatalogQuery.vue";
-import QueryResult from "./QueryResult.vue";
-import OrderData from "./OrderData.vue";
+import CatalogQuery from "./CatalogQuery.vue"
+import QueryResult from "./QueryResult.vue"
 
-import axios from "axios";
-import moment from "moment";
+import axios from 'axios'
 
 export default {
-    name: "OrderCreation",
-    components: {
-        CatalogQuery,
-        QueryResult,
-        OrderData
-    },
-    data: function() {
-        return {
-            activeTab: 0,
-            plants: [],
-            order: {
-                plant: {},
-                rentalPeriod: {}
-            }
+  name: "OrderCreation",
+  components: {
+    CatalogQuery,
+    QueryResult
+  },
+  data: function(){
+    return {
+      activeTab: 0,
+      plants: [{id: 1, name: "Bike", description: "Nice and shinny", price: 100}]
+    }
+  },
+  methods:{
+    handleCatalogQuery: function(query){
+      if(query.name && query.startDate && query.endDate) {
+        let params = {
+          name: query.name,
+          startDate: query.startDate,
+          endDate: query.endDate
         }
-    },
-    methods: {
-        handleCatalogQuery: function(query) {
-            if (query.name && query.startDate && query.endDate) {
-                let params = {
-                    name: query.name,
-                    startDate: moment(String(query.startDate)).format("YYYY-MM-DD"),
-                    endDate: moment(String(query.endDate)).format("YYYY-MM-DD")
-                };
-                axios.get("http://localhost:8090/api/sales/plants?name=Exc&startDate=2016-03-14&endDate=2016-03-25", {params: params})
-                    .then(response => {
-                        console.log(response);
-                        this.order.rentalPeriod.startDate = params.startDate;
-                        this.order.rentalPeriod.endDate = params.endDate;
-                        this.plants = response.data._embedded.plants;
-                        this.activeTab = 1;
-                    });
-            }
-        },
-        handlePlantSelection: function(plant) {
-            this.order.plant = plant;
-            this.activeTab = 2;
-        },
-        handlePOCreation: function() {
-            console.log("ORDER", this.order);
-            axios.post("http://localhost:8090/api/sales/orders", this.order)
-                .then(response => {
-                    this.$snackbar.open("Purchase order submitted. Waiting for confirmation.");
-                }).catch(error => {
-                    this.$snackbar.open({
-                        type: 'is-danger',
-                        message: "Something went wrong with purchase order submition."
-                    });
-                });
-        }
+        axios.get("http://localhost:8090/api/sales/plants", { params: params})
+        .then(respone => {
+          console.log(query);
+          this.activeTab = 1;
+          this.plants = respone.data;
+        })
+      }
     }
 }
+}
 </script>
+
+<style>
+
+</style>

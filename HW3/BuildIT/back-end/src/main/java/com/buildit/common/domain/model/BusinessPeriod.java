@@ -8,6 +8,7 @@ import lombok.Value;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalDate;
+import java.time.Period;
 
 @Embeddable
 @Value
@@ -20,5 +21,9 @@ public class BusinessPeriod {
 
 	@Column(name = "end_date", nullable = false)
 	LocalDate endDate;
+
+	public int getNoOfDays() {
+		return Period.between(startDate, endDate).getDays();
+	}
 
 }

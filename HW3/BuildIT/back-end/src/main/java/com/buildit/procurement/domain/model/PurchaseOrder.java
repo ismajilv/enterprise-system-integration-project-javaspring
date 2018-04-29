@@ -1,26 +1,21 @@
 package com.buildit.procurement.domain.model;
 
 import com.buildit.procurement.domain.enums.POStatus;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-// TODO - VALUE OBJECT?
 @Entity
-@Getter
-@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
-@AllArgsConstructor(staticName = "of")
+@Data
 public class PurchaseOrder {
 
 	@Id // It's the identifier
 	@URL
 	String href;
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	POStatus status;
 
 }

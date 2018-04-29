@@ -1,6 +1,6 @@
 package com.buildit.procurement.application.dto;
 
-import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
+import com.buildit.common.application.dto.BusinessPeriodDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,10 +9,10 @@ import org.springframework.hateoas.ResourceSupport;
 @Data
 @NoArgsConstructor(force = true)
 @AllArgsConstructor(staticName = "of")
-public class RentItPurchaseOrderDTO extends ResourceSupport {
+public class RentItCreatePORequestDTO extends ResourceSupport {
 
-	String poHref;
+	String plantHref;
 
-	RentItPurchaseOrderStatus status;
+	BusinessPeriodDTO rentalPeriod;
 
 }

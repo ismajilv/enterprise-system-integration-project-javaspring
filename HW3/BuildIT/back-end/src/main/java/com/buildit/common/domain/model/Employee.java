@@ -1,4 +1,4 @@
-package com.buildit.procurement.domain.model;
+package com.buildit.common.domain.model;
 
 import com.buildit.procurement.domain.enums.Role;
 import lombok.Data;

@@ -1,6 +1,7 @@
 package com.buildit.procurement.domain.model;
 
 import com.buildit.common.domain.model.BusinessPeriod;
+import com.buildit.common.domain.model.Employee;
 import com.buildit.common.domain.model.Money;
 import com.buildit.procurement.domain.enums.PHRStatus;
 import lombok.Data;
@@ -46,14 +47,15 @@ public class PlantHireRequest {
 	//</editor-fold>
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "plantHireRequest", cascade = CascadeType.ALL)
 	Collection<Comment> comments = new ArrayList<>();
-
-	// not really needed
-	// @JoinColumn(name = "requesting_site_engineer_id")
-	// @OneToOne
-	// Employee requestingSiteEngineer;
 	@JoinColumn(name = "purchase_order_id")
 	@OneToOne
 	PurchaseOrder purchaseOrder;
+	@JoinColumn(name = "requesting_site_engineer_id", nullable = false)
+	@ManyToOne(optional = false)
+	Employee requestingSiteEngineer;
+	@JoinColumn(name = "approving_works_engineer_id")
+	@ManyToOne
+	Employee approvingWorksEngineer;
 	//</editor-fold>
 
 	public void setStatus(PHRStatus newStatus) {
