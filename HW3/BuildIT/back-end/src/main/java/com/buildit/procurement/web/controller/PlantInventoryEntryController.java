@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
-
-import static java.util.Objects.requireNonNull;
 
 @RestController
 @RequestMapping("/api/plants")

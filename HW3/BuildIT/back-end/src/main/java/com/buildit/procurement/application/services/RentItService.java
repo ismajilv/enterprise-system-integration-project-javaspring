@@ -1,14 +1,10 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.common.application.dto.BusinessPeriodDTO;
-import com.buildit.common.application.dto.MoneyDTO;
-import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
 import com.buildit.procurement.application.dto.RentItCreatePORequestDTO;
 import com.buildit.procurement.application.dto.RentItPlantInventoryEntryDTO;
 import com.buildit.procurement.application.dto.RentItPurchaseOrderDTO;
-import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
-import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -17,14 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
 @Service
@@ -33,7 +25,7 @@ public class RentItService {
 	@Autowired
 	RentItToBuildItPlantInventoryEntryAssembler rent2buildEntryAssembler;
 
-	@Value("${rentItUrl}" )
+	@Value("${rentItUrl}")
 	String rentItUrl;
 
 	public Collection<PlantInventoryEntryDTO> queryPlantCatalog(String name, LocalDate startDate, LocalDate endDate) {
@@ -57,7 +49,8 @@ public class RentItService {
 						builder.toUriString(),
 						HttpMethod.GET,
 						entity,
-						new ParameterizedTypeReference<List<RentItPlantInventoryEntryDTO>>() {}
+						new ParameterizedTypeReference<List<RentItPlantInventoryEntryDTO>>() {
+						}
 				);
 
 		List<RentItPlantInventoryEntryDTO> entries = response.getBody();
@@ -86,7 +79,8 @@ public class RentItService {
 						href,
 						HttpMethod.GET,
 						entity,
-						new ParameterizedTypeReference<RentItPlantInventoryEntryDTO>() {}
+						new ParameterizedTypeReference<RentItPlantInventoryEntryDTO>() {
+						}
 				);
 
 		RentItPlantInventoryEntryDTO entry = response.getBody();
@@ -117,7 +111,8 @@ public class RentItService {
 						rentItUrl + "/api/sales/orders",
 						HttpMethod.POST,
 						entity,
-						new ParameterizedTypeReference<RentItPurchaseOrderDTO>() {}
+						new ParameterizedTypeReference<RentItPurchaseOrderDTO>() {
+						}
 				);
 
 		RentItPurchaseOrderDTO order = response.getBody();

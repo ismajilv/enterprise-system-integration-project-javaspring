@@ -36,7 +36,7 @@ public class TestDataProvider {
 	@Autowired
 	EmployeeService employeeService;
 
-	@Value("${rentItUrl}" )
+	@Value("${rentItUrl}")
 	String rentItUrl;
 
 	@PostConstruct

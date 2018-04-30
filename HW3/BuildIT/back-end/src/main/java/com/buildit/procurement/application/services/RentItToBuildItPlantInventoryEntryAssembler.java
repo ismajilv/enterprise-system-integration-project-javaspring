@@ -1,10 +1,8 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.common.application.dto.MoneyDTO;
-import com.buildit.common.domain.model.Money;
 import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
 import com.buildit.procurement.application.dto.RentItPlantInventoryEntryDTO;
-import com.buildit.procurement.domain.model.PlantInventoryEntry;
 import com.buildit.procurement.web.controller.PlantHireRequestController;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
