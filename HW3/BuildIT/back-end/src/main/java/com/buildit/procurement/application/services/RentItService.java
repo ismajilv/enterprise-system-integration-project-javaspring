@@ -10,6 +10,7 @@ import com.buildit.procurement.application.dto.RentItPurchaseOrderDTO;
 import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.requireNonNull;
 
 @Service
 public class RentItService {
@@ -31,12 +33,16 @@ public class RentItService {
 	@Autowired
 	RentItToBuildItPlantInventoryEntryAssembler rent2buildEntryAssembler;
 
+	@Value("${rentItUrl}" )
+	String rentItUrl;
+
 	public Collection<PlantInventoryEntryDTO> queryPlantCatalog(String name, LocalDate startDate, LocalDate endDate) {
 		HttpHeaders headers = new HttpHeaders();
 
 		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-		final String url = "http://localhost:8090/api/sales/plants";
+		checkRentItUrl();
+		final String url = rentItUrl + "/api/sales/plants";
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
 				.queryParam("name", name)
 				.queryParam("startDate", startDate)
@@ -57,6 +63,11 @@ public class RentItService {
 		List<RentItPlantInventoryEntryDTO> entries = response.getBody();
 
 		return rent2buildEntryAssembler.toResources(entries);
+	}
+
+	private void checkRentItUrl() {
+		requireNonNull(rentItUrl);
+		if (rentItUrl.length() < 10) throw new IllegalArgumentException("Configure rentItUrl properly: " + rentItUrl);
 	}
 
 //	public boolean isAvailableDuringPeriod(String href, BusinessPeriod period) {
@@ -100,9 +111,10 @@ public class RentItService {
 
 		RestTemplate restTemplate = new RestTemplate();
 
+		checkRentItUrl();
 		ResponseEntity<RentItPurchaseOrderDTO> response =
 				restTemplate.exchange(
-						"http://localhost:8090/api/sales/orders",
+						rentItUrl + "/api/sales/orders",
 						HttpMethod.POST,
 						entity,
 						new ParameterizedTypeReference<RentItPurchaseOrderDTO>() {}

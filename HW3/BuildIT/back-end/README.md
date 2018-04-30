@@ -5,6 +5,8 @@ NB!
 ------------
 RentIt back-end needs to be running in parallel to BuildIt for integrations between the two to work!
 
+You can specify RentIt base URL in application.properties
+
 Sample data
 ------------
 

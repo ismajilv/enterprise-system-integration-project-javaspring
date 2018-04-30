@@ -8,6 +8,7 @@ import com.buildit.procurement.domain.enums.Role;
 import com.buildit.procurement.domain.model.ConstructionSite;
 import com.buildit.procurement.domain.model.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -35,6 +36,9 @@ public class TestDataProvider {
 	@Autowired
 	EmployeeService employeeService;
 
+	@Value("${rentItUrl}" )
+	String rentItUrl;
+
 	@PostConstruct
 	public void init() {
 		System.out.println("== Adding test data ==");
@@ -61,7 +65,7 @@ public class TestDataProvider {
 				plantHireRequestService.addRequest(
 						constructionSite1.getId(),
 						supplierRamirent.getId(),
-						"http://localhost:8090/api/sales/plants/3",
+						rentItUrl + "/api/sales/plants/3",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(1),
 								LocalDate.now().plusDays(5)
@@ -83,7 +87,7 @@ public class TestDataProvider {
 				plantHireRequestService.addRequest(
 						constructionSite2.getId(),
 						supplierCramo.getId(),
-						"http://localhost:8090/api/sales/plants/6",
+						rentItUrl + "/api/sales/plants/6",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(1),
 								LocalDate.now().plusDays(5)
