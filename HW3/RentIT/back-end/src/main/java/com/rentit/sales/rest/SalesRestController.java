@@ -89,7 +89,9 @@ public class SalesRestController {
     }
 
     @PostMapping("/orders/{poId}/accept")
-    public ResponseEntity<?> acceptPurchaseOrder(@RequestBody Long piiId, @PathVariable("poId") Long poId)  throws URISyntaxException, PlantNotFoundException {
+    public ResponseEntity<?> acceptPurchaseOrder(
+            @RequestParam(name = "piiId") Long piiId,
+            @PathVariable("poId") Long poId)  throws URISyntaxException, PlantNotFoundException {
 
         if (!inventoryService.isPlantInventoryItemExisting(piiId)) {
             throw new PlantNotFoundException(piiId);
