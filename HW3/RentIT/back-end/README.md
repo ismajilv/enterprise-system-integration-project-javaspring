@@ -20,6 +20,26 @@ If some of the examples below don't work:
   * Include header 'Accept' with value 'application/json';
   * Check IDs, browsing the test data.  
 
+How to fetch pending purchase orders
+------------
+
+To retrieve pending purchase orders, send a GET to http://localhost:8090/api/sales/orders
+
+How to accept a purchase order
+------------
+
+To accept, send a POST to http://localhost:8080/api/sales/orders/{id}/accept?piiId={piiId}
+
+Parameter piiId of accept request should be the plant inventory item ID (corresponding to requested plant inventory entry) that is to be allocated for order.
+
+Example for sample data would be POST to http://localhost:8080/api/sales/orders/9/accept?piiId=5
+
+How to reject a purchase order
+------------
+To reject, send a POST to http://localhost:8080/api/sales/orders/{id}/reject
+
+**Note: The following endpoints are mainly for machine-to-machine communication!**
+
 How to browse the plant catalog
 ------------
 
@@ -28,11 +48,6 @@ Sample HTTP query to browse the plant catalog:
 GET http://localhost:8090/api/sales/plants?name=exc&startDate=2018-01-01&endDate=2018-10-10
 
 Include the part of plant name to search in parameter 'name'.
-
-How to fetch pending purchase orders
-------------
-
-To retrieve pending purchase orders, send a GET to http://localhost:8090/api/sales/orders
 
 How to create a purchase order
 ------------
@@ -61,19 +76,6 @@ Send a GET to http://localhost:8090/api/sales/orders/{id} .
 **URL for sample data (after creating PO)**
 
 http://localhost:8090/api/sales/orders/9
-
-How to accept a purchase order
-------------
-
-To accept, send a POST to http://localhost:8080/api/sales/orders/{id}/accept?piiId={piiId}
-
-Parameter piiId of accept request should be the plant inventory item ID (corresponding to requested plant inventory entry) that is to be allocated for order.
-
-Example for sample data would be POST to http://localhost:8080/api/sales/orders/9/accept?piiId=5
-
-How to reject a purchase order
-------------
-To reject, send a POST to http://localhost:8080/api/sales/orders/{id}/reject
 
 TODOs
 ------------
