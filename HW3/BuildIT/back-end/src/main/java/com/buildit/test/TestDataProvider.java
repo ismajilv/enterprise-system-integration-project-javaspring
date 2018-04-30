@@ -61,7 +61,7 @@ public class TestDataProvider {
 				plantHireRequestService.addRequest(
 						constructionSite1.getId(),
 						supplierRamirent.getId(),
-						"http://ramirent.ee:9550/api/plants/2",
+						"http://localhost:8090/api/sales/plants/3",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(1),
 								LocalDate.now().plusDays(5)
@@ -83,7 +83,7 @@ public class TestDataProvider {
 				plantHireRequestService.addRequest(
 						constructionSite2.getId(),
 						supplierCramo.getId(),
-						"http://www.cramo.ee/api/item-json/55",
+						"http://localhost:8090/api/sales/plants/6",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(1),
 								LocalDate.now().plusDays(5)

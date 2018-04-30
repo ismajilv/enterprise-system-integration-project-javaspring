@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -20,14 +21,13 @@ public class PlantInventoryEntryService {
 	PlantInventoryEntryAssembler assembler;
 
 	@Autowired
+	RentItToBuildItPlantInventoryEntryAssembler rentItToBuildItPlantInventoryEntryAssembler;
+
+	@Autowired
 	RentItService integrationService;
 
-	public Collection<PlantInventoryEntryDTO> getAll() {
-		return integrationService.queryPlantCatalog();
-	}
-
 	public PlantInventoryEntryDTO fetchByHref(String href) {
-		return integrationService.readOneExternal(href);
+		return rentItToBuildItPlantInventoryEntryAssembler.toResource(integrationService.fetchPlantEntryFromRentIt(href));
 	}
 
 	@Transactional
@@ -47,6 +47,10 @@ public class PlantInventoryEntryService {
 		}
 
 		return plant;
+	}
+
+	public Collection<PlantInventoryEntryDTO> findAvailable(String plantName, LocalDate startDate, LocalDate endDate) {
+		return integrationService.queryPlantCatalog(plantName, startDate, endDate);
 	}
 
 }

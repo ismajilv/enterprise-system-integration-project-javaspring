@@ -2,19 +2,17 @@ package com.buildit.procurement.domain.enums;
 
 public enum RentItPurchaseOrderStatus {
 
-	PENDING_APPROVE,
-
-	APPROVED,
-
-	REFUSED;
+	PENDING, REJECTED, OPEN, CLOSED, PENDING_EXTENSION;
 
 	public POStatus convertToLocal() {
 		switch (this) {
-			case PENDING_APPROVE:
+			case PENDING:
 				return POStatus.PENDING;
-			case APPROVED:
+			case OPEN:
+			case CLOSED:
+			case PENDING_EXTENSION:
 				return POStatus.APPROVED;
-			case REFUSED:
+			case REJECTED:
 				return POStatus.REJECTED;
 			default:
 				throw new IllegalArgumentException("Unknown PO status: " + this);

@@ -13,6 +13,7 @@ import com.buildit.procurement.domain.enums.POStatus;
 import com.buildit.procurement.domain.enums.Role;
 import com.buildit.procurement.domain.model.*;
 import com.buildit.procurement.domain.repository.PlantHireRequestRepository;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.requireNonNull;
 
 @Service
 public class PlantHireRequestService {
@@ -158,17 +160,17 @@ public class PlantHireRequestService {
 		Employee approvingWorksEngineer = employeeService.getLoggedInEmployee(Role.WORKS_ENGINEER);
 
 		PlantHireRequest request = readModel(id);
+		String plantHref = request.getPlant().getHref();
+		requireNonNull(plantHref);
 
-		RentItCreatePORequestDTO rentItPO = RentItCreatePORequestDTO.of(
-				request.getPlant().getHref(),
-				businessPeriodAssembler.toResource(request.getRentalPeriod())
-		);
+		RentItPurchaseOrderDTO createdPO =
+				rentItService.createPurchaseOrder(plantHref, businessPeriodAssembler.toResource(request.getRentalPeriod()));
 
-		RentItPurchaseOrderDTO createdPO = rentItService.createPurchaseOrder(rentItPO);
+		String href = createdPO.get_links().get("self").get("href");
 
 		POStatus status = createdPO.getStatus().convertToLocal();
 
-		PurchaseOrder purchaseOrder = purchaseOrderService.create(createdPO.getPoHref(), status);
+		PurchaseOrder purchaseOrder = purchaseOrderService.create(href, status);
 
 		request.setPurchaseOrder(purchaseOrder);
 

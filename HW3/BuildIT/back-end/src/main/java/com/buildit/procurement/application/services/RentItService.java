@@ -1,77 +1,116 @@
 package com.buildit.procurement.application.services;
 
+import com.buildit.common.application.dto.BusinessPeriodDTO;
 import com.buildit.common.application.dto.MoneyDTO;
 import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
 import com.buildit.procurement.application.dto.RentItCreatePORequestDTO;
+import com.buildit.procurement.application.dto.RentItPlantInventoryEntryDTO;
 import com.buildit.procurement.application.dto.RentItPurchaseOrderDTO;
 import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
+import org.hibernate.validator.constraints.URL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
 
-// TODO data should be queried externally from different RentIts
 @Service
 public class RentItService {
 
-	// mock querying from RentIt for now
-	private Map<String, PlantInventoryEntryDTO> href2Plant = new HashMap<>();
+	@Autowired
+	RentItToBuildItPlantInventoryEntryAssembler rent2buildEntryAssembler;
 
-	{
-		PlantInventoryEntryDTO plant1 = PlantInventoryEntryDTO.of(
-				"http://ramirent.ee:9550/api/plants/2",
-				"BOBCAT E19CAB",
-				MoneyDTO.of(BigDecimal.valueOf(159.99))
-		);
+	public Collection<PlantInventoryEntryDTO> queryPlantCatalog(String name, LocalDate startDate, LocalDate endDate) {
+		HttpHeaders headers = new HttpHeaders();
 
-		PlantInventoryEntryDTO plant2 = PlantInventoryEntryDTO.of(
-				"http://ramirent.ee:9550/api/plants/59",
-				"KAESER M122",
-				MoneyDTO.of(BigDecimal.valueOf(1800))
-		);
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-		PlantInventoryEntryDTO plant3 = PlantInventoryEntryDTO.of(
-				"http://www.cramo.ee/api/item-json/55",
-				"WACKER-NEUSON DPU6555HE",
-				MoneyDTO.of(BigDecimal.valueOf(620.50))
-		);
+		final String url = "http://localhost:8090/api/sales/plants";
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+				.queryParam("name", name)
+				.queryParam("startDate", startDate)
+				.queryParam("endDate", endDate);
 
-		href2Plant.put(plant1.getHref(), plant1);
+		HttpEntity<List<RentItPlantInventoryEntryDTO>> entity = new HttpEntity<>(headers);
 
-		href2Plant.put(plant2.getHref(), plant2);
+		RestTemplate restTemplate = new RestTemplate();
 
-		href2Plant.put(plant3.getHref(), plant3);
+		ResponseEntity<List<RentItPlantInventoryEntryDTO>> response =
+				restTemplate.exchange(
+						builder.toUriString(),
+						HttpMethod.GET,
+						entity,
+						new ParameterizedTypeReference<List<RentItPlantInventoryEntryDTO>>() {}
+				);
+
+		List<RentItPlantInventoryEntryDTO> entries = response.getBody();
+
+		return rent2buildEntryAssembler.toResources(entries);
 	}
 
-	// TODO may need parameters
-	public Collection<PlantInventoryEntryDTO> queryPlantCatalog() {
-		return href2Plant.values();
+//	public boolean isAvailableDuringPeriod(String href, BusinessPeriod period) {
+//		return true;
+//	}
+
+	public RentItPlantInventoryEntryDTO fetchPlantEntryFromRentIt(String href) {
+		HttpHeaders headers = new HttpHeaders();
+
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+
+		ResponseEntity<RentItPlantInventoryEntryDTO> response =
+				new RestTemplate().exchange(
+						href,
+						HttpMethod.GET,
+						entity,
+						new ParameterizedTypeReference<RentItPlantInventoryEntryDTO>() {}
+				);
+
+		RentItPlantInventoryEntryDTO entry = response.getBody();
+
+		return entry;
 	}
 
-	public boolean isAvailableDuringPeriod(String href, BusinessPeriod period) {
-		return true;
+	public RentItPurchaseOrderDTO createPurchaseOrder(String href, BusinessPeriodDTO businessPeriodDTO) {
+		RentItPlantInventoryEntryDTO rentItEntry = fetchPlantEntryFromRentIt(href);
+
+		RentItCreatePORequestDTO rentItPORequest = RentItCreatePORequestDTO.of(rentItEntry, businessPeriodDTO);
+
+		return doCreatePurchaseOrder(rentItPORequest);
 	}
 
-	public PlantInventoryEntryDTO readOneExternal(String href) {
-		PlantInventoryEntryDTO maybePlantInventoryEntry = href2Plant.get(href);
+	private RentItPurchaseOrderDTO doCreatePurchaseOrder(RentItCreatePORequestDTO request) {
+		HttpHeaders headers = new HttpHeaders();
 
-		if (isNull(maybePlantInventoryEntry)) {
-			throw new IllegalArgumentException("Cannot fetch plant inventory entry by href: " + href);
-		}
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-		return maybePlantInventoryEntry;
-	}
+		HttpEntity<RentItCreatePORequestDTO> entity = new HttpEntity<>(request, headers);
 
-	public RentItPurchaseOrderDTO createPurchaseOrder(RentItCreatePORequestDTO request) {
-		return RentItPurchaseOrderDTO.of(
-				"http://ramirent.ee:5999/api/orders-list/584",
-				RentItPurchaseOrderStatus.PENDING_APPROVE
-		);
+		RestTemplate restTemplate = new RestTemplate();
+
+		ResponseEntity<RentItPurchaseOrderDTO> response =
+				restTemplate.exchange(
+						"http://localhost:8090/api/sales/orders",
+						HttpMethod.POST,
+						entity,
+						new ParameterizedTypeReference<RentItPurchaseOrderDTO>() {}
+				);
+
+		RentItPurchaseOrderDTO order = response.getBody();
+
+		return order;
 	}
 
 }

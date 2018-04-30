@@ -25,6 +25,10 @@ public class PurchaseOrderService {
 
 	@Transactional
 	public PurchaseOrder create(String href, POStatus status) {
+		requireNonNull(href);
+		requireNonNull(status);
+		if (href.length() < 10) throw new IllegalArgumentException("Illegal href: " + href);
+
 		PurchaseOrder purchaseOrder = new PurchaseOrder();
 
 		purchaseOrder.setHref(href);
