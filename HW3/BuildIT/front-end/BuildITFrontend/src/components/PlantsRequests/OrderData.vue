@@ -2,10 +2,10 @@
 <div>
   <section>
     <b-field label="Customer reference">
-        <b-input v-model="customerinfo.customer"></b-input>
+        <b-input v-model="customer"></b-input>
     </b-field>
     <b-field label="Site address">
-        <b-input v-model="customerinfo.siteAddress"></b-input>
+        <b-input v-model="siteAddress"></b-input>
     </b-field>
     <button class="button is-primary" v-on:click="submit">Create Purchase Order</button>
   </section>
@@ -31,8 +31,6 @@
         </tr>
     </tbody>
 </table>
-
-    {{customerinfo }}
 </div>
 </template>
 
@@ -42,10 +40,8 @@ export default {
     props: ["order"],
     data: function() {
         return {
-            customerinfo: {
-              customer: "",
-              siteAddress: ""
-            }
+            customer: "",
+            siteAddress: ""
         }
     },
     methods: {
