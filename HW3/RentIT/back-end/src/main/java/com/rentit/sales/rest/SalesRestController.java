@@ -53,7 +53,34 @@ public class SalesRestController {
             @RequestParam(name = "name") String plantName,
             @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return inventoryService.findAvailable(plantName, startDate, endDate);
+        List<PlantInventoryEntryDTO> found = inventoryService.findAvailable(plantName, startDate, endDate);
+
+        fixLinks(found);
+
+        return found;
+    }
+
+    private void fixLinks(List<PlantInventoryEntryDTO> found) {
+        found.forEach(p -> fixLinks(p));
+    }
+
+    private void fixLinks(PlantInventoryEntryDTO p) {
+        p.removeLinks();
+        p.getLinks().add(
+                linkTo(
+                        methodOn(SalesRestController.class)
+                                .readOnePlant(p.get_id()))
+                        .withSelfRel()
+        );
+    }
+
+    @GetMapping("/plants/{id}")
+    public PlantInventoryEntryDTO readOnePlant(@PathVariable Long id) {
+        PlantInventoryEntryDTO plant = plantInventoryEntryAssembler.toResource(inventoryService.findPlantInventoryEntry(id));
+
+        fixLinks(plant);
+
+        return plant;
     }
 
     @GetMapping("/orders")

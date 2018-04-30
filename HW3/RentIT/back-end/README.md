@@ -14,10 +14,11 @@ NB!
 ------------
 
 If some of the examples below don't work: 
-* Check port (starting your Spring boot app prints out if the port is 8080, 8090 or third);
-* Include header 'Content-Type' with value 'application/json';
-* Include header 'Accept' with value 'application/json';
-* Check IDs, browsing the test data.  
+
+  * Check port (starting your Spring boot app prints out if the port is 8080, 8090 or third);
+  * Include header 'Content-Type' with value 'application/json';
+  * Include header 'Accept' with value 'application/json';
+  * Check IDs, browsing the test data.  
 
 How to browse the plant catalog
 ------------
