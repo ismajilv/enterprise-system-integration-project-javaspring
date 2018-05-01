@@ -1,18 +1,22 @@
 <template>
 <div>
-   <div>
-     <select v-model="moreInfo.supplierName">
-      <option disabled value="">Choose a supplier</option>
-      <option v-for="supplier in suppliers" :key="supplier.id">{{supplier.name}}</option>
-    </select>
+   <b-field label="Choose supplier">
+            <b-select  v-model="order.supplierName"
+            placeholder="Choose supplier" expanded>
+                <option v-for="supplier in suppliers" :key="supplier.id">
+                  {{supplier.name}}</option>
+            </b-select>
+   </b-field>
 
-    <select v-model="moreInfo.constructionSite">
-      <option disabled value="">Choose a site</option>
-      <option v-for="site in sites" :key="site.id" >{{site.address}}</option>
-    </select>
-   </div>
-    <button class="button is-primary" v-on:click="submit">Create Purchase Order</button>
+   <b-field label="Choose construction site">
+            <b-select  v-model="order.constructionSite"
+            placeholder="Choose supplier" expanded>
+                <option v-for="site in sites" :key="site.id">
+                  {{site.address}}</option>
+            </b-select>
+   </b-field>
 
+<button class="button is-primary" v-on:click="submit">Create Purchase Order</button>
 <table class="table is-table-bordered is-table-striped is-fullwidth">
     <thead>
         <tr>
@@ -31,6 +35,7 @@
             <td>{{order.rentalPeriod.endDate|formatDate}}</td>
             <td class="has-text-right">{{order.plant.price}}</td>
             <td class="has-text-right">{{order.total}}</td>
+            <a class="button is-success is-outlined">Update</a>
             <a class="button is-danger is-outlined">Remove</a>
         </tr>
     </tbody>
@@ -40,7 +45,6 @@
 
 <script>
 import axios from 'axios';
-import moment from "moment";
 
 export default {
     name: "OrderData",
@@ -50,11 +54,11 @@ export default {
         plants: [],
         sites: [],
         suppliers: [],
-        moreInfo: {
-                 supplierName: '' ,
-                 constructionSite: '',
-      }
     }
+  },
+  mounted: function(){
+    this.supplierlists();
+    this.sitelists();
   },
     methods: {
       submit: function() {
@@ -77,7 +81,7 @@ export default {
       .then(response => {
           this.sites = response.data;
       })
-    },
-  }
+    }
+    }
 }
 </script>
