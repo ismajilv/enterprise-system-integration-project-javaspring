@@ -8,7 +8,8 @@
           <query-result :plants= "plants" @selectPlant="handlePlantSelection"></query-result>
         </b-tab-item>
        <b-tab-item label="Review order">
-            <order-data :order="order" @submitPurchaseOrder="handlePOCreation"></order-data>
+          <order-data :order="order" @submitPurchaseOrder="handlePOCreation">
+          </order-data>
         </b-tab-item>
     </b-tabs>
     </div>
@@ -24,7 +25,6 @@ import moment from "moment";
 
 export default {
   name: "OrderCreation",
-  props: ["moreInfo"],
   components: {
     CatalogQuery,
     QueryResult,
@@ -35,9 +35,13 @@ export default {
       activeTab: 0,
       plants: [],
       order: {
-                plant: {},
-                rentalPeriod: {}
-      }
+          plant: {},
+          rentalPeriod: {},
+        moreInfo: {
+            supplierName: '' ,
+            constructionSite: "",
+        }
+      },
     }
   },
   methods:{
@@ -63,10 +67,8 @@ export default {
             this.activeTab = 2;
         },
      handlePOCreation: function() {
-            console.log("Plant submission", this.order )
-            console.log("Choose supplier", this.select.supplierName);
-            let orders = this.order;
-            axios.post("http://localhost:8090/api/sales/orders"+ {params: orders})
+              console.log("Plant submission before", this.order);
+              axios.post("http://localhost:8090/api/sales/orders", this.order)
                 .then(response => {
                     this.$snackbar.open("Purchase order submitted. Waiting for confirmation.");
                 }).catch(error => {
@@ -75,7 +77,8 @@ export default {
                         message: "Something went wrong with purchase order submition."
                     });
                 });
-        }
+            console.log("Plant submission after", this.order);
+     },
 }
 }
 </script>

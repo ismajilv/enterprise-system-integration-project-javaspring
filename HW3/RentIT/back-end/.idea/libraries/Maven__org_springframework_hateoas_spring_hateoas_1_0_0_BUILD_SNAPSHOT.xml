@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.springframework.hateoas:spring-hateoas:1.0.0.BUILD-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/hateoas/spring-hateoas/1.0.0.BUILD-SNAPSHOT/spring-hateoas-1.0.0.BUILD-20180418.145801-23.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/hateoas/spring-hateoas/1.0.0.BUILD-SNAPSHOT/spring-hateoas-1.0.0.BUILD-20180418.145801-23-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/hateoas/spring-hateoas/1.0.0.BUILD-SNAPSHOT/spring-hateoas-1.0.0.BUILD-20180418.145801-23-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
