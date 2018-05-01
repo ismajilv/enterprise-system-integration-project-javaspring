@@ -2,3 +2,7 @@ target
 /HW1/mvnw
 /HW1/mvnw.cmd
 /HW1/src/main/resources/application.properties
+/HW3/RentIT/back-end/*.iml
+.idea
+/HW3/BuildIT/back-end/*.iml
+/HW2/*.iml
