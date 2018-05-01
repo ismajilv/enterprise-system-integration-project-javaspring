@@ -1,11 +1,11 @@
-<template>
+d<template>
   <div class="home">
    <order-creation></order-creation>
   </div>
 </template>
 
 <script>
-import OrderCreation from "../components/PlantsRequests/OrderCreation.vue"
+import OrderCreation from "../components/PlantsRequest/OrderCreation.vue"
 
 export default {
   name: 'Home',

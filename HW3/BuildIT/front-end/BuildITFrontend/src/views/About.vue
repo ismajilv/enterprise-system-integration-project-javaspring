@@ -1,12 +1,18 @@
 <template>
   <div class="about">
-    <h2> Our about page</h2>
+    <h2> For Work engineers only </h2>
+    <planthirerequest> </planthirerequest>
   </div>
 </template>
 
 <script>
+import Planthirerequest from "../components/RequestApproval/Planthirerequest.vue";
+
 export default {
-  name: "about"
+  name: "about",
+   components: {
+    Planthirerequest
+  },
 
 }
 </script>
