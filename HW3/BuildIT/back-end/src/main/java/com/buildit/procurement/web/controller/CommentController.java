@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:6080")
 @RequestMapping("/api/comments")
 /**
  * Just for testing use; can be deleted in production

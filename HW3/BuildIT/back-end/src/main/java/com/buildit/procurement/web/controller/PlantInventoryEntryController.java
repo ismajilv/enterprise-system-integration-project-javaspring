@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:6080")
 @RequestMapping("/api/plants")
 public class PlantInventoryEntryController {
 

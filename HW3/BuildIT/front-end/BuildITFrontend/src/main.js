@@ -7,6 +7,8 @@ import Buefy from 'buefy'
 import 'buefy/lib/buefy.css'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
+
+import Datepicker from 'vuejs-datepicker'
 import moment from 'moment'
 
 Vue.use(VueMaterial)
