@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import OrderCreation from "../components/PlantsRequests/OrderCreation.vue"
+import OrderCreation from "../components/PlantsRequest/OrderCreation.vue"
 
 export default {
   name: 'Home',
