@@ -1,9 +1,12 @@
 Feature: Creation of Purchase Order
-  As a BuildIT customer
+  As a BuildIt's site engineer
   So that I start with the construction project
-  I want to hire all the required machinery
-  As a RentIT customer
+  I want hire all the required machinery
+  As a BuildIt's work engineer
   So that I avoid excessive or unnecessary plant hiring
+  I want to approve the plant hire requests
+  As a RentIt's employee
+  So that I avoid renting unavailable plants
   I want to approve the plant hire requests
 
   Background: Plant catalog
@@ -27,34 +30,57 @@ Feature: Creation of Purchase Order
       |  6 |     6     | exc-max20-01 | SERVICEABLE        |
       |  7 |     7     | dmp-hs1.5-01 | SERVICEABLE        |
       |  8 |     8     | dmp-ft2.0-01 | SERVICEABLE        |
-    And a BuildIt's user is in the "Plant Catalog" web page
-    And a Rentit's user is in the "Plant Catalog" web page
-    And no purchase order exists in the system
+    And the following suppliers
+      | id | name     |
+      |  1 | Ramirent |
+      |  2 | Cramo    |
+    And the following construction sites
+      | id | address          |
+      |  1 | Viru 1, Tallinn  |
+      |  2 | Pepleri 1, Tartu |
+      |  3 | Kase 12, Narva   |
+    And site engineer is in the BuildIt webpage "Query Catalog" tab
+    And work engineer is in the BuildIt webpage "Approval" tab
+    And RentIt's employee is in the RentIt webpage "Plant Hire Requests" tab
+    And no purchase order exists in the RentIts system
+    And no plant hire requests exists in the BuildIt system
 
-  Scenario: Creating and accepting plant hire request
-    When the BuildIt's user queries the plant catalog for an "Excavator" available from "5/20/2018" to "5/22/2018" from "Supplier 1" to be used on site "Site 1"
-    Then 6 plants are shown
-    When the BuildIt's user selects a "3 Tonne Mini excavator"
-    Then the BuildIt's user sees the price and availability of the the selected plant
-    When the BuildIt's user accepts the plant hire request
-    Then the RentIt's user sees a plant hire request for "3 Tonne Mini excavator"
-    When the RentIt's user accepts the plant hire request
-    Then the BuildIt's user sees that the state of the plant hire request is "Accepted"
+  Scenario: Creating plant hire request that is accepted by work engineer and RentIt
+    When site engineer queries the plant catalog for an "Excavator" available from "5/20/2018" to "5/22/2018"
+    Then 6 plants are shown including "3 Tonne Mini excavator" with price 600
+    When site engineer selects a "3 Tonne Mini excavator"
+    Then tab is changed to "Review order"
+    When site engineer selects supplier "Cramo"
+    And selects construction site "Viru 1, Tallinn"
+    And pushes "Create Plant Hire Request" button
+    Then 1 pending plant hire request is/are shown for the work engineer
+    When work engineer accepts the plant hire request
+    Then 1 pending plant hire request is/are shown for the RentIt's employee
+    When the RentIt's employee accepts the plant hire request
+    Then the site engineer sees that the state of the plant hire request is "Accepted"
 
-  Scenario: Creating a plant hire request that will be rejected by RentIt
-    When the BuildIt's user queries the plant catalog for an "Excavator" available from "5/20/2018" to "5/22/2018" from "Supplier 1" to be used on site "Site 1"
-    Then 6 plants are shown
-    When the BuildIt's user selects a "3 Tonne Mini excavator"
-    Then the BuildIt's user sees the price and availability of the the selected plant
-    When the BuildIt's user accepts the plant hire request
-    Then the RentIt's user sees a plant hire request for "3 Tonne Mini excavator"
-    When the RentIt's user rejects the plant hire request
-    Then the BuildIt's user sees that the state of the plant hire request is "Rejected"
+  #Scenario: Creating plant hire request that is accepted by work engineer but rejected by RentIt
+  #  When site engineer queries the plant catalog for an "Excavator" available from "5/20/2018" to "5/22/2018"
+  #  Then 6 plants are shown including "3 Tonne Mini excavator" with price 600
+  #  When site engineer selects a "3 Tonne Mini excavator"
+  #  Then tab is changed to "Review order"
+  #  When site engineer selects supplier "Cramo"
+  #  And selects construction site "Viru 1, Tallinn"
+  #  And pushes "Create Plant Hire Request" button
+  #  Then 1 pending plant hire request is/are shown for the work engineer
+  #  When work engineer rejects the plant hire request
+  #  Then 0 pending plant hire request is/are shown for the RentIt's employee
+  #  When the RentIt's employee rejects the plant hire request
+  #  Then the site engineer sees that the state of the plant hire request is "Rejected"
 
-  Scenario: Creating a plant hire request that will be rejected by BuildIt user
-    When the BuildIt's user queries the plant catalog for an "Excavator" available from "5/20/2018" to "5/22/2018" from "Supplier 1" to be used on site "Site 1"
-    Then 6 plants are shown
-    When the BuildIt's user selects a "3 Tonne Mini excavator"
-    Then the BuildIt's user sees the price and availability of the the selected plant
-    When the BuildIt's user reject the plant hire request
-    Then the RentIt's user doesn't see a plant hire request for "3 Tonne Mini excavator"
+#  Scenario: Creating a plant hire request that is rejected by work engineer
+ #   When site engineer queries the plant catalog for an "Excavator" available from "5/20/2018" to "5/22/2018"
+  #  Then 6 plants are shown including "3 Tonne Mini excavator" with price 600
+   # When site engineer selects a "3 Tonne Mini excavator"
+    #Then tab is changed to "Review order"
+    #When site engineer selects supplier "Cramo"
+    #And selects construction site "Viru 1, Tallinn"
+    #And pushes "Create Plant Hire Request" button
+    #Then 1 pending plant hire request is/are shown for the work engineer
+    #When work engineer rejects the plant hire request
+    #Then 0 pending plant hire request is/are shown for the RentIt's employee

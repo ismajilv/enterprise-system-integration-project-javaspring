@@ -1,6 +1,9 @@
 package com.example.rentit;
 
+import com.example.rentit.sales.rest.dtos.ConstructionSite;
 import com.example.rentit.sales.rest.dtos.PlantInventoryEntry;
+import com.example.rentit.sales.rest.dtos.PlantInventoryItem;
+import com.example.rentit.sales.rest.dtos.Supplier;
 import cucumber.api.DataTable;
 import cucumber.api.PendingException;
 import cucumber.api.java.After;
@@ -8,6 +11,7 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
 import cucumber.api.java.en.Then;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -22,13 +26,14 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Stepdefs {
-    WebDriver rentItUser;
-    WebDriver buildItUser;
+    WebDriver rentItEmployee;
+    WebDriver siteEngineer;
+    WebDriver workEngineer;
     RestTemplate restTemplate = new RestTemplate();
-    int rentItFEPort = 8080;
+    int rentItFEPort = 8082;
     int rentItBEPort = 8090;
-    int buildItFEPort = 9000;
-    int buildItBEPort = 9010;
+    int buildItFEPort = 8081;
+    int buildItBEPort = 8080;
     String host = "http://localhost:";
 
     static {
@@ -37,14 +42,17 @@ public class Stepdefs {
 
     @Before
     public void setup() {
-        rentItUser = new ChromeDriver();
-        buildItUser = new ChromeDriver();
+        //rentItEmployee = new ChromeDriver();
+        siteEngineer = new ChromeDriver();
+        workEngineer = new ChromeDriver();
     }
 
     @After
     public void tearoff() {
         // Comment the following line if you want to check the application's final state on the browser
-       // customer.close();
+        //rentItEmployee.close();
+       // siteEngineer.close();
+        //workEngineer.close();
     }
 
     @Given("^the following plant catalog$")
@@ -55,128 +63,139 @@ public class Stepdefs {
                 .collect(Collectors.toList());
 
         PlantInventoryEntry[] result = restTemplate.postForObject(host+rentItBEPort+"/api/entries", entries, PlantInventoryEntry[].class);
+        assertThat(result).hasSize(8);
     }
 
     @Given("^the following inventory$")
-    public void the_following_inventory(DataTable items) throws Exception {
+    public void the_following_inventory(DataTable table) throws Exception {
+        /*List<PlantInventoryItem> items = table.asMaps(String.class, String.class)
+                .stream()
+                .map(row -> PlantInventoryItem.of(row.get("id"), row.get("serialNumber"), row.get("equipmentCondition"), row.get("plantInfo")))
+                .collect(Collectors.toList());
+        PlantInventoryItem[] result = restTemplate.postForObject(host+rentItBEPort+"/api/items", items, PlantInventoryItem[].class);
+        assertThat(result).hasSize(8);*/
     }
 
-    /*@Given("^a customer is in the \"([^\"]*)\" web page$")
-    public void a_customer_is_in_the_web_page(String arg1) throws Exception {
-        rentItUser.get("http://localhost:8080/#/");
+    @Given("^the following suppliers$")
+    public void the_following_suppliers(DataTable table) throws Throwable {
+        List<Supplier> suppliers = table.asMaps(String.class, String.class)
+                .stream()
+                .map(row -> Supplier.of(row.get("id"), row.get("name")))
+                .collect(Collectors.toList());
+        Supplier[] result = restTemplate.postForObject(host+buildItBEPort+"/api/suppliers", suppliers, Supplier[].class);
+        assertThat(result).hasSize(2);
     }
 
-    @Given("^no purchase order exists in the system$")
-    public void no_purchase_order_exists_in_the_system() throws Exception {
+    @Given("^the following construction sites$")
+    public void the_following_construction_sites(DataTable table) throws Throwable {
+        List<ConstructionSite> constructionSites = table.asMaps(String.class, String.class)
+                .stream()
+                .map(row -> ConstructionSite.of(row.get("id"), row.get("address")))
+                .collect(Collectors.toList());
+        ConstructionSite[] result = restTemplate.postForObject(host+buildItBEPort+"/api/constructionsites", constructionSites, ConstructionSite[].class);
+        assertThat(result).hasSize(3);
     }
 
-    @When("^the customer queries the plant catalog for an \"([^\"]*)\" available from \"([^\"]*)\" to \"([^\"]*)\"$")
-    public void the_customer_queries_the_plant_catalog_for_an_available_from_to(String plantName, String startDate, String endDate) throws Exception {
-        rentItUser.findElement(By.id("name")).sendKeys(plantName);
-        rentItUser.findElement(By.id("start-date")).sendKeys(startDate);
-        rentItUser.findElement(By.id("end-date")).sendKeys(endDate);
-        rentItUser.findElement(By.id("submit-query")).click();
+    @Given("^site engineer is in the BuildIt webpage \"([^\"]*)\" tab$")
+    public void site_engineer_is_in_the_BuildIt_webpage_tab(String arg1) throws Throwable {
+        siteEngineer.get(host+buildItFEPort+"/#/");
     }
 
-    @Then("^(\\d+) plants are shown$")
-    public void plants_are_shown(int numberOfPlants) throws Exception {
+    @Given("^work engineer is in the BuildIt webpage \"([^\"]*)\" tab$")
+    public void work_engineer_is_in_the_BuildIt_webpage_tab(String arg1) throws Throwable {
+        workEngineer.get(host+buildItFEPort+"/#/about");
+    }
+
+    @Given("^RentIt's employee is in the RentIt webpage \"([^\"]*)\" tab$")
+    public void rentit_s_employee_is_in_the_RentIt_webpage_tab(String arg1) throws Throwable {
+        //rentItEmployee.get(host+rentItFEPort+"/#/");
+    }
+
+    @Given("^no purchase order exists in the RentIts system$")
+    public void no_purchase_order_exists_in_the_RentIts_system() throws Throwable {
+        int count = restTemplate.getForObject(host+rentItBEPort+"/api/po/count", Integer.class);
+        assertThat(count).isEqualTo(0);
+    }
+
+    @Given("^no plant hire requests exists in the BuildIt system$")
+    public void no_plant_hire_requests_exists_in_the_BuildIt_system() throws Throwable {
+        int count = restTemplate.getForObject(host+buildItBEPort+"/api/plantihirerequest/count", Integer.class);
+        assertThat(count).isEqualTo(0);
+    }
+
+    @When("^site engineer queries the plant catalog for an \"([^\"]*)\" available from \"([^\"]*)\" to \"([^\"]*)\"$")
+    public void site_engineer_queries_the_plant_catalog_for_an_available_from_to(String plantName, String startDate, String endDate) throws Throwable {
+        siteEngineer.findElement(By.id("name")).sendKeys(plantName);
+        siteEngineer.findElement(By.id("start-date")).sendKeys(startDate);
+        siteEngineer.findElement(By.id("end-date")).sendKeys(endDate);
+        siteEngineer.findElement(By.id("submit-query")).click();
+    }
+
+    @Then("^(\\d+) plants are shown including \"([^\"]*)\" with price (\\d+)$")
+    public void plants_are_shown_including_with_price(int numberOfPlants, String name, int price) throws Throwable {
         Thread.sleep(3000);
-        List<?> rows = rentItUser.findElements(By.className("table-row"));
+        List<?> rows = siteEngineer.findElements(By.className("table-row"));
         assertThat(rows).hasSize(numberOfPlants);
+        //#TODO name and price
     }
 
-    @When("^the customer selects a \"([^\"]*)\"$")
-    public void the_customer_selects_a(String plantDescription) throws Exception {
-        WebElement row = rentItUser.findElement(By.xpath(String.format("//tr/td[contains(text(), '%s')]", plantDescription)));
+    @When("^site engineer selects a \"([^\"]*)\"$")
+    public void site_engineer_selects_a(String plantDescription) throws Throwable {
+        WebElement row = siteEngineer.findElement(By.xpath(String.format("//tr/td[contains(text(), '%s')]", plantDescription)));
         WebElement selectPlantButton = row.findElement(By.xpath("//a[contains(text(), 'Select plant')]"));
         selectPlantButton.click();
     }
 
-    @Then("^a purchase order should be created with a total price of (\\d+\\.\\d+)$")
-    public void a_purchase_order_should_be_created_with_a_total_price_of(double price) throws Exception {
-
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }*/
-
-    @Given("^a BuildIt's user is in the \"([^\"]*)\" web page$")
-    public void a_BuildIt_s_user_is_in_the_web_page(String arg1) throws Throwable {
-        buildItUser.get(host+buildItFEPort+"/#/");
-    }
-
-    @Given("^a Rentit's user is in the \"([^\"]*)\" web page$")
-    public void a_Rentit_s_user_is_in_the_web_page(String arg1) throws Throwable {
-        rentItUser.get(host+rentItFEPort+"/#/");
-    }
-
-    @Given("^no purchase order exists in the system$")
-    public void no_purchase_order_exists_in_the_system() throws Throwable {
+    @Then("^tab is changed to \"([^\"]*)\"$")
+    public void tab_is_changed_to(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @When("^the BuildIt's user queries the plant catalog for an \"([^\"]*)\" available from \"([^\"]*)\" to \"([^\"]*)\" from \"([^\"]*)\" to be used on site \"([^\"]*)\"$")
-    public void the_BuildIt_s_user_queries_the_plant_catalog_for_an_available_from_to_from_to_be_used_on_site(String arg1, String arg2, String arg3, String arg4, String arg5) throws Throwable {
+    @When("^site engineer selects supplier \"([^\"]*)\"$")
+    public void site_engineer_selects_supplier(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Then("^(\\d+) plants are shown$")
-    public void plants_are_shown(int arg1) throws Throwable {
+    @When("^selects construction site \"([^\"]*)\"$")
+    public void selects_construction_site(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @When("^the BuildIt's user selects a \"([^\"]*)\"$")
-    public void the_BuildIt_s_user_selects_a(String arg1) throws Throwable {
+    @When("^pushes \"([^\"]*)\" button$")
+    public void pushes_button(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Then("^the BuildIt's user sees the price and availability of the the selected plant$")
-    public void the_BuildIt_s_user_sees_the_price_and_availability_of_the_the_selected_plant() throws Throwable {
+    @Then("^(\\d+) pending plant hire request is/are shown for the work engineer$")
+    public void pending_plant_hire_request_is_are_shown_for_the_work_engineer(int arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @When("^the BuildIt's user accepts the plant hire request$")
-    public void the_BuildIt_s_user_accepts_the_plant_hire_request() throws Throwable {
+    @When("^work engineer accepts the plant hire request$")
+    public void work_engineer_accepts_the_plant_hire_request() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Then("^the RentIt's user sees a plant hire request for \"([^\"]*)\"$")
-    public void the_RentIt_s_user_sees_a_plant_hire_request_for(String arg1) throws Throwable {
+    @Then("^(\\d+) pending plant hire request is/are shown for the RentIt's employee$")
+    public void pending_plant_hire_request_is_are_shown_for_the_RentIt_s_employee(int arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @When("^the RentIt's user accepts the plant hire request$")
-    public void the_RentIt_s_user_accepts_the_plant_hire_request() throws Throwable {
+    @When("^the RentIt's employee accepts the plant hire request$")
+    public void the_RentIt_s_employee_accepts_the_plant_hire_request() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Then("^the BuildIt's user sees that the state of the plant hire request is \"([^\"]*)\"$")
-    public void the_BuildIt_s_user_sees_that_the_state_of_the_plant_hire_request_is(String arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @When("^the RentIt's user rejects the plant hire request$")
-    public void the_RentIt_s_user_rejects_the_plant_hire_request() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @When("^the BuildIt's user reject the plant hire request$")
-    public void the_BuildIt_s_user_reject_the_plant_hire_request() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @Then("^the RentIt's user doesn't see a plant hire request for \"([^\"]*)\"$")
-    public void the_RentIt_s_user_doesn_t_see_a_plant_hire_request_for(String arg1) throws Throwable {
+    @Then("^the site engineer sees that the state of the plant hire request is \"([^\"]*)\"$")
+    public void the_site_engineer_sees_that_the_state_of_the_plant_hire_request_is(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
