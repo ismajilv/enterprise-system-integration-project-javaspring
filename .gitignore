@@ -1,6 +1,4 @@
 target
-.*
-*.iml
 /HW1/mvnw
 /HW1/mvnw.cmd
 /HW1/src/main/resources/application.properties
