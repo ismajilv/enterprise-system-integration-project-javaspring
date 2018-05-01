@@ -21,7 +21,7 @@
       </form>
 
       <button class="button is-primary is-outlined"
-    v-on:click="submit"> Submit Query </button>
+    v-on:click="submit" id="submit-query"> Submit Query </button>
     </div>
 
  </div>

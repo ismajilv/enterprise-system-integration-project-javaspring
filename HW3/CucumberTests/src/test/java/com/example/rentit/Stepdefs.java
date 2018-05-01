@@ -17,6 +17,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -149,13 +150,16 @@ public class Stepdefs {
     @Then("^tab is changed to \"([^\"]*)\"$")
     public void tab_is_changed_to(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        System.out.println("TAB IS CHANGED TO" + arg1);
+      //  throw new PendingException();
     }
 
     @When("^site engineer selects supplier \"([^\"]*)\"$")
     public void site_engineer_selects_supplier(String arg1) throws Throwable {
+        Select droplist = new Select(siteEngineer.findElement(By.id("selection")));
+        droplist.selectByVisibleText(arg1);
         // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+       // throw new PendingException();
     }
 
     @When("^selects construction site \"([^\"]*)\"$")
