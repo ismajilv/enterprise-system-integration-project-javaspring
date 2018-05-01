@@ -1,6 +1,12 @@
 BuildIt backend
 ============
 
+NB!
+------------
+RentIt back-end needs to be running in parallel to BuildIt for integrations between the two to work!
+
+You can specify RentIt base URL in application.properties
+
 Sample data
 ------------
 
@@ -9,6 +15,15 @@ Sample data is added in
 > /src/main/java/com/buildit/test/TestDataProvider.java
 
 Add more data to suit your needs!
+
+How to browse the plants catalog
+------------
+
+Query GET on */api/plants* with search term and availability period.
+
+**Sample URL for querying excavators**
+
+http://localhost:8080/api/plants?name=exc&startDate=2018-01-01&endDate=2018-10-10
 
 How to create a plant hire request
 ------------
@@ -27,10 +42,10 @@ To create plant hire request, send a POST to http://localhost:8080/api/requests
 {
 	"constructionSiteId": 2,
 	"supplierId": 4,
-	"plantHref": "http://ramirent.ee:9550/api/plants/2",
+	"plantHref": "http://localhost:8090/api/sales/plants/3",
 	"rentalPeriod" : {
-	    "startDate" : "2018-04-29",
-	    "endDate" : "2018-05-03"
+	    "startDate" : "2018-05-25",
+	    "endDate" : "2018-05-30"
 	}
 }
 ~~~
@@ -57,7 +72,6 @@ PUT to http://localhost:8080/api/requests/7
 	}
 }
 ~~~
-
 
 How to add a comment to a plant hire request
 ------------
@@ -104,7 +118,6 @@ JSON contents should be RentIt self href together with the new status.
 TODOs
 ------------
 
-Here is a list of ongoing issues:
+Here is a list of known ongoing issues:
 
-  * Documentation about design decisions;
-  * Do integrations in RentItIntegrationsService;
+    

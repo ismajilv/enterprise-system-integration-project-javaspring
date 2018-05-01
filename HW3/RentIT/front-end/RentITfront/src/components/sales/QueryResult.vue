@@ -14,7 +14,8 @@
             <td>{{ plant.description }}</td>
             <td class="has-text-right">{{ plant.price }}</td>
             <td>
-                <a class="button is-link is-small is-outlined">Select plant</a>
+                <a class="button is-link is-small is-outlined"
+                @click="submit(plant)">Select plant</a>
             </td>
         </tr>
     </tbody>
@@ -22,9 +23,15 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   name: "QueryResult",
-  props: ["plants"]
+  props: ["plants"],
+    methods: {
+        submit: function(plant) {
+            this.$emit("selectPlant", plant);
+        }
+    }
 }
 </script>
 

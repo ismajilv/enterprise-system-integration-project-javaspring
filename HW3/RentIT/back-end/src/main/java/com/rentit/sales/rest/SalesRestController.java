@@ -36,6 +36,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/sales")
 public class SalesRestController {
     @Autowired
@@ -52,7 +53,34 @@ public class SalesRestController {
             @RequestParam(name = "name") String plantName,
             @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return inventoryService.findAvailable(plantName, startDate, endDate);
+        List<PlantInventoryEntryDTO> found = inventoryService.findAvailable(plantName, startDate, endDate);
+
+        fixLinks(found);
+
+        return found;
+    }
+
+    private void fixLinks(List<PlantInventoryEntryDTO> found) {
+        found.forEach(p -> fixLinks(p));
+    }
+
+    private void fixLinks(PlantInventoryEntryDTO p) {
+        p.removeLinks();
+        p.getLinks().add(
+                linkTo(
+                        methodOn(SalesRestController.class)
+                                .readOnePlant(p.get_id()))
+                        .withSelfRel()
+        );
+    }
+
+    @GetMapping("/plants/{id}")
+    public PlantInventoryEntryDTO readOnePlant(@PathVariable Long id) {
+        PlantInventoryEntryDTO plant = plantInventoryEntryAssembler.toResource(inventoryService.findPlantInventoryEntry(id));
+
+        fixLinks(plant);
+
+        return plant;
     }
 
     @GetMapping("/orders")
@@ -89,7 +117,9 @@ public class SalesRestController {
     }
 
     @PostMapping("/orders/{poId}/accept")
-    public ResponseEntity<?> acceptPurchaseOrder(@RequestBody Long piiId, @PathVariable("poId") Long poId)  throws URISyntaxException, PlantNotFoundException {
+    public ResponseEntity<?> acceptPurchaseOrder(
+            @RequestParam(name = "piiId") Long piiId,
+            @PathVariable("poId") Long poId)  throws URISyntaxException, PlantNotFoundException {
 
         if (!inventoryService.isPlantInventoryItemExisting(piiId)) {
             throw new PlantNotFoundException(piiId);
