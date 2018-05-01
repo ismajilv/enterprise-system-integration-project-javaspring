@@ -30,9 +30,9 @@ public class TestHelperController {
 
     @PostMapping("/api/suppliers")
     public List<Supplier> setupSuppliers(@RequestBody List<Supplier> suppliers) {
+        plantHireRequestRepository.deleteAll();
         constructionSiteRepository.deleteAll();
         supplierRepository.deleteAll();
-        plantHireRequestRepository.deleteAll();
         return supplierRepository.saveAll(suppliers);
     }
 

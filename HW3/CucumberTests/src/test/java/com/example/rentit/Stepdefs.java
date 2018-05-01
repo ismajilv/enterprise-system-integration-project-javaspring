@@ -32,7 +32,7 @@ public class Stepdefs {
     RestTemplate restTemplate = new RestTemplate();
     int rentItFEPort = 8082;
     int rentItBEPort = 8090;
-    int buildItFEPort = 8081;
+    int buildItFEPort = 6080;
     int buildItBEPort = 8080;
     String host = "http://localhost:";
 
