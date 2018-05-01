@@ -1,8 +1,8 @@
 Feature: Creation of Purchase Order
-  As a Rentit's customer
+  As a BuildIT customer
   So that I start with the construction project
-  I want hire all the required machinery
-  As a BuildIt's customer
+  I want to hire all the required machinery
+  As a RentIT customer
   So that I avoid excessive or unnecessary plant hiring
   I want to approve the plant hire requests
 

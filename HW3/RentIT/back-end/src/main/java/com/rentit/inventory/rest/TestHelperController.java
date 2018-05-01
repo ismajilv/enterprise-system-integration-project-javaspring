@@ -7,6 +7,7 @@ import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import com.rentit.inventory.domain.repository.PlantInventoryItemRepository;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,5 +42,10 @@ public class TestHelperController {
         plantInventoryItemRepository.saveAll(items);
 
         return entries;
+    }
+
+    @GetMapping("/api/po/count")
+    public Integer countPurchaseOrders(){
+        return purchaseOrderRepository.findAll().size();
     }
 }
