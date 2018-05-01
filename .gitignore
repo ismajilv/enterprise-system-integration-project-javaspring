@@ -6,3 +6,4 @@ target
 .idea
 /HW3/BuildIT/back-end/*.iml
 /HW2/*.iml
+/HW3/CucumberTests/esi-acceptance.iml
