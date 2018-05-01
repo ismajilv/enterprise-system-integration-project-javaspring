@@ -78,12 +78,19 @@ export default {
         },
      handlePOCreation: function() {
 
-         let params = {
-           orders: this.order,
-           orderid: this.order.id++
+         let obj = {
+          //  orders: this.order,
+          //  orderid: this.order.id++
+          "constructionSiteId": 2,
+          "supplierId": 4,
+          "plantHref": "http://localhost:8090/api/sales/plants/3",
+          "rentalPeriod" : {
+          "startDate" : "2018-05-25",
+           "endDate" : "2018-05-30"
+    }
         }
-        console.log("Plant submission before", params);
-              axios.post("http://localhost:8090/api/sales/orders", { params: params})
+        //console.log("Plant submission before", obj);
+              axios.post("http://localhost:8090/api/sales/orders/"+ { params: obj})
                 .then(response => {
                     this.$snackbar.open("Purchase order submitted. Waiting for confirmation.");
                 }).catch(error => {
@@ -92,7 +99,7 @@ export default {
                         message: "Something went wrong with purchase order submition."
                     });
                 });
-            console.log("Plant submission after", params);
+           // console.log("Plant submission after", obj);
      },
 }
 }
