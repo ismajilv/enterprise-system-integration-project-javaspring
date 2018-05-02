@@ -29,7 +29,7 @@ import static java.util.Objects.requireNonNull;
 public class PlantHireRequestService {
 
 	@Autowired
-	PlantHireRequestRepository plantHireRequestRepository;
+	PlantHireRequestRepository repository;
 
 	@Autowired
 	ConstructionSiteService constructionSiteService;
@@ -87,7 +87,7 @@ public class PlantHireRequestService {
 
 		request.setRentalCost(Money.of(calculateCost(request.getPlant().getHref(), request.getRentalPeriod())));
 
-		request = plantHireRequestRepository.save(request);
+		request = repository.save(request);
 
 		return assembler.toResource(request);
 	}
@@ -117,7 +117,7 @@ public class PlantHireRequestService {
 		Employee requestingSiteEngineer = employeeService.getLoggedInEmployee(Role.SITE_ENGINEER);
 		plantHireRequest.setRequestingSiteEngineer(requestingSiteEngineer);
 
-		plantHireRequest = plantHireRequestRepository.save(plantHireRequest);
+		plantHireRequest = repository.save(plantHireRequest);
 
 		return assembler.toResource(plantHireRequest);
 	}
@@ -137,7 +137,7 @@ public class PlantHireRequestService {
 
 	@Transactional(readOnly = true)
 	public PlantHireRequest readModel(Long id) {
-		Optional<PlantHireRequest> maybePlantHireRequest = plantHireRequestRepository.findById(id);
+		Optional<PlantHireRequest> maybePlantHireRequest = repository.findById(id);
 
 		if (!maybePlantHireRequest.isPresent()) {
 			throw new IllegalArgumentException("Cannot find plant hire request with id: " + id);
@@ -148,7 +148,14 @@ public class PlantHireRequestService {
 
 	@Transactional(readOnly = true)
 	public List<PlantHireRequestDTO> getAll() {
-		List<PlantHireRequest> all = plantHireRequestRepository.findAll();
+		List<PlantHireRequest> all = repository.findAll();
+
+		return all.stream().map(phr -> assembler.toResource(phr)).collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public List<PlantHireRequestDTO> getAllWithStatus(PHRStatus status) {
+		List<PlantHireRequest> all = repository.findByStatus(status);
 
 		return all.stream().map(phr -> assembler.toResource(phr)).collect(Collectors.toList());
 	}
@@ -176,7 +183,7 @@ public class PlantHireRequestService {
 
 		request.setApprovingWorksEngineer(approvingWorksEngineer);
 
-		request = plantHireRequestRepository.save(request);
+		request = repository.save(request);
 
 		return assembler.toResource(request);
 	}
@@ -187,7 +194,7 @@ public class PlantHireRequestService {
 
 		request.setStatus(PHRStatus.REJECTED);
 
-		request = plantHireRequestRepository.save(request);
+		request = repository.save(request);
 
 		return assembler.toResource(request);
 	}
