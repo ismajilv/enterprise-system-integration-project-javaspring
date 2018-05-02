@@ -31,11 +31,12 @@ public class Stepdefs {
     WebDriver siteEngineer;
     WebDriver workEngineer;
     RestTemplate restTemplate = new RestTemplate();
-    int rentItFEPort = 8081;
-    int rentItBEPort = 8090;
-    int buildItFEPort = 6080;
-    int buildItBEPort = 8080;
-    String host = "http://localhost:";
+    final int rentItFEPort = 8081;
+    final int rentItBEPort = 8090;
+    final int buildItFEPort = 6080;
+    final int buildItBEPort = 8080;
+    final String host = "http://localhost:";
+    final int waitForMs = 2000;
 
     static {
         System.setProperty("webdriver.chrome.driver", "c:/drivers/chromedriver.exe");
@@ -43,7 +44,7 @@ public class Stepdefs {
 
     @Before
     public void setup() {
-        //rentItEmployee = new ChromeDriver();
+        rentItEmployee = new ChromeDriver();
         siteEngineer = new ChromeDriver();
         workEngineer = new ChromeDriver();
     }
@@ -109,7 +110,7 @@ public class Stepdefs {
 
     @Given("^RentIt's employee is in the RentIt webpage \"([^\"]*)\" tab$")
     public void rentit_s_employee_is_in_the_RentIt_webpage_tab(String arg1) throws Throwable {
-        //rentItEmployee.get(host+rentItFEPort+"/#/");
+        rentItEmployee.get(host+rentItFEPort+"/#/");
     }
 
     @Given("^no purchase order exists in the RentIts system$")
@@ -126,6 +127,7 @@ public class Stepdefs {
 
     @When("^site engineer queries the plant catalog for an \"([^\"]*)\" available from \"([^\"]*)\" to \"([^\"]*)\"$")
     public void site_engineer_queries_the_plant_catalog_for_an_available_from_to(String plantName, String startDate, String endDate) throws Throwable {
+        Thread.sleep(waitForMs);
         siteEngineer.findElement(By.id("name")).sendKeys(plantName);
         siteEngineer.findElement(By.id("start-date")).sendKeys(startDate);
         siteEngineer.findElement(By.id("end-date")).sendKeys(endDate);
@@ -134,7 +136,7 @@ public class Stepdefs {
 
     @Then("^(\\d+) plants are shown including \"([^\"]*)\" with price (\\d+)$")
     public void plants_are_shown_including_with_price(int numberOfPlants, String description, int price) throws Throwable {
-        Thread.sleep(3000);
+        Thread.sleep(waitForMs);
         List<WebElement> rows = siteEngineer.findElements(By.className("table-row"));
         assertThat(rows).hasSize(numberOfPlants);
         WebElement specificColumnRow = siteEngineer.findElement(By.xpath(String.format("//tr/td[contains(text(), '%s')]", description)));
@@ -146,6 +148,7 @@ public class Stepdefs {
 
     @When("^site engineer selects a \"([^\"]*)\"$")
     public void site_engineer_selects_a(String plantDescription) throws Throwable {
+        Thread.sleep(waitForMs);
         WebElement row = siteEngineer.findElement(By.xpath(String.format("//tr/td[contains(text(), '%s')]", plantDescription)));
         WebElement selectPlantButton = row.findElement(By.xpath("//a[contains(text(), 'Select plant')]"));
         selectPlantButton.click();
@@ -153,6 +156,7 @@ public class Stepdefs {
 
     @Then("^tab is changed to \"([^\"]*)\"$")
     public void tab_is_changed_to(String tabName) throws Throwable {
+        Thread.sleep(waitForMs);
         WebElement tab = siteEngineer.findElement(By.xpath(String.format("//span[contains(text(), '%s')]", tabName)));
         WebElement parentElement = tab.findElement(By.xpath("./../.."));
         assertThat("is-active").isEqualToIgnoringCase(parentElement.getAttribute("class"));
@@ -160,32 +164,70 @@ public class Stepdefs {
 
     @When("^site engineer selects supplier \"([^\"]*)\"$")
     public void site_engineer_selects_supplier(String supplierName) throws Throwable {
+        Thread.sleep(waitForMs);
         List<WebElement> selectors = siteEngineer.findElements(By.xpath("//select"));
         Select supplier = new Select(selectors.get(0));
-        supplier.selectByVisibleText(supplierName);
+        supplier.selectByIndex(1);
+       // supplier.selectByVisibleText(supplierName);
     }
 
     @When("^selects construction site \"([^\"]*)\"$")
     public void selects_construction_site(String siteName) throws Throwable {
+        Thread.sleep(waitForMs);
         List<WebElement> selectors = siteEngineer.findElements(By.xpath("//select"));
         Select site = new Select(selectors.get(1));
-        site.selectByVisibleText(siteName);
+        site.selectByIndex(1);
+        //ssite.selectByVisibleText(siteName);
     }
 
     @When("^pushes \"([^\"]*)\" button$")
     public void pushes_button(String buttonName) throws Throwable {
+        Thread.sleep(waitForMs);
         WebElement button = siteEngineer.findElement(By.xpath(String.format("//button[contains(text(), '%s')]", buttonName)));
         button.click();
     }
 
-    @Then("^(\\d+) pending plant hire request is/are shown for the work engineer$")
-    public void pending_plant_hire_request_is_are_shown_for_the_work_engineer(int arg1) throws Throwable {
+    @Then("^(\\d+) \"([^\"]*)\" plant hire request with name \"([^\"]*)\" from \"([^\"]*)\" to \"([^\"]*)\" with price \"([^\"]*)\" is shown for the work engineer$")
+    public void plant_hire_request_with_name_from_to_with_price_is_shown_for_the_work_engineer(int numberOfRequests, String status, String name, String from, String to, String price) throws Throwable {
+        Thread.sleep(waitForMs);
+        List<WebElement> rows = workEngineer.findElements(By.className("table-row-we"));
+        assertThat(rows).hasSize(numberOfRequests);
+        WebElement specificRow = rows.get(0);
+//        assertThat(specificRow.findElement(By.id("plantNameWE")).getText()).isEqualToIgnoringCase(name);
+  //      assertThat(specificRow.findElement(By.id("plantStartDateWE")).getText()).isEqualToIgnoringCase(from);
+    //    assertThat(specificRow.findElement(By.id("plantEndDateWE")).getText()).isEqualToIgnoringCase(to);
+      //  assertThat(specificRow.findElement(By.id("plantPriceWE")).getText()).isEqualToIgnoringCase(price);
+    }
+
+    @Then("^(\\d+) \"([^\"]*)\" plant hire request with name \"([^\"]*)\" from \"([^\"]*)\" to \"([^\"]*)\" with price \"([^\"]*)\" is shown for the site engineer$")
+    public void plant_hire_request_with_name_from_to_with_price_is_shown_for_the_site_engineer(int numberOfRequests, String status, String name, String from, String to, String price) throws Throwable {
+        Thread.sleep(waitForMs);
+        List<WebElement> rows = siteEngineer.findElements(By.className("table-row-hire"));
+        assertThat(rows).hasSize(numberOfRequests);
+        WebElement specificRow = rows.get(0);
+        assertThat(specificRow.findElement(By.id("plantNameHire")).getText()).isEqualToIgnoringCase(name);
+        assertThat(specificRow.findElement(By.id("plantStartDateHire")).getText()).isEqualToIgnoringCase(from);
+        assertThat(specificRow.findElement(By.id("plantEndDateHire")).getText()).isEqualToIgnoringCase(to);
+        assertThat(specificRow.findElement(By.id("plantTotalCostHire")).getText()).isEqualToIgnoringCase(price);
+        assertThat(specificRow.findElement(By.id("plantStatusHire")).getText()).isEqualToIgnoringCase(status);
+    }
+
+    @When("^work engineer accepts the \"([^\"]*)\" plant hire request$")
+    public void work_engineer_accepts_the_plant_hire_request(String plantDescription) throws Throwable {
+        Thread.sleep(waitForMs);
+        WebElement row = workEngineer.findElement(By.xpath(String.format("//tr/td[contains(text(), '%s')]", plantDescription)));
+        WebElement acceptButton = row.findElement(By.xpath("//a[contains(text(), 'Accept')]"));
+        acceptButton.click();
+    }
+
+    @When("^the RentIt's employee accepts the plant hire request for \"([^\"]*)\"$")
+    public void the_RentIt_s_employee_accepts_the_plant_hire_request_for(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @When("^work engineer accepts the plant hire request$")
-    public void work_engineer_accepts_the_plant_hire_request() throws Throwable {
+    @Then("^the site engineer sees that the state of the plant hire request for \"([^\"]*)\" is \"([^\"]*)\"$")
+    public void the_site_engineer_sees_that_the_state_of_the_plant_hire_request_for_is(String arg1, String arg2) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
@@ -196,16 +238,9 @@ public class Stepdefs {
         throw new PendingException();
     }
 
-    @When("^the RentIt's employee accepts the plant hire request$")
-    public void the_RentIt_s_employee_accepts_the_plant_hire_request() throws Throwable {
+    @When("^the RentIt's employee pushes \"([^\"]*)\" button for the plant hire request for \"([^\"]*)\"$")
+    public void the_RentIt_s_employee_pushes_button_for_the_plant_hire_request_for(String arg1, String arg2) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
-
-    @Then("^the site engineer sees that the state of the plant hire request is \"([^\"]*)\"$")
-    public void the_site_engineer_sees_that_the_state_of_the_plant_hire_request_is(String arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
 }

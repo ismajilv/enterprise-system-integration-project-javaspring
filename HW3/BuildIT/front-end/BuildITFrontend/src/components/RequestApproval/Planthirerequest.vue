@@ -11,13 +11,13 @@
     </thead>
     <tbody>
         <tr v-for="(order, order_index) in orders" :key="order_index">
-            <td>
+            <td id="plantName">
                 {{order.plant.name}} <br/>
                 <a class="button is-link is-small is-outlined">
                    See details
                 </a>
             </td>
-            <td>{{order.rentalPeriod.startDate}} / {{order.rentalPeriod.endDate}}</td>
+            <td id="plantRentalPeriod">{{order.rentalPeriod.startDate}} / {{order.rentalPeriod.endDate}}</td>
             <td class="has-text-right"></td>
             <td>
               <a v-for="(link, rel) in order._links" :key="rel" v-if="rel !== 'self'"

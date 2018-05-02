@@ -12,12 +12,12 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>{{orderStatus.plant.name}}</td>
-            <td>{{orderStatus.rentalPeriod.startDate}}</td>
-            <td>{{orderStatus.rentalPeriod.endDate}}</td>
-            <td>{{orderStatus.rentalCost.total}}</td>
-            <td>{{orderStatus.status}}</td>
+        <tr class="table-row-hire">
+            <td id="plantNameHire">{{orderStatus.plant.name}}</td>
+            <td id="plantStartDateHire">{{orderStatus.rentalPeriod.startDate}}</td>
+            <td id="plantEndDateHire">{{orderStatus.rentalPeriod.endDate}}</td>
+            <td id="plantTotalCostHire">{{orderStatus.rentalCost.total}}</td>
+            <td id="plantStatusHire">{{orderStatus.status}}</td>
         </tr>
     </tbody>
 </table>

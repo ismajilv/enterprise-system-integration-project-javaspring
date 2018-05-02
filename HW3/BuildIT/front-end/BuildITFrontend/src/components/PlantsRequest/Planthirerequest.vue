@@ -13,11 +13,11 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <th class="has-text-center"> Plant Name</th>
-            <th class="has-text-center">Plant Start Date</th>
-            <th class="has-text-center">Plant End Date</th>
-            <th class="has-text-center">Plant Price</th>
+        <tr class="table-row-we">
+            <td id = "plantNameWE" class="has-text-center"> Plant Name</td>
+            <td id = "plantStartDateWE" class="has-text-center">Plant Start Date</td>
+            <td id = "plantEndDateWE" class="has-text-center">Plant End Date</td>
+            <td id = "plantPriceWE" class="has-text-center">Plant Price</td>
             <td><a v-on:click="update" class="button is-success is-outlined">Accept</a> </td>
             <td> <a class="button is-danger is-outlined">Reject</a> </td>
         </tr>
