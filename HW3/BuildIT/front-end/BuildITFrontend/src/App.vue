@@ -1,14 +1,14 @@
 <template>
   <div id="app">
-    <router-link to="/">Request</router-link> |
-    <router-link to="/about">Approval</router-link>
+    <router-link to="/">Site Engineer</router-link> |
+    <router-link to="/about">Work Engineer</router-link>
     <router-view/>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
 }
 </script>
 

@@ -1,22 +1,22 @@
 <template>
 <div>
-   <b-field label="Choose supplier">
-            <b-select  v-model="order.supplierName"
+   <b-field label="Choose supplier by id">
+            <b-select  v-model="order.suppliersid"
             placeholder="Choose supplier" expanded>
                 <option v-for="supplier in suppliers" :key="supplier.id">
-                  {{supplier.name}}</option>
+                {{supplier._id}}
+                </option>
             </b-select>
    </b-field>
 
-   <b-field label="Choose construction site">
-            <b-select  v-model="order.constructionSite"
+   <b-field label="Choose construction site by id">
+            <b-select  v-model="order.siteid"
             placeholder="Choose supplier" expanded>
                 <option v-for="site in sites" :key="site.id">
-                  {{site.address}}</option>
+                  {{site._id}} </option>
             </b-select>
    </b-field>
-
-<button class="button is-primary" v-on:click="submit">Create Purchase Order</button>
+<button class="button is-primary" v-on:click="submit">Request Plant</button>
 <table class="table is-table-bordered is-table-striped is-fullwidth">
     <thead>
         <tr>
@@ -24,7 +24,7 @@
             <th class="has-text-center">Start Date</th>
             <th class="has-text-center">End Date</th>
             <th class="has-text-center">Price</th>
-            <th class="has-text-center">Subtotal</th>
+            <th class="has-text-center">Actions</th>
             <th class="has-text-center">Actions</th>
         </tr>
     </thead>
@@ -34,12 +34,13 @@
             <td>{{order.rentalPeriod.startDate|formatDate}}</td>
             <td>{{order.rentalPeriod.endDate|formatDate}}</td>
             <td class="has-text-right">{{order.plant.price}}</td>
-            <td class="has-text-right">{{order.total}}</td>
-            <a class="button is-success is-outlined">Update</a>
-            <a class="button is-danger is-outlined">Remove</a>
+            <td><a v-on:click="update" class="button is-success is-outlined">Update</a> </td>
+            <td> <a class="button is-danger is-outlined">Remove</a> </td>
         </tr>
     </tbody>
 </table>
+
+
 </div>
 </template>
 
@@ -53,7 +54,7 @@ export default {
         return {
         plants: [],
         sites: [],
-        suppliers: [],
+        suppliers: []
     }
   },
   mounted: function(){
@@ -64,17 +65,14 @@ export default {
       submit: function() {
             this.$emit("submitPurchaseOrder");
       },
+      update: function(){
+          this.$emit("updatePurchaseOrder");
+      },
       supplierlists: function() {
       axios.get("http://localhost:8080/api/suppliers")
       .then(response => {
           this.suppliers = response.data;
       })
-    },
-    plantslists: function(){
-         axios.get("http://localhost:8080/api/plants")
-        .then(response => {
-          this.plants = response.data;
-        })
     },
     sitelists: function() {
       axios.get("http://localhost:8080/api/sites")

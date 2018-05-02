@@ -12,7 +12,8 @@
           </order-data>
         </b-tab-item>
        <b-tab-item label="Review order">
-         <hirerequest> </hirerequest>
+         <hirerequest :orderStatus= "orderStatus">
+         </hirerequest>
         </b-tab-item>
     </b-tabs>
     </div>
@@ -39,13 +40,14 @@ export default {
     return {
       activeTab: 0,
       plants: [],
+      orderStatus: {},
       order: {
-          id: 0,
+          id: 1,
           plant: {},
           rentalPeriod: {},
         moreInfo: {
-            supplierName: '' ,
-            constructionSite: "",
+            suppliersid: 0 ,
+            siteid: 0,
         }
       },
     }
@@ -58,7 +60,7 @@ export default {
           startDate: moment(String(query.startDate)).format("YYYY-MM-DD"),
           endDate: moment(String(query.endDate)).format("YYYY-MM-DD")
         }
-        axios.get("http://localhost:8090/api/sales/plants", { params: params})
+        axios.get("http://localhost:8090//api/sales/plants", { params: params})
         .then(response => {
           console.log(response);
            this.order.rentalPeriod.startDate = params.startDate;
@@ -77,30 +79,29 @@ export default {
             this.activeTab = 2;
         },
      handlePOCreation: function() {
-
          let obj = {
-          //  orders: this.order,
-          //  orderid: this.order.id++
-          "constructionSiteId": 2,
-          "supplierId": 4,
-          "plantHref": "http://localhost:8090/api/sales/plants/3",
-          "rentalPeriod" : {
-          "startDate" : "2018-05-25",
-           "endDate" : "2018-05-30"
-    }
+           "constructionSiteId": this.order.siteid,
+           "supplierId": this.order.suppliersid,
+           "plantHref":  this.order.plant._links.self.href,
+           "rentalPeriod" : {
+           "startDate" : this.order.rentalPeriod.startDate,
+           "endDate" : this.order.rentalPeriod.endDate
+          }
         };
-        //console.log("Plant submission before", obj);
+        console.log("Plant submission before", obj);
               axios.post("http://localhost:8080/api/requests", obj)
                 .then(response => {
-                    this.$snackbar.open("Purchase order submitted. Waiting for confirmation.");
+                    this.$snackbar.open("Plant hire request. Waiting for confirmation from works engineer.");
+                 this.orderStatus = response.data;
+                   console.log("Plant submission after", this.orderStatus);
                 }).catch(error => {
                     this.$snackbar.open({
                         type: 'is-danger',
                         message: "Something went wrong with purchase order submition."
                     });
                 });
-           // console.log("Plant submission after", obj);
-     },
+          this.activeTab = 3;
+    },
 }
 }
 </script>

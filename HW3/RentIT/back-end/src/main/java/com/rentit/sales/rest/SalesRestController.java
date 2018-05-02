@@ -108,6 +108,7 @@ public class SalesRestController {
         }
 
         PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
+        salesService.notifyCustomer(poDTO);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
         return new ResponseEntity<>(
@@ -138,6 +139,7 @@ public class SalesRestController {
         }
 
         PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
+        salesService.notifyCustomer(poDTO);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
@@ -168,7 +170,11 @@ public class SalesRestController {
             throw new PlantNotFoundException(partialPODTO.getPlant().get_id());
         }
 
-        PurchaseOrder preparedForSavePO = salesService.preparePurchaseOrderForSave(partialPODTO.getPlant().get_id(), partialPODTO.getRentalPeriod().getStartDate(), partialPODTO.getRentalPeriod().getEndDate());
+        PurchaseOrder preparedForSavePO =
+                salesService.preparePurchaseOrderForSave(partialPODTO.getPlant().get_id(),
+                                                         partialPODTO.getRentalPeriod().getStartDate(),
+                                                         partialPODTO.getRentalPeriod().getEndDate(),
+                                                         partialPODTO.getAddress().getHref());
 
         DataBinder binder = new DataBinder(preparedForSavePO);
 
