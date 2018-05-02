@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Planthirerequest from "../components/RequestApproval/Planthirerequest.vue";
+import Planthirerequest from "../components/PlantsRequest/Planthirerequest.vue";
 
 export default {
   name: "about",
