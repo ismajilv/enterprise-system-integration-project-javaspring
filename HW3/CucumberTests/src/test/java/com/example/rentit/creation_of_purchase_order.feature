@@ -47,12 +47,12 @@ Feature: Creation of Purchase Order
 
   Scenario: Creating plant hire request that is accepted by work engineer and RentIt
     When site engineer queries the plant catalog for an "Excavator" available from "5/20/2018" to "5/22/2018"
-    Then 6 plants are shown including "3 Tonne Mini excavator" with price 600
+    Then 6 plants are shown including "3 Tonne Mini excavator" with price 200
     When site engineer selects a "3 Tonne Mini excavator"
-    Then tab is changed to "Review order"
+    Then tab is changed to "Plant hire"
     When site engineer selects supplier "Cramo"
     And selects construction site "Viru 1, Tallinn"
-    And pushes "Create Plant Hire Request" button
+    And pushes "Create Purchase Order" button
     Then 1 pending plant hire request is/are shown for the work engineer
     When work engineer accepts the plant hire request
     Then 1 pending plant hire request is/are shown for the RentIt's employee

@@ -31,7 +31,7 @@ public class Stepdefs {
     WebDriver siteEngineer;
     WebDriver workEngineer;
     RestTemplate restTemplate = new RestTemplate();
-    int rentItFEPort = 8082;
+    int rentItFEPort = 8081;
     int rentItBEPort = 8090;
     int buildItFEPort = 6080;
     int buildItBEPort = 8080;
@@ -52,8 +52,8 @@ public class Stepdefs {
     public void tearoff() {
         // Comment the following line if you want to check the application's final state on the browser
         //rentItEmployee.close();
-       // siteEngineer.close();
-        //workEngineer.close();
+        siteEngineer.close();
+        workEngineer.close();
     }
 
     @Given("^the following plant catalog$")
@@ -133,11 +133,15 @@ public class Stepdefs {
     }
 
     @Then("^(\\d+) plants are shown including \"([^\"]*)\" with price (\\d+)$")
-    public void plants_are_shown_including_with_price(int numberOfPlants, String name, int price) throws Throwable {
+    public void plants_are_shown_including_with_price(int numberOfPlants, String description, int price) throws Throwable {
         Thread.sleep(3000);
-        List<?> rows = siteEngineer.findElements(By.className("table-row"));
+        List<WebElement> rows = siteEngineer.findElements(By.className("table-row"));
         assertThat(rows).hasSize(numberOfPlants);
-        //#TODO name and price
+        WebElement specificColumnRow = siteEngineer.findElement(By.xpath(String.format("//tr/td[contains(text(), '%s')]", description)));
+        WebElement parentElement = specificColumnRow.findElement(By.xpath("./.."));
+        assertThat(parentElement.findElement(By.id("plantName")).getText()).isEqualToIgnoringCase("Mini Excavator");
+        assertThat(parentElement.findElement(By.id("plantPrice")).getText()).isEqualToIgnoringCase(String.valueOf(price));
+        assertThat(parentElement.findElement(By.id("plantDesc")).getText()).isEqualToIgnoringCase(description);
     }
 
     @When("^site engineer selects a \"([^\"]*)\"$")
@@ -148,30 +152,30 @@ public class Stepdefs {
     }
 
     @Then("^tab is changed to \"([^\"]*)\"$")
-    public void tab_is_changed_to(String arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        System.out.println("TAB IS CHANGED TO" + arg1);
-      //  throw new PendingException();
+    public void tab_is_changed_to(String tabName) throws Throwable {
+        WebElement tab = siteEngineer.findElement(By.xpath(String.format("//span[contains(text(), '%s')]", tabName)));
+        WebElement parentElement = tab.findElement(By.xpath("./../.."));
+        assertThat("is-active").isEqualToIgnoringCase(parentElement.getAttribute("class"));
     }
 
     @When("^site engineer selects supplier \"([^\"]*)\"$")
-    public void site_engineer_selects_supplier(String arg1) throws Throwable {
-        Select droplist = new Select(siteEngineer.findElement(By.id("selection")));
-        droplist.selectByVisibleText(arg1);
-        // Write code here that turns the phrase above into concrete actions
-       // throw new PendingException();
+    public void site_engineer_selects_supplier(String supplierName) throws Throwable {
+        List<WebElement> selectors = siteEngineer.findElements(By.xpath("//select"));
+        Select supplier = new Select(selectors.get(0));
+        supplier.selectByVisibleText(supplierName);
     }
 
     @When("^selects construction site \"([^\"]*)\"$")
-    public void selects_construction_site(String arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    public void selects_construction_site(String siteName) throws Throwable {
+        List<WebElement> selectors = siteEngineer.findElements(By.xpath("//select"));
+        Select site = new Select(selectors.get(1));
+        site.selectByVisibleText(siteName);
     }
 
     @When("^pushes \"([^\"]*)\" button$")
-    public void pushes_button(String arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    public void pushes_button(String buttonName) throws Throwable {
+        WebElement button = siteEngineer.findElement(By.xpath(String.format("//button[contains(text(), '%s')]", buttonName)));
+        button.click();
     }
 
     @Then("^(\\d+) pending plant hire request is/are shown for the work engineer$")
