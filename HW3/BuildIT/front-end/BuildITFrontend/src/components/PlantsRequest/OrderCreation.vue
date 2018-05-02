@@ -7,8 +7,12 @@
         <b-tab-item label="Select plant">
           <query-result :plants= "plants" @selectPlant="handlePlantSelection"></query-result>
         </b-tab-item>
+        <b-tab-item label="Plant hire">
+          <order-data :order="order" @submitPurchaseOrder="handlePOCreation">
+          </order-data>
+        </b-tab-item>
        <b-tab-item label="Review order">
-            <order-data :order="order" @submitPurchaseOrder="handlePOCreation"></order-data>
+         <hirerequest> </hirerequest>
         </b-tab-item>
     </b-tabs>
     </div>
@@ -18,26 +22,32 @@
 import CatalogQuery from "./CatalogQuery.vue";
 import QueryResult from "./QueryResult.vue";
 import OrderData from "./OrderData.vue";
+import Hirerequest from "./Hirerequest.vue";
 
 import axios from 'axios';
 import moment from "moment";
 
 export default {
   name: "OrderCreation",
-  props: ["moreInfo"],
   components: {
     CatalogQuery,
     QueryResult,
-    OrderData
+    OrderData,
+    Hirerequest
   },
   data: function(){
     return {
       activeTab: 0,
       plants: [],
       order: {
-                plant: {},
-                rentalPeriod: {}
-      }
+          id: 0,
+          plant: {},
+          rentalPeriod: {},
+        moreInfo: {
+            supplierName: '' ,
+            constructionSite: "",
+        }
+      },
     }
   },
   methods:{
@@ -62,11 +72,25 @@ export default {
             this.order.plant = plant;
             this.activeTab = 2;
         },
+     handleStatusOrder: function(plant) {
+            this.order.plant = plant;
+            this.activeTab = 2;
+        },
      handlePOCreation: function() {
-            console.log("Plant submission", this.order )
-            console.log("Choose supplier", this.select.supplierName);
-            let orders = this.order;
-            axios.post("http://localhost:8090/api/sales/orders"+ {params: orders})
+
+         let obj = {
+          //  orders: this.order,
+          //  orderid: this.order.id++
+          "constructionSiteId": 2,
+          "supplierId": 4,
+          "plantHref": "http://localhost:8090/api/sales/plants/3",
+          "rentalPeriod" : {
+          "startDate" : "2018-05-25",
+           "endDate" : "2018-05-30"
+    }
+        };
+        //console.log("Plant submission before", obj);
+              axios.post("http://localhost:8080/api/requests", obj)
                 .then(response => {
                     this.$snackbar.open("Purchase order submitted. Waiting for confirmation.");
                 }).catch(error => {
@@ -75,7 +99,8 @@ export default {
                         message: "Something went wrong with purchase order submition."
                     });
                 });
-        }
+           // console.log("Plant submission after", obj);
+     },
 }
 }
 </script>

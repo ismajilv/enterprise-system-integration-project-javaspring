@@ -3,15 +3,13 @@ package com.buildit.procurement.web.controller;
 import com.buildit.common.application.dto.EmployeeDTO;
 import com.buildit.procurement.application.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:6080")
 @RequestMapping("/api/employee")
 public class EmployeeController {
 

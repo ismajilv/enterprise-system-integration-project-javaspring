@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Greg Turnquist
  */
 @Configuration
+
 // @EnableHypermediaSupport(type = HypermediaType.HAL_FORMS)
 public class HypermediaConfiguration {
 

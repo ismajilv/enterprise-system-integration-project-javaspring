@@ -9,7 +9,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr v-for="plant in plants" :key="plant.id">
+        <tr v-for="plant in plants" :key="plant.id" class="table-row">
             <td>{{ plant.name }}</td>
             <td>{{ plant.description }}</td>
             <td class="has-text-right">{{ plant.price }}</td>

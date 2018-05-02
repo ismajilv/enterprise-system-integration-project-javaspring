@@ -3,10 +3,7 @@ package com.buildit.procurement.web.controller;
 import com.buildit.procurement.application.dto.ConstructionSiteDTO;
 import com.buildit.procurement.application.services.ConstructionSiteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -14,6 +11,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:6080")
 @RequestMapping("/api/sites")
 public class ConstructionSiteController {
 

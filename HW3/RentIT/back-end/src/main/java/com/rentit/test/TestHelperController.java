@@ -1,4 +1,4 @@
-package com.rentit.inventory.rest;
+package com.rentit.test;
 
 import com.rentit.inventory.domain.model.EquipmentCondition;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
@@ -7,6 +7,7 @@ import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import com.rentit.inventory.domain.repository.PlantInventoryItemRepository;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +32,7 @@ public class TestHelperController {
         purchaseOrderRepository.deleteAll();
         plantInventoryItemRepository.deleteAll();
         plantInventoryEntryRepository.deleteAll();
-
+//        return plantInventoryEntryRepository.saveAll(entries);
         entries = plantInventoryEntryRepository.saveAll(entries);
 
         List<PlantInventoryItem> items = entries.stream()
@@ -41,5 +42,15 @@ public class TestHelperController {
         plantInventoryItemRepository.saveAll(items);
 
         return entries;
+    }
+
+    @PostMapping("/api/items")
+    public List<PlantInventoryItem> setupItems(@RequestBody List<PlantInventoryItem> items) {
+        return plantInventoryItemRepository.saveAll(items);
+    }
+
+    @GetMapping("/api/po/count")
+    public Integer countPurchaseOrders(){
+        return purchaseOrderRepository.findAll().size();
     }
 }
