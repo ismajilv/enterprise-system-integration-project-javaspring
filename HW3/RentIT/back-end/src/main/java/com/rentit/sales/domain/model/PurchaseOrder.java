@@ -39,11 +39,18 @@ public class PurchaseOrder {
     @ElementCollection
     List<POExtension> extensions = new ArrayList<>();
 
-    public static PurchaseOrder of(PlantInventoryEntry plant, BusinessPeriod rentalPeriod) {
+    @Column(name = "site_address")
+    @Embedded
+    Address siteAddress;
+
+    public static PurchaseOrder of(PlantInventoryEntry plant,
+                                   BusinessPeriod rentalPeriod,
+                                   Address address) {
         PurchaseOrder po = new PurchaseOrder();
         po.plant = plant;
         po.rentalPeriod = rentalPeriod;
         po.status = POStatus.PENDING;
+        po.siteAddress = address;
         return po;
     }
 

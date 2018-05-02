@@ -9,13 +9,23 @@ import com.rentit.inventory.domain.repository.InventoryRepository;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import com.rentit.inventory.domain.repository.PlantInventoryItemRepository;
 import com.rentit.inventory.domain.repository.PlantReservationRepository;
+import com.rentit.sales.application.dto.POCallbackDTO;
+import com.rentit.sales.application.dto.PurchaseOrderDTO;
+import com.rentit.sales.domain.model.Address;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Service
 public class SalesService {
@@ -32,6 +42,8 @@ public class SalesService {
 
     @Autowired
     PurchaseOrderRepository purchaseOrderRepository;
+
+    private AddressAssembler purchaseOrderAssembler;
 
     public PurchaseOrder findPurchaseOrder(Long id) {
         return purchaseOrderRepository.getOne(id);
@@ -54,11 +66,12 @@ public class SalesService {
         return save(po);
     }
 
-    public PurchaseOrder preparePurchaseOrderForSave(Long plantId, LocalDate startDate, LocalDate endDate) throws PlantNotFoundException {
+    public PurchaseOrder preparePurchaseOrderForSave(Long plantId, LocalDate startDate, LocalDate endDate, String href) throws PlantNotFoundException {
         PlantInventoryEntry plant = plantInventoryEntryRepository.getOne(plantId);
         PurchaseOrder po = PurchaseOrder.of(
                 plant,
-                BusinessPeriod.of(startDate, endDate));
+                BusinessPeriod.of(startDate, endDate),
+                Address.of(href));
 
 
 // batch allocation ->
@@ -91,4 +104,9 @@ public class SalesService {
         return purchaseOrderRepository.findPendingPurchaseOrders();
     }
 
+    public void notifyCustomer(PurchaseOrderDTO po) {
+        RestTemplate restTemplate = new RestTemplate();
+        POCallbackDTO callback = POCallbackDTO.of(po.getRequiredLink("self").getHref(), po.getStatus());
+        restTemplate.postForObject(po.getAddress().getHref(), callback, String.class);
+    }
 }
