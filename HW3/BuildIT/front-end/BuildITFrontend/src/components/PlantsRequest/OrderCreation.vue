@@ -88,9 +88,9 @@ export default {
           "startDate" : "2018-05-25",
            "endDate" : "2018-05-30"
     }
-        }
+        };
         //console.log("Plant submission before", obj);
-              axios.post("http://localhost:8090/api/sales/orders/"+ { params: obj})
+              axios.post("http://localhost:8080/api/requests", obj)
                 .then(response => {
                     this.$snackbar.open("Purchase order submitted. Waiting for confirmation.");
                 }).catch(error => {
