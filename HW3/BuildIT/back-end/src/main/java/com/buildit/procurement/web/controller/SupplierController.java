@@ -11,7 +11,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:6080")
+@CrossOrigin()
 @RequestMapping("/api/suppliers")
 public class SupplierController {
 

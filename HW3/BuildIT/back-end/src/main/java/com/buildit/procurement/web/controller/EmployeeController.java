@@ -9,7 +9,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:6080")
+@CrossOrigin()
 @RequestMapping("/api/employee")
 public class EmployeeController {
 
