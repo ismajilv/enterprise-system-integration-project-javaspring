@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
 
+import static java.util.Objects.isNull;
+
 @Service
 public class PurchaseOrderAssembler extends ResourceAssemblerSupport<PurchaseOrder, PurchaseOrderDTO> {
 
@@ -26,7 +28,9 @@ public class PurchaseOrderAssembler extends ResourceAssemblerSupport<PurchaseOrd
         dto.setRentalPeriod(BusinessPeriodDTO.of(purchaseOrder.getRentalPeriod().getStartDate(),purchaseOrder.getRentalPeriod().getEndDate()));
         dto.setTotal(purchaseOrder.getTotal());
         dto.setStatus(purchaseOrder.getStatus());
-        dto.setAddress(AddressAssembler.toResource(purchaseOrder.getSiteAddress()));
+        if (!isNull(purchaseOrder.getSiteAddress())) {
+            dto.setAddress(AddressAssembler.toResource(purchaseOrder.getSiteAddress()));
+        }
         return dto;
     }
 }
