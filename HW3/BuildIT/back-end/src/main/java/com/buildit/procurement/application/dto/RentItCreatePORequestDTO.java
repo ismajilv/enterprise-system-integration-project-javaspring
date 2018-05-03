@@ -16,6 +16,4 @@ public class RentItCreatePORequestDTO extends ResourceSupport {
 
 	BusinessPeriodDTO rentalPeriod;
 
-    AddressDTO address;
-
 }

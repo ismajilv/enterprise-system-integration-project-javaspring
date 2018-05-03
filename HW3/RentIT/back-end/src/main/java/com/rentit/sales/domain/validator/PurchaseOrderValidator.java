@@ -42,10 +42,6 @@ public class PurchaseOrderValidator implements Validator {
 			errors.rejectValue("status", "null", "Purchase order has null for status");
 		}
 
-		if (isNull(po.getSiteAddress())) {
-			errors.rejectValue("address", "null", "Purchase order has null for address");
-		}
-
 		switch (po.getStatus()) {
 			case PENDING:
 				if (!isNull(po.getRentalPeriod())

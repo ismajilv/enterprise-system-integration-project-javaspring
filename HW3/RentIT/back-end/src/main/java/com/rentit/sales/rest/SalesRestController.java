@@ -173,8 +173,7 @@ public class SalesRestController {
         PurchaseOrder preparedForSavePO =
                 salesService.preparePurchaseOrderForSave(partialPODTO.getPlant().get_id(),
                                                          partialPODTO.getRentalPeriod().getStartDate(),
-                                                         partialPODTO.getRentalPeriod().getEndDate(),
-                                                         partialPODTO.getAddress().getHref());
+                                                         partialPODTO.getRentalPeriod().getEndDate());
 
         DataBinder binder = new DataBinder(preparedForSavePO);
 

@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(staticName = "of")
 public class POCallbackDTO {
     String href;
-    POStatus status;
+    POStatus value;
 }

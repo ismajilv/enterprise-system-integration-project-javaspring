@@ -96,9 +96,7 @@ public class RentItService {
 		RentItPlantInventoryEntryDTO rentItEntry = fetchPlantEntryFromRentIt(href);
         String respondTo = rentItUrl + "/callbacks/orderStateChanged";
 		RentItCreatePORequestDTO rentItPORequest =
-				RentItCreatePORequestDTO.of(rentItEntry,
-											businessPeriodDTO,
-                                            AddressDTO.of(respondTo));
+				RentItCreatePORequestDTO.of(rentItEntry, businessPeriodDTO);
 
 		return doCreatePurchaseOrder(rentItPORequest);
 	}

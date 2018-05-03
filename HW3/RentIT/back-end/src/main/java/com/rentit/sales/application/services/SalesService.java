@@ -15,20 +15,25 @@ import com.rentit.sales.domain.model.Address;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Service
 public class SalesService {
+
+    @Value("${buildItUrl}")
+    String buildItUrl;
 
     @Autowired
     PlantInventoryEntryRepository plantInventoryEntryRepository;
@@ -42,8 +47,6 @@ public class SalesService {
 
     @Autowired
     PurchaseOrderRepository purchaseOrderRepository;
-
-    private AddressAssembler purchaseOrderAssembler;
 
     public PurchaseOrder findPurchaseOrder(Long id) {
         return purchaseOrderRepository.getOne(id);
@@ -66,12 +69,11 @@ public class SalesService {
         return save(po);
     }
 
-    public PurchaseOrder preparePurchaseOrderForSave(Long plantId, LocalDate startDate, LocalDate endDate, String href) throws PlantNotFoundException {
+    public PurchaseOrder preparePurchaseOrderForSave(Long plantId, LocalDate startDate, LocalDate endDate) throws PlantNotFoundException {
         PlantInventoryEntry plant = plantInventoryEntryRepository.getOne(plantId);
         PurchaseOrder po = PurchaseOrder.of(
                 plant,
-                BusinessPeriod.of(startDate, endDate),
-                Address.of(href));
+                BusinessPeriod.of(startDate, endDate));
 
 
 // batch allocation ->
@@ -105,8 +107,29 @@ public class SalesService {
     }
 
     public void notifyCustomer(PurchaseOrderDTO po) {
+        POCallbackDTO callback = POCallbackDTO.of("http://localhost:8090/api/sales/orders/" + po.get_id(), po.getStatus());
+
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+
+        HttpEntity<POCallbackDTO> entity = new HttpEntity<>(callback, headers);
+
         RestTemplate restTemplate = new RestTemplate();
-        POCallbackDTO callback = POCallbackDTO.of(po.getRequiredLink("self").getHref(), po.getStatus());
-        restTemplate.postForObject(po.getAddress().getHref(), callback, String.class);
+
+        checkBuildItUrl();
+
+        restTemplate.exchange(buildItUrl + "/callbacks/orderStateChanged",
+                HttpMethod.POST,
+                entity,
+                new ParameterizedTypeReference<String>() {}
+        );
     }
+
+    private void checkBuildItUrl() {
+        requireNonNull(buildItUrl);
+        if (buildItUrl.length() < 10) throw new IllegalArgumentException("Configure buildItUrl properly: " + buildItUrl);
+    }
+
 }
