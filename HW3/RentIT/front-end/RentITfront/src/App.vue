@@ -1,8 +1,22 @@
 <template>
   <div id="app">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-    <router-view/>
+    <h2> RentIT </h2>
+  <table class="table is-table-bordered is-table-striped is-fullwidth">
+    <thead>
+        <tr>
+            <th class="has-text-center">id</th>
+            <th class="has-text-center">Name</th>
+            <th class="has-text-center">Start Date</th>
+            <th class="has-text-center">End Date</th>
+            <th class="has-text-center">Site Engineer</th>
+            <th class="has-text-center">Price</th>
+            <th class="has-text-center">Actions</th>
+            <th class="has-text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
   </div>
 </template>
 

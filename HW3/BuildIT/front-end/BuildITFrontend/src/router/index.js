@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Home from '../views/Home.vue'
-import About from '../views/about.vue'
+import SiteEngineer from '../views/SiteEngineer.vue'
+import WorkEngineer from '../views/WorkEngineer.vue'
 
 Vue.use(Router)
 
@@ -10,12 +10,12 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Home',
+      name: 'SiteEngineer',
       component: Home
     },
     {
-      path: '/about',
-      name: 'about',
+      path: '/WorkEngineer',
+      name: 'WorkEngineer',
       component: About
     }
   ]

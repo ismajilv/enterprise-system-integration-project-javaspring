@@ -46,8 +46,10 @@ export default {
           plant: {},
           rentalPeriod: {},
         moreInfo: {
+            name: '',
             suppliersid: 0 ,
             siteid: 0,
+            index: 0
         }
       },
     }

@@ -10,9 +10,9 @@
     </thead>
     <tbody>
         <tr v-for="plant in plants" :key="plant.id" class="table-row">
-            <td id="plantName">{{ plant.name }}</td>
-            <td id="plantDesc">{{ plant.description }}</td>
-            <td id="plantPrice" class="has-text-right">{{ plant.price }}</td>
+            <td>{{ plant.name }}</td>
+            <td>{{ plant.description }}</td>
+            <td class="has-text-right">{{ plant.price }}</td>
             <td>
                 <a class="button is-link is-small is-outlined"
                 @click="submit(plant)">Select plant</a>

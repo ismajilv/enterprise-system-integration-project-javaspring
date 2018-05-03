@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 @SpringBootApplication
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
-@CrossOrigin(origins = "http://localhost:6080")
+@CrossOrigin(origins = "http://localhost:7070")
 public class RentitApplication {
 
 //	@Configuration

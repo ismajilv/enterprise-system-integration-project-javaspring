@@ -1,53 +1,103 @@
 <template>
-<div>
-  <table class="table is-striped is-fullwidth">
+  <div>
+    <h2> Lists of plants</h2>
+    <table class="table is-table-bordered is-table-striped is-fullwidth">
     <thead>
         <tr>
-            <th class="has-text-center">Plant</th>
-            <th class="has-text-center">Rental period</th>
+            <th class="has-text-center">id</th>
+            <th class="has-text-center">Name</th>
+            <th class="has-text-center">Start Date</th>
+            <th class="has-text-center">End Date</th>
+            <th class="has-text-center">Site Engineer</th>
             <th class="has-text-center">Price</th>
+            <th class="has-text-center">Actions</th>
             <th class="has-text-center">Actions</th>
         </tr>
     </thead>
     <tbody>
-        <tr v-for="(order, order_index) in orders" :key="order_index">
-            <td id="plantName">
-                {{order.plant.name}} <br/>
-                <a class="button is-link is-small is-outlined">
-                   See details
-                </a>
-            </td>
-            <td id="plantRentalPeriod">{{order.rentalPeriod.startDate}} / {{order.rentalPeriod.endDate}}</td>
-            <td class="has-text-right"></td>
-            <td>
-              <a v-for="(link, rel) in order._links" :key="rel" v-if="rel !== 'self'"
-              v-bind:class="{ 'is-danger': link.method === 'DELETE', 'is-link': link.method !== 'DELETE' }"
-              class="button is-small is-outlined"
-              @click="followLink(link, rel, order_index)">
-              {{rel}}
-            </a>
-            </td>
+          <tr v-for="pending in allrequest" :key="pending._id" >
+            <th class="has-text-center" id="name"> {{pending._id}}</th>
+            <th class="has-text-center"> {{pending.plant.name}}</th>
+            <th class="has-text-center"> {{pending.rentalPeriod.startDate}}</th>
+            <th class="has-text-center"> {{pending.rentalPeriod.endDate}}</th>
+            <th class="has-text-center"> {{pending.requestingSiteEngineer.firstName}} {{pending.requestingSiteEngineer.lastName}} </th>
+            <th class="has-text-center"> {{pending.rentalCost.total}}</th>
+            <td><a v-on:click="accept" class="button is-success is-outlined">Accept</a> </td>
+            <td> <a v-on:click="reject" @click="isActive = !isActive" class="button is-danger is-outlined">Reject</a> </td>
         </tr>
     </tbody>
-  </table>
-</div>
+</table>
+    <b-message title="You have rejected this order, Why?" :active.sync="isActive">
+     <textarea rows="4" cols="120" name="comment" form="usrform" v-model="comments">
+      Enter text here...</textarea>
+     <a v-on:click="comment" class="button is-success"> Comment </a>
+     </b-message>
+  </div>
 </template>
 
 <script>
+import axios from 'axios';
 
-import axios from "axios";
 export default {
-    name: "Planthirerequest",
-    data: function() {
-        return {
-            orders: []
+  name: "Planthirerequest",
+  props: ["orderStatus"],
+  data: function(){
+      return{
+        allrequest: [],
+        isActive: false,
+        rejectedRequest:{},
+        request: {
+          id: 0,
+          comments: ''
         }
-    },
-    mounted: function() {
-        axios.get("http://localhost:8090/api/sales/orders")
+      }
+  },
+   mounted:function(){
+    this.pendingHire();
+  },
+  methods: {
+      pendingHire: function(){
+         axios.get("http://localhost:8080/api/requests?status=PENDING")
         .then(response => {
-            this.orders = !response.data._embedded ? [] : response.data._embedded.orders;
+          this.allrequest = response.data._embedded.plantHireRequestDTOList;
+          console.log("Response", this.allrequest);
         });
-    }
+      },
+      accept: function(inputOrder){
+           let i= document.getElementById("name").innerHTML
+           let params = i + "/accept"
+           console.log("Accept", i);
+        axios.get("http://localhost:8080/api/requests/", params)
+        .then(response => {
+           this.$snackbar.open("Plant hire request accepted for site engineer.");
+         console.log("Accept", response.data._embedded);
+        });
+      },
+      reject: function(inputOrder){
+           let i= document.getElementById("name").innerHTML
+           let params = i + "/reject"
+           console.log("Reject", i);
+        axios.get("http://localhost:8080/api/requests/", params)
+        .then(response => {
+          console.log("Reject", response.data._embedded.plantHireRequestDTOList);
+          this.rejectedRequest = response.data._embedded.plantHireRequestDTOList;
+        });
+      },
+      comment: function(){
+           let i= document.getElementById("name").innerHTML
+           let obj = {"value": "abc"}
+           let params = i + "/addComment"
+        axios.get("http://localhost:8080/api/requests/", params, obj)
+        .then(response => {
+          console.log("Comment", response);
+           this.$snackbar.open("Comment submitted successfully");
+        });
+      }
+  }
 }
 </script>
+
+<style>
+
+</style>
+

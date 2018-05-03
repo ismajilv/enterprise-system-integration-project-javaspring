@@ -6,7 +6,6 @@ import com.buildit.procurement.application.dto.CreatePlantHireRequestDTO;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.application.services.CommentService;
 import com.buildit.procurement.application.services.PlantHireRequestService;
-import com.buildit.procurement.domain.enums.PHRStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
@@ -26,6 +25,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:6080")
 @RequestMapping("/api/requests")
 public class PlantHireRequestController {
 
@@ -36,14 +36,8 @@ public class PlantHireRequestController {
 	CommentService commentService;
 
 	@GetMapping
-	public ResponseEntity<Resources<PlantHireRequestDTO>> readAll(@RequestParam(required = false) PHRStatus status) {
-		List<PlantHireRequestDTO> requests;
-
-		if (isNull(status)) {
-			requests = service.getAll();
-		} else {
-			requests = service.getAllWithStatus(status);
-		}
+	public ResponseEntity<Resources<PlantHireRequestDTO>> readAll() {
+		List<PlantHireRequestDTO> requests = service.getAll();
 
 		return transformIntoResponse(requests);
 	}

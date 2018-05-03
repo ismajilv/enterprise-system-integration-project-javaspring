@@ -73,19 +73,6 @@ PUT to http://localhost:8080/api/requests/7
 }
 ~~~
 
-How to retrieve plant hire requests
-------------
-
-Send a GET to http://localhost:8080/api/requests
-
-An optional parameter is the request status to filter requests.
-
-**Sample URL for pending requests**
-
-> http://localhost:8080/api/requests?status=PENDING
-
-
-
 How to add a comment to a plant hire request
 ------------
 
