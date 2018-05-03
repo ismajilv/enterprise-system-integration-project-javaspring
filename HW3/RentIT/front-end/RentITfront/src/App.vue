@@ -3,7 +3,7 @@
     <h2> RentIT </h2>
   <table class="table is-table-bordered is-table-striped is-fullwidth">
     <thead>
-        <tr>
+        <tr class="table-row-rentit">
             <th class="has-text-center">id</th>
             <th class="has-text-center">Name</th>
             <th class="has-text-center">Start Date</th>

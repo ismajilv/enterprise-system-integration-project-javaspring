@@ -15,13 +15,13 @@
         </tr>
     </thead>
     <tbody>
-          <tr v-for="pending in allrequest" :key="pending._id" >
-            <th class="has-text-center" id="name"> {{pending._id}}</th>
-            <th class="has-text-center"> {{pending.plant.name}}</th>
-            <th class="has-text-center"> {{pending.rentalPeriod.startDate}}</th>
-            <th class="has-text-center"> {{pending.rentalPeriod.endDate}}</th>
-            <th class="has-text-center"> {{pending.requestingSiteEngineer.firstName}} {{pending.requestingSiteEngineer.lastName}} </th>
-            <th class="has-text-center"> {{pending.rentalCost.total}}</th>
+          <tr class="table-row-we2" v-for="pending in allrequest" :key="pending._id" >
+            <td class="has-text-center" id="name"> {{pending._id}}</td>
+            <td id = "plantNameWE2" class="has-text-center"> {{pending.plant.name}}</td>
+            <td id = "plantStartDateWE2" class="has-text-center"> {{pending.rentalPeriod.startDate}}</td>
+            <td id = "plantEndDateWE2" class="has-text-center"> {{pending.rentalPeriod.endDate}}</td>
+            <td class="has-text-center"> {{pending.requestingSiteEngineer.firstName}} {{pending.requestingSiteEngineer.lastName}} </td>
+            <td id = "plantPriceWE2" class="has-text-center"> {{pending.rentalCost.total}}</td>
             <td><a v-on:click="accept" class="button is-success is-outlined">Accept</a> </td>
             <td> <a v-on:click="reject" @click="isActive = !isActive" class="button is-danger is-outlined">Reject</a> </td>
         </tr>

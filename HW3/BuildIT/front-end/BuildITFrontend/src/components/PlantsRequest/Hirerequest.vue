@@ -13,13 +13,13 @@
         </tr>
     </thead>
     <tbody>
-       <tr v-show="orderStatus">
-            <td>{{orderStatus.plant.name}}</td>
-            <td>{{orderStatus.rentalPeriod.startDate}}</td>
-            <td>{{orderStatus.rentalPeriod.endDate}}</td>
-            <td>{{orderStatus.rentalCost.total}}</td>
-            <td>{{orderStatus.status}}</td>
-           <th class="has-text-center">Should display status order</th>
+       <tr class="table-row-hire" v-show="orderStatus">
+            <td id="plantNameHire">{{orderStatus.plant.name}}</td>
+            <td id="plantStartDateHire">{{orderStatus.rentalPeriod.startDate}}</td>
+            <td id="plantEndDateHire">{{orderStatus.rentalPeriod.endDate}}</td>
+            <td id="plantTotalCostHire">{{orderStatus.rentalCost.total}}</td>
+            <td id="plantStatusHire">{{orderStatus.status}}</td>
+           <td id="plantStatusHireUp" class="has-text-center">Should display status order</td>
         </tr>
     </tbody>
 </table>
