@@ -52,9 +52,9 @@ public class Stepdefs {
     @After
     public void tearoff() {
         // Comment the following line if you want to check the application's final state on the browser
-        rentItEmployee.close();
-        siteEngineer.close();
-        workEngineer.close();
+       rentItEmployee.close();
+       siteEngineer.close();
+       workEngineer.close();
     }
 
     @Given("^the following plant catalog$")
@@ -223,6 +223,7 @@ public class Stepdefs {
 
     @Then("^the site engineer sees that the state of the plant hire request for \"([^\"]*)\" is \"([^\"]*)\"$")
     public void the_site_engineer_sees_that_the_state_of_the_plant_hire_request_for_is(String plantDescription, String status) throws Throwable {
+        Thread.sleep(waitForMs);
         WebElement row = siteEngineer.findElement(By.xpath(String.format("//tr/td[contains(text(), '%s')]", plantDescription)));
         assertThat(row.findElement(By.id("plantStatusHireUp")).getText()).isEqualToIgnoringCase(status);
     }
@@ -236,7 +237,7 @@ public class Stepdefs {
 
     @When("^the RentIt's employee pushes \"([^\"]*)\" button for the plant hire request for \"([^\"]*)\"$")
     public void the_RentIt_s_employee_pushes_button_for_the_plant_hire_request_for(String buttonLabel, String plantDescription) throws Throwable {
-        WebElement row = workEngineer.findElement(By.xpath(String.format("//tr/td[contains(text(), '%s')]", plantDescription)));
+        WebElement row = rentItEmployee.findElement(By.xpath(String.format("//tr/td[contains(text(), '%s')]", plantDescription)));
         WebElement acceptButton = row.findElement(By.xpath("//a[contains(text(), "+buttonLabel+")]"));
         acceptButton.click();
     }

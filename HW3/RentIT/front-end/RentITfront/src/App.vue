@@ -16,7 +16,7 @@
         </tr>
     </thead>
     <tbody>
-          <tr class="table-row-we2" v-for="pending in allrequest" :key="pending._id" >
+          <tr class="table-row-rentit" v-for="pending in allrequest" :key="pending._id" >
             <td class="has-text-center" id="name"> {{pending._id}}</td>
             <td id = "plantNameWE2" class="has-text-center"> {{pending.plant.name}}</td>
             <td id = "plantStartDateWE2" class="has-text-center"> {{pending.rentalPeriod.startDate}}</td>
