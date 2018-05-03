@@ -66,7 +66,6 @@ export default {
       accept: function(inputOrder){
            let i= document.getElementById("name").innerHTML
            let params = i + "/accept"
-           console.log("Accept", i);
         axios.get("http://localhost:8080/api/requests/", params)
         .then(response => {
            this.$snackbar.open("Plant hire request accepted for site engineer.");

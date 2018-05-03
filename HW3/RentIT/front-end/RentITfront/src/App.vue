@@ -48,7 +48,7 @@ export default {
   },
   methods: {
       pendingpurchaseOrder: function(){
-         axios.get("http://localhost:8080/api/requests?status=PENDING")
+         axios.get(" http://localhost:8090/api/sales/orders")
         .then(response => {
           this.allrequest = response.data._embedded.plantHireRequestDTOList;
           console.log("Response", this.allrequest);

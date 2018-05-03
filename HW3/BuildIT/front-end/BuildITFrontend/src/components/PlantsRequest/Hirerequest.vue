@@ -19,7 +19,6 @@
             <td id="plantEndDateHire">{{orderStatus.rentalPeriod.endDate}}</td>
             <td id="plantTotalCostHire">{{orderStatus.rentalCost.total}}</td>
             <td id="plantStatusHire">{{orderStatus.status}}</td>
-           <td id="plantStatusHireUp" class="has-text-center">Should display status order</td>
         </tr>
     </tbody>
 </table>
@@ -36,15 +35,18 @@ export default {
       return{
       }
   },
+  mounted: function(){
+    this.statusofOrder();
+  },
   methods: {
      statusofOrder: function(){
         let changeStatus = {
         "href": this.orderStatus.plant.href,
         "value": "APPROVED"
       }
-       axios.get("http://localhost:8080/callbacks/orderStateChanged", changeStatus)
+       axios.get(" http://localhost:8080/callbacks/orderStateChanged", changeStatus)
       .then(response => {
-          console.log("Response", response)
+          console.log("Status Response", response)
           return response.data;
       })
      }
