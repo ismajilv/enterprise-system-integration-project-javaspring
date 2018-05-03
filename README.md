@@ -7,4 +7,4 @@ The team consists of the following members:
 * Kristjan Veskimäe
 * Polad Mahmudov
 * Tural Ismayilov
-
+ 
