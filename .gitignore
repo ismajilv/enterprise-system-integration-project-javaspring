@@ -1,4 +1,5 @@
 target
+*.iml
 /HW1/mvnw
 /HW1/mvnw.cmd
 /HW1/src/main/resources/application.properties
@@ -8,3 +9,4 @@ target
 /HW2/*.iml
 /HW3/CucumberTests/esi-acceptance.iml
 /HW3/BuildIT/back-end/.idea
+.DS_Store
