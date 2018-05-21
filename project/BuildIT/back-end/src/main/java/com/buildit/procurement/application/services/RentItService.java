@@ -2,10 +2,7 @@ package com.buildit.procurement.application.services;
 
 import com.buildit.common.application.dto.BusinessPeriodDTO;
 import com.buildit.common.domain.model.AddressDTO;
-import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
-import com.buildit.procurement.application.dto.RentItCreatePORequestDTO;
-import com.buildit.procurement.application.dto.RentItPlantInventoryEntryDTO;
-import com.buildit.procurement.application.dto.RentItPurchaseOrderDTO;
+import com.buildit.procurement.application.dto.*;
 import com.buildit.procurement.web.controller.RentItCallbackController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -123,6 +120,10 @@ public class RentItService {
 		RentItPurchaseOrderDTO order = response.getBody();
 
 		return order;
+	}
+
+	public void sendRemittanceAdvice(Long supplierId, RemittanceAdviceDTO remittanceAdvice) {
+		// TODO
 	}
 
 }

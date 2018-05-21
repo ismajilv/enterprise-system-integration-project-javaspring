@@ -11,7 +11,7 @@ public enum RentItPurchaseOrderStatus {
 			case OPEN:
 			case CLOSED:
 			case PENDING_EXTENSION:
-				return POStatus.APPROVED;
+				return POStatus.ACCEPTED;
 			case REJECTED:
 				return POStatus.REJECTED;
 			default:

@@ -51,4 +51,8 @@ public class SupplierService {
 		return assembler.toResource(readModel(id));
 	}
 
+	public Supplier getFirstAsModel() {
+		return repository.findAll().iterator().next();
+	}
+
 }

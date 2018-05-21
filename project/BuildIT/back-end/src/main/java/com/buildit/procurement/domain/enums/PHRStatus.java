@@ -2,10 +2,16 @@ package com.buildit.procurement.domain.enums;
 
 public enum PHRStatus {
 
-	PENDING,
+	PENDING_APPROVAL,
 
 	ACCEPTED,
 
-	REJECTED
+	REJECTED,
+
+	CANCELLED,
+
+	PENDING_EXTENSION,
+
+	CLOSED
 
 }

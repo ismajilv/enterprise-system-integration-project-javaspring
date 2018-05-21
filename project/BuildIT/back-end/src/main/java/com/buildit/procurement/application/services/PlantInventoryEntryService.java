@@ -2,6 +2,7 @@ package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
 import com.buildit.procurement.domain.model.PlantInventoryEntry;
+import com.buildit.procurement.domain.model.Supplier;
 import com.buildit.procurement.domain.repository.PlantInventoryEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,9 @@ public class PlantInventoryEntryService {
 	@Autowired
 	RentItService integrationService;
 
+	@Autowired
+	SupplierService supplierService;
+
 	public PlantInventoryEntryDTO fetchByHref(String href) {
 		return rentItToBuildItPlantInventoryEntryAssembler.toResource(integrationService.fetchPlantEntryFromRentIt(href));
 	}
@@ -39,7 +43,9 @@ public class PlantInventoryEntryService {
 		if (!maybePlantInventoryEntry.isPresent()) {
 			PlantInventoryEntryDTO fetched = fetchByHref(href);
 
-			plant = PlantInventoryEntry.of(href, fetched.getName());
+			Supplier supplier = supplierService.getFirstAsModel(); // TODO needs to be changed to one that is queried
+
+			plant = PlantInventoryEntry.of(href, fetched.getName(), supplier);
 
 			plant = repository.save(plant);
 		} else {

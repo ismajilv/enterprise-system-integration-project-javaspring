@@ -3,6 +3,7 @@ package com.buildit.procurement.application.services;
 import com.buildit.procurement.application.dto.SupplierDTO;
 import com.buildit.procurement.domain.model.Supplier;
 import com.buildit.procurement.web.controller.PlantHireRequestController;
+import com.buildit.procurement.web.controller.SupplierController;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
 

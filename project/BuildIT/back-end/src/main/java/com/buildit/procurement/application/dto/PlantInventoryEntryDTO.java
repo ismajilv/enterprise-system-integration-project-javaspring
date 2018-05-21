@@ -17,4 +17,6 @@ public class PlantInventoryEntryDTO extends ResourceSupport {
 
 	MoneyDTO pricePerDay;
 
+	SupplierDTO supplier;
+
 }

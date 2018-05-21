@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 // TODO - VALUE OBJECT?
 @Entity
@@ -23,5 +21,9 @@ public class PlantInventoryEntry {
 
 	@Column(nullable = false)
 	String name;
+
+	@JoinColumn(name = "supplier_id", nullable = false)
+	@ManyToOne(optional = false)
+	Supplier supplier;
 
 }

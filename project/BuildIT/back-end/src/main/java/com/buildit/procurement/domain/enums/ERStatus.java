@@ -1,15 +1,11 @@
 package com.buildit.procurement.domain.enums;
 
-public enum POStatus {
+public enum ERStatus {
 
 	PENDING,
 
 	ACCEPTED,
 
-	REJECTED,
-
-	CANCELLED,
-
-	PLANT_DELIVERED
+	REJECTED
 
 }

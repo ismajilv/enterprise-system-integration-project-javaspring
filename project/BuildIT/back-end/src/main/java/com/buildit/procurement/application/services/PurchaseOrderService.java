@@ -3,6 +3,7 @@ package com.buildit.procurement.application.services;
 import com.buildit.procurement.application.dto.PurchaseOrderDTO;
 import com.buildit.procurement.domain.enums.POStatus;
 import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
+import com.buildit.procurement.domain.model.PlantHireRequest;
 import com.buildit.procurement.domain.model.PurchaseOrder;
 import com.buildit.procurement.domain.repository.PurchaseOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +24,22 @@ public class PurchaseOrderService {
 	@Autowired
 	PurchaseOrderAssembler assembler;
 
+	@Autowired
+	PlantHireRequestService plantHireRequestService;
+
 	@Transactional
-	public PurchaseOrder create(String href, POStatus status) {
+	public PurchaseOrder create(String href, POStatus status, Long plantHireRequestId) {
 		requireNonNull(href);
 		requireNonNull(status);
 		if (href.length() < 10) throw new IllegalArgumentException("Illegal href: " + href);
 
 		PurchaseOrder purchaseOrder = new PurchaseOrder();
 
+		PlantHireRequest plantHireRequest = plantHireRequestService.readModel(plantHireRequestId);
+
 		purchaseOrder.setHref(href);
 		purchaseOrder.setStatus(status);
+		purchaseOrder.setPlantHireRequest(plantHireRequest);
 
 		purchaseOrder = repository.save(purchaseOrder);
 
@@ -44,7 +51,7 @@ public class PurchaseOrderService {
 		return assembler.toResources(repository.findAll());
 	}
 
-	private PurchaseOrder readModel(String id) {
+	public PurchaseOrder readModel(String id) {
 		Optional<PurchaseOrder> maybePurchaseOrder = repository.findById(id);
 
 		if (!maybePurchaseOrder.isPresent()) {

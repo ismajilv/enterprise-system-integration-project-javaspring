@@ -1,0 +1,22 @@
+package com.buildit.procurement.domain.model;
+
+import lombok.Data;
+
+import javax.persistence.*;
+
+@Entity
+@Data
+public class RemittanceAdvice {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	Long id;
+
+	@Column
+	String note;
+
+	@JoinColumn(name = "invoice_id", nullable = false)
+	@ManyToOne(optional = false)
+	Invoice invoice;
+
+}

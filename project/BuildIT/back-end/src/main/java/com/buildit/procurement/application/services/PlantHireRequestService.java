@@ -101,7 +101,7 @@ public class PlantHireRequestService {
 
 		PlantHireRequest plantHireRequest = new PlantHireRequest();
 
-		plantHireRequest.setStatus(PHRStatus.PENDING);
+		plantHireRequest.setStatus(PHRStatus.PENDING_APPROVAL);
 
 		ConstructionSite constructionSite = constructionSiteService.readModel(constructionSiteId);
 		plantHireRequest.setConstructionSite(constructionSite);
@@ -168,7 +168,7 @@ public class PlantHireRequestService {
 
 		POStatus status = createdPO.getStatus().convertToLocal();
 
-		PurchaseOrder purchaseOrder = purchaseOrderService.create(href, status);
+		PurchaseOrder purchaseOrder = purchaseOrderService.create(href, status, id);
 
 		request.setPurchaseOrder(purchaseOrder);
 

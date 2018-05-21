@@ -2,6 +2,7 @@ package com.buildit.test;
 
 import com.buildit.common.application.dto.EmployeeDTO;
 import com.buildit.common.domain.model.BusinessPeriod;
+import com.buildit.procurement.application.dto.ExtensionDTO;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.application.services.*;
 import com.buildit.procurement.domain.enums.Role;
@@ -35,6 +36,9 @@ public class TestDataProvider {
 
 	@Autowired
 	EmployeeService employeeService;
+
+	@Autowired
+	ExtensionRequestService extensionRequestService;
 
 	@Value("${rentItUrl}")
 	String rentItUrl;
@@ -95,6 +99,24 @@ public class TestDataProvider {
 				);
 
 		plantHireRequestService.reject(rejectedPlantHireRequest.get_id());
+
+		PlantHireRequestDTO acceptedPlantHireRequest =
+
+				plantHireRequestService.addRequest(
+						constructionSite1.getId(),
+						supplierRamirent.getId(),
+						rentItUrl + "/api/sales/plants/3",
+						BusinessPeriod.of(
+								LocalDate.now().plusDays(10),
+								LocalDate.now().plusDays(12)
+						)
+				);
+
+		plantHireRequestService.accept(acceptedPlantHireRequest.get_id());
+
+		ExtensionDTO extension = extensionRequestService.create(acceptedPlantHireRequest.get_id(), acceptedPlantHireRequest.getRentalPeriod().getEndDate().plusDays(3));
+
+		// TODO add some seed data with PurchaseOrder Invoice RemittanceAdvice
 	}
 
 }

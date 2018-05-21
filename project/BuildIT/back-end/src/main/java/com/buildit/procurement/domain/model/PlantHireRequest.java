@@ -61,7 +61,7 @@ public class PlantHireRequest {
 	public void setStatus(PHRStatus newStatus) {
 		if (!isNull(status)) {
 			switch (status) {
-				case PENDING:
+				case PENDING_APPROVAL:
 					this.status = newStatus;
 					break;
 				default:
