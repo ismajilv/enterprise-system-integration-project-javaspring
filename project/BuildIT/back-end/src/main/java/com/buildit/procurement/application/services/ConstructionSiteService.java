@@ -1,6 +1,7 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.ConstructionSiteDTO;
+import com.buildit.procurement.application.services.assemblers.ConstructionSiteAssembler;
 import com.buildit.procurement.domain.model.ConstructionSite;
 import com.buildit.procurement.domain.repository.ConstructionSiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class ConstructionSiteService {
 	ConstructionSiteRepository constructionSiteRepository;
 
 	@Autowired
-	ConstructionSiteAssembler constructionSiteAssembler;
+    ConstructionSiteAssembler constructionSiteAssembler;
 
 	@Transactional
 	public ConstructionSite create(String address) {

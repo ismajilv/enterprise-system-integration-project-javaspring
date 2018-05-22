@@ -1,4 +1,4 @@
-package com.buildit.procurement.web.controller;
+package com.buildit.procurement.web.controller.dev.controllers;
 
 import com.buildit.procurement.application.dto.CommentDTO;
 import com.buildit.procurement.application.services.CommentService;

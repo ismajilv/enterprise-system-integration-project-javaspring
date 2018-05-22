@@ -6,6 +6,8 @@ import com.buildit.procurement.application.dto.CreatePlantHireRequestDTO;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.application.services.CommentService;
 import com.buildit.procurement.application.services.PlantHireRequestService;
+import com.buildit.procurement.web.controller.dev.controllers.EmployeeController;
+import com.buildit.procurement.web.controller.dev.controllers.SupplierController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;

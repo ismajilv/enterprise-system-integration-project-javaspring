@@ -24,8 +24,8 @@ public class PurchaseOrder {
 	@OneToOne(optional = false)
 	PlantHireRequest plantHireRequest;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "purchaseOrder", cascade = CascadeType.ALL)
-	@Fetch(value = FetchMode.SUBSELECT)
-	Collection<Invoice> invoices = new ArrayList<>();
+	@JoinColumn(name = "invoice_id", nullable = false)
+	@OneToOne(optional = false)
+	Invoice invoice;
 
 }

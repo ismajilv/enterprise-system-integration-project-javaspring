@@ -1,4 +1,4 @@
-package com.buildit.procurement.application.services;
+package com.buildit.procurement.application.services.assemblers;
 
 import com.buildit.procurement.application.dto.SupplierDTO;
 import com.buildit.procurement.domain.model.Supplier;

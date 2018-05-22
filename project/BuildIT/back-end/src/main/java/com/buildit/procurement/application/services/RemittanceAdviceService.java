@@ -31,7 +31,7 @@ public class RemittanceAdviceService {
 
 		RemittanceAdvice remittanceAdvice = null; // TODO
 
-		RemittanceAdviceDTO remittanceAdviceDTO = null; // TODO assembler etc.
+		RemittanceAdviceDTO remittanceAdviceDTO = null; // TODO assemblers etc.
 
 		rentItService.sendRemittanceAdvice(supplierId, remittanceAdviceDTO);
 

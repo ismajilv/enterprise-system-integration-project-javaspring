@@ -1,6 +1,7 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.ExtensionRequestDTO;
+import com.buildit.procurement.application.services.assemblers.ExtensionRequestAssembler;
 import com.buildit.procurement.domain.model.ExtensionRequest;
 import com.buildit.procurement.domain.model.PlantHireRequest;
 import com.buildit.procurement.domain.repository.ExtensionRequestRepository;
@@ -17,7 +18,7 @@ public class ExtensionRequestService {
 	ExtensionRequestRepository repository;
 
 	@Autowired
-	ExtensionRequestAssembler assembler;
+    ExtensionRequestAssembler assembler;
 
 	@Autowired
 	PlantHireRequestService plantHireRequestService;

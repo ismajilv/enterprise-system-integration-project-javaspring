@@ -22,7 +22,7 @@ public class Invoice {
 	LocalDate dueDate;
 
 	@JoinColumn(name = "purchase_order_id", nullable = false)
-	@ManyToOne(optional = false)
+	@OneToOne(optional = false)
 	PurchaseOrder purchaseOrder;
 
 	@Column(nullable = false)

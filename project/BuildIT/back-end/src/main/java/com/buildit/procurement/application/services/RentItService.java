@@ -2,6 +2,7 @@ package com.buildit.procurement.application.services;
 
 import com.buildit.common.application.dto.BusinessPeriodDTO;
 import com.buildit.procurement.application.dto.*;
+import com.buildit.procurement.application.services.assemblers.RentItToBuildItPlantInventoryEntryAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -20,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 public class RentItService {
 
 	@Autowired
-	RentItToBuildItPlantInventoryEntryAssembler rent2buildEntryAssembler;
+    RentItToBuildItPlantInventoryEntryAssembler rent2buildEntryAssembler;
 
 	@Value("${rentItUrl}")
 	String rentItUrl;
