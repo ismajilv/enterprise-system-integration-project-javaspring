@@ -88,6 +88,13 @@ public class PlantHireRequestController {
 		return transformIntoResponse(acceptedRequest, HttpStatus.OK);
 	}
 
+	@PostMapping("/{id}/cancel")
+	public ResponseEntity<Resource<PlantHireRequestDTO>> cancel(@PathVariable Long id) {
+		PlantHireRequestDTO cancelledRequest = service.cancel(id);
+
+		return transformIntoResponse(cancelledRequest, HttpStatus.OK);
+	}
+
 	@PostMapping("/{id}/reject")
 	public ResponseEntity<Resource<PlantHireRequestDTO>> reject(@PathVariable Long id) {
 		PlantHireRequestDTO rejectedRequest = service.reject(id);

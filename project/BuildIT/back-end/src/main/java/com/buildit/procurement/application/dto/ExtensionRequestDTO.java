@@ -22,4 +22,14 @@ public class ExtensionRequestDTO extends ResourceSupport {
 
 	String comment;
 
+	@Override
+	public boolean hasLinks() {
+		return false;
+	}
+
+	@Override
+	public boolean hasLink(String rel) {
+		return false;
+	}
+
 }

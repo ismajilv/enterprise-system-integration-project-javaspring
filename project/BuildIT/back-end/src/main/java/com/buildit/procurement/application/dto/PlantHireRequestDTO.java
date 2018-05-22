@@ -34,4 +34,6 @@ public class PlantHireRequestDTO extends ResourceSupport {
 
 	EmployeeDTO approvingWorksEngineer;
 
+	ExtensionRequestDTO extensionRequest;
+
 }

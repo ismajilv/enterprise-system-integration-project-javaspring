@@ -12,6 +12,7 @@ import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
 import com.buildit.procurement.domain.enums.Role;
 import com.buildit.procurement.domain.model.*;
 import com.buildit.procurement.domain.repository.PlantHireRequestRepository;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,9 +81,13 @@ public class PlantHireRequestService {
 		}
 
 		if (!isNull(plantHref)) {
-			PlantInventoryEntry plant = plantInventoryEntryService.readOrCreateModel(plantHref);
+			if (!isNull(supplierId)) {
+				PlantInventoryEntry plant = plantInventoryEntryService.readOrCreateModel(plantHref, supplierId);
 
-			request.setPlant(plant);
+				request.setPlant(plant);
+			} else {
+				throw new IllegalArgumentException("Need supplier ID as well with plant");
+			}
 		}
 
 		BigDecimal cost = calculateCost(request.getPlant().getHref(), request.getRentalPeriod());
@@ -99,7 +104,7 @@ public class PlantHireRequestService {
 										  Long supplierId,
 										  String plantHref,
 										  BusinessPeriod rentalPeriod) {
-		PlantInventoryEntry plant = plantInventoryEntryService.readOrCreateModel(plantHref);
+		PlantInventoryEntry plant = plantInventoryEntryService.readOrCreateModel(plantHref, supplierId);
 
 		PlantHireRequest plantHireRequest = new PlantHireRequest();
 
@@ -171,6 +176,8 @@ public class PlantHireRequestService {
 		PHRStatus status = createdPO.getStatus().convertToPHRStatus();
 		request.setStatus(status);
 
+		request.setApprovingWorksEngineer(employeeService.getLoggedInEmployee(Role.WORKS_ENGINEER));
+
 		PurchaseOrder purchaseOrder = purchaseOrderService.create(href, id);
 
 		request.setPurchaseOrder(purchaseOrder);
@@ -190,11 +197,20 @@ public class PlantHireRequestService {
 
 		request.setStatus(PHRStatus.REJECTED);
 
+		request.setApprovingWorksEngineer(employeeService.getLoggedInEmployee(Role.WORKS_ENGINEER));
+
 		request = repository.save(request);
 
 		return assembler.toResource(request);
 	}
 
+	@Transactional
+	public PlantHireRequestDTO cancel(Long id) {
+		// TODO
+		// check previous state, so cancelling is allowed.
+		// may need to notify rentit partner as well
+		throw new NotImplementedException("");
+	}
 
 	@Transactional
 	public void updateStatus(String href, RentItPurchaseOrderStatus newStatus) {

@@ -55,6 +55,8 @@ public class PlantHireRequest {
 	@JoinColumn(name = "approving_works_engineer_id")
 	@ManyToOne
 	Employee approvingWorksEngineer;
+	@OneToOne(mappedBy = "plantHireRequest")
+	ExtensionRequest extensionRequest;
 	//</editor-fold>
 
 	public void setStatus(PHRStatus newStatus) {
