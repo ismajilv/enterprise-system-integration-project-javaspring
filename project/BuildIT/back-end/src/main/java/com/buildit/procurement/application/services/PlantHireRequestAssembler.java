@@ -2,7 +2,6 @@ package com.buildit.procurement.application.services;
 
 import com.buildit.common.application.service.BusinessPeriodAssembler;
 import com.buildit.common.application.service.EmployeeAssembler;
-import com.buildit.common.application.service.MoneyAssembler;
 import com.buildit.procurement.application.dto.CommentDTO;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.domain.model.PlantHireRequest;
@@ -34,9 +33,6 @@ public class PlantHireRequestAssembler extends ResourceAssemblerSupport<PlantHir
 	PlantInventoryEntryAssembler plantInventoryEntryAssembler;
 
 	@Autowired
-	MoneyAssembler moneyAssembler;
-
-	@Autowired
 	PurchaseOrderAssembler purchaseOrderAssembler;
 
 	@Autowired
@@ -64,7 +60,7 @@ public class PlantHireRequestAssembler extends ResourceAssemblerSupport<PlantHir
 
 		dto.setPlant(plantInventoryEntryAssembler.toResource(plantHireRequest.getPlant()));
 
-		dto.setRentalCost(moneyAssembler.toResource(plantHireRequest.getRentalCost()));
+		dto.setRentalCost(plantHireRequest.getRentalCost());
 
 		dto.setStatus(plantHireRequest.getStatus());
 

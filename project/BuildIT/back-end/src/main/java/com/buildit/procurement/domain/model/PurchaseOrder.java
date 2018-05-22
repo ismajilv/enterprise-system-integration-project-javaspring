@@ -1,6 +1,5 @@
 package com.buildit.procurement.domain.model;
 
-import com.buildit.procurement.domain.enums.POStatus;
 import lombok.Data;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -18,9 +17,8 @@ public class PurchaseOrder {
 	@URL
 	String href;
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	POStatus status;
+	@Column
+	Long externalId;
 
 	@JoinColumn(name = "plant_hire_request_id", nullable = false)
 	@OneToOne(optional = false)

@@ -1,7 +1,6 @@
 package com.buildit.procurement.application.services;
 
-import com.buildit.procurement.application.dto.ExtensionDTO;
-import com.buildit.procurement.domain.enums.ERStatus;
+import com.buildit.procurement.application.dto.ExtensionRequestDTO;
 import com.buildit.procurement.domain.model.ExtensionRequest;
 import com.buildit.procurement.domain.model.PlantHireRequest;
 import com.buildit.procurement.domain.repository.ExtensionRequestRepository;
@@ -18,13 +17,13 @@ public class ExtensionRequestService {
 	ExtensionRequestRepository repository;
 
 	@Autowired
-	CommentAssembler assembler;
+	ExtensionRequestAssembler assembler;
 
 	@Autowired
 	PlantHireRequestService plantHireRequestService;
 
 	@Transactional
-	public ExtensionDTO create(Long plantHireRequestId, LocalDate newEndDate) {
+	public ExtensionRequestDTO create(Long plantHireRequestId, LocalDate newEndDate) {
 		PlantHireRequest plantHireRequest = plantHireRequestService.readModel(plantHireRequestId);
 
 		ExtensionRequest request = new ExtensionRequest();
@@ -33,11 +32,9 @@ public class ExtensionRequestService {
 
 		request.setNewEndDate(newEndDate);
 
-		request.setState(ERStatus.PENDING);
-
 		request = repository.save(request);
 
-		return null; // TODO assembler.toResource(request);
+		return assembler.toResource(request);
 	}
 
 }

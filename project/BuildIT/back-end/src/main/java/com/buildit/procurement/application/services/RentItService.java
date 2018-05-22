@@ -1,9 +1,7 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.common.application.dto.BusinessPeriodDTO;
-import com.buildit.common.domain.model.AddressDTO;
 import com.buildit.procurement.application.dto.*;
-import com.buildit.procurement.web.controller.RentItCallbackController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -17,8 +15,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Service
 public class RentItService {
@@ -91,7 +87,7 @@ public class RentItService {
 
 	public RentItPurchaseOrderDTO createPurchaseOrder(String href, BusinessPeriodDTO businessPeriodDTO) {
 		RentItPlantInventoryEntryDTO rentItEntry = fetchPlantEntryFromRentIt(href);
-        String respondTo = rentItUrl + "/callbacks/orderStateChanged";
+		String respondTo = rentItUrl + "/callbacks/orderStateChanged";
 		RentItCreatePORequestDTO rentItPORequest =
 				RentItCreatePORequestDTO.of(rentItEntry, businessPeriodDTO);
 

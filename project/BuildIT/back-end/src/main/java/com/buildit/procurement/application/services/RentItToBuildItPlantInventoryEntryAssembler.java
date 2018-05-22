@@ -1,6 +1,5 @@
 package com.buildit.procurement.application.services;
 
-import com.buildit.common.application.dto.MoneyDTO;
 import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
 import com.buildit.procurement.application.dto.RentItPlantInventoryEntryDTO;
 import com.buildit.procurement.web.controller.PlantHireRequestController;
@@ -20,10 +19,9 @@ public class RentItToBuildItPlantInventoryEntryAssembler extends ResourceAssembl
 
 		dto.setHref(plant.get_links().get("self").get("href"));
 		dto.setName(plant.getName());
-		dto.setPricePerDay(MoneyDTO.of(plant.getPrice()));
+		dto.setPricePerDay(plant.getPrice());
 
 		dto.removeLinks();
-		dto.getPricePerDay().removeLinks();
 
 		return dto;
 	}

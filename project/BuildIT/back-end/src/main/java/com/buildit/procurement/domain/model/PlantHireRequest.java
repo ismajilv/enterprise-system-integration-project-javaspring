@@ -2,11 +2,11 @@ package com.buildit.procurement.domain.model;
 
 import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.common.domain.model.Employee;
-import com.buildit.common.domain.model.Money;
 import com.buildit.procurement.domain.enums.PHRStatus;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -25,9 +25,8 @@ public class PlantHireRequest {
 	@Column(nullable = false)
 	BusinessPeriod rentalPeriod;
 
-	@Embedded
 	@Column(nullable = false)
-	Money rentalCost;
+	BigDecimal rentalCost;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -61,7 +60,7 @@ public class PlantHireRequest {
 	public void setStatus(PHRStatus newStatus) {
 		if (!isNull(status)) {
 			switch (status) {
-				case PENDING_APPROVAL:
+				case PENDING_WORKS_ENGINEER_APPROVAL:
 					this.status = newStatus;
 					break;
 				default:

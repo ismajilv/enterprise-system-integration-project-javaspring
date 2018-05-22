@@ -45,7 +45,7 @@ public class PlantInventoryEntryService {
 
 			Supplier supplier = supplierService.getFirstAsModel(); // TODO needs to be changed to one that is queried
 
-			plant = PlantInventoryEntry.of(href, fetched.getName(), supplier);
+			plant = PlantInventoryEntry.of(href, null, fetched.getName(), supplier); // TODO needs external ID
 
 			plant = repository.save(plant);
 		} else {

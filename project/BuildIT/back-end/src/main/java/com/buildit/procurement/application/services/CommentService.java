@@ -24,14 +24,14 @@ public class CommentService {
 	PlantHireRequestService plantHireRequestService;
 
 	@Transactional
-	public CommentDTO create(Long plantHireRequestId, String text) {
+	public CommentDTO create(Long plantHireRequestId, String contents) {
 		PlantHireRequest plantHireRequest = plantHireRequestService.readModel(plantHireRequestId);
 
 		Comment comment = new Comment();
 
 		comment.setPlantHireRequest(plantHireRequest);
 
-		comment.setContents(text);
+		comment.setContents(contents);
 
 		plantHireRequest.getComments().add(comment);
 

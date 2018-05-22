@@ -4,16 +4,16 @@ public enum RentItPurchaseOrderStatus {
 
 	PENDING, REJECTED, OPEN, CLOSED, PENDING_EXTENSION;
 
-	public POStatus convertToLocal() {
+	public PHRStatus convertToPHRStatus() {
 		switch (this) {
 			case PENDING:
-				return POStatus.PENDING;
+				return PHRStatus.PENDING_WORKS_ENGINEER_APPROVAL;
 			case OPEN:
 			case CLOSED:
 			case PENDING_EXTENSION:
-				return POStatus.ACCEPTED;
+				return PHRStatus.PENDING_RENTAL_PARTNER_APPROVAL;
 			case REJECTED:
-				return POStatus.REJECTED;
+				return PHRStatus.REJECTED;
 			default:
 				throw new IllegalArgumentException("Unknown PO status: " + this);
 		}

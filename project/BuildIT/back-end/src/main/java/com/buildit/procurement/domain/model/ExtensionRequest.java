@@ -1,6 +1,5 @@
 package com.buildit.procurement.domain.model;
 
-import com.buildit.procurement.domain.enums.ERStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -24,9 +23,5 @@ public class ExtensionRequest {
 
 	@Column
 	String comment; // Sent & filled from RentIt if this ER gets rejected
-
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	ERStatus state;
 
 }

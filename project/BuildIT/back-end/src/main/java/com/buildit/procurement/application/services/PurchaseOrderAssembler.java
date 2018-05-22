@@ -19,7 +19,7 @@ public class PurchaseOrderAssembler extends ResourceAssemblerSupport<PurchaseOrd
 		PurchaseOrderDTO dto = createResourceWithId(order.getHref(), order);
 
 		dto.setHref(order.getHref());
-		dto.setStatus(order.getStatus());
+		dto.setExternalId(order.getExternalId());
 
 		return dto;
 	}

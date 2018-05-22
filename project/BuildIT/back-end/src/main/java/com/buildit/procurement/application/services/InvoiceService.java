@@ -2,7 +2,8 @@ package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.InvoiceDTO;
 import com.buildit.procurement.domain.enums.InvoiceStatus;
-import com.buildit.procurement.domain.model.*;
+import com.buildit.procurement.domain.model.Invoice;
+import com.buildit.procurement.domain.model.PurchaseOrder;
 import com.buildit.procurement.domain.repository.InvoiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

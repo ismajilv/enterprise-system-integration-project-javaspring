@@ -22,6 +22,7 @@ public class PlantInventoryEntryAssembler extends ResourceAssemblerSupport<Plant
 		PlantInventoryEntryDTO dto = createResourceWithId(plantInventoryEntry.getHref(), plantInventoryEntry);
 
 		dto.setHref(plantInventoryEntry.getHref());
+		dto.setExternalId(plantInventoryEntry.getExternalId());
 		dto.setName(plantInventoryEntry.getName());
 		dto.setPricePerDay(null); // price does not get stored, as it will be stale data
 		dto.setSupplier(supplierAssembler.toResource(plantInventoryEntry.getSupplier()));

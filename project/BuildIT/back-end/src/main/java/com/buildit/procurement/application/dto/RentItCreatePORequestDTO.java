@@ -1,7 +1,6 @@
 package com.buildit.procurement.application.dto;
 
 import com.buildit.common.application.dto.BusinessPeriodDTO;
-import com.buildit.common.domain.model.AddressDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

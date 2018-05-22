@@ -1,8 +1,6 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.PurchaseOrderDTO;
-import com.buildit.procurement.domain.enums.POStatus;
-import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
 import com.buildit.procurement.domain.model.PlantHireRequest;
 import com.buildit.procurement.domain.model.PurchaseOrder;
 import com.buildit.procurement.domain.repository.PurchaseOrderRepository;
@@ -28,9 +26,8 @@ public class PurchaseOrderService {
 	PlantHireRequestService plantHireRequestService;
 
 	@Transactional
-	public PurchaseOrder create(String href, POStatus status, Long plantHireRequestId) {
+	public PurchaseOrder create(String href, Long plantHireRequestId) {
 		requireNonNull(href);
-		requireNonNull(status);
 		if (href.length() < 10) throw new IllegalArgumentException("Illegal href: " + href);
 
 		PurchaseOrder purchaseOrder = new PurchaseOrder();
@@ -38,7 +35,6 @@ public class PurchaseOrderService {
 		PlantHireRequest plantHireRequest = plantHireRequestService.readModel(plantHireRequestId);
 
 		purchaseOrder.setHref(href);
-		purchaseOrder.setStatus(status);
 		purchaseOrder.setPlantHireRequest(plantHireRequest);
 
 		purchaseOrder = repository.save(purchaseOrder);
@@ -59,17 +55,6 @@ public class PurchaseOrderService {
 		}
 
 		return maybePurchaseOrder.get();
-	}
-
-	@Transactional
-	public void updateStatus(String id, RentItPurchaseOrderStatus status) {
-		requireNonNull(status);
-
-		PurchaseOrder purchaseOrder = readModel(id);
-
-		purchaseOrder.setStatus(status.convertToLocal());
-
-		repository.save(purchaseOrder);
 	}
 
 }

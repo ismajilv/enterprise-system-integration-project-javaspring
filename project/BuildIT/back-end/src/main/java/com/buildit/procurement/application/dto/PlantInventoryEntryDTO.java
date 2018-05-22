@@ -1,10 +1,11 @@
 package com.buildit.procurement.application.dto;
 
-import com.buildit.common.application.dto.MoneyDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.ResourceSupport;
+
+import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor(force = true)
@@ -13,9 +14,11 @@ public class PlantInventoryEntryDTO extends ResourceSupport {
 
 	String href;
 
+	Long externalId;
+
 	String name;
 
-	MoneyDTO pricePerDay;
+	BigDecimal pricePerDay;
 
 	SupplierDTO supplier;
 

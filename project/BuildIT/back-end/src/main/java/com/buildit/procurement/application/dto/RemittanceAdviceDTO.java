@@ -8,6 +8,6 @@ public class RemittanceAdviceDTO extends ResourceSupport {
 
 	Long _id;
 
-	// TODO add other fields
+	String note;
 
 }

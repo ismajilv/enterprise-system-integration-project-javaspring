@@ -19,6 +19,9 @@ public class PlantInventoryEntry {
 	@URL
 	String href;
 
+	@Column
+	Long externalId;
+
 	@Column(nullable = false)
 	String name;
 
