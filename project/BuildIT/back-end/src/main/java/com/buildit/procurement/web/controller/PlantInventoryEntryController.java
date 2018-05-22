@@ -30,4 +30,11 @@ public class PlantInventoryEntryController {
 		return plants;
 	}
 
+	@GetMapping("/{p.id}")
+	public PlantInventoryEntryDTO findPlant(@PathVariable(name = "p.id") String href){
+        PlantInventoryEntryDTO plant = service.fetchByHref(href);
+        plant.removeLinks();
+        return plant;
+	}
+
 }
