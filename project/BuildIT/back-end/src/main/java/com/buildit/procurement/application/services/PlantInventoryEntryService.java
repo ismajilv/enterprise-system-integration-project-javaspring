@@ -35,7 +35,7 @@ public class PlantInventoryEntryService {
 	}
 
 	@Transactional
-	public PlantInventoryEntry readOrCreateModel(String href) {
+	public PlantInventoryEntry readOrCreateModel(String href, Long supplierId) {
 		Optional<PlantInventoryEntry> maybePlantInventoryEntry = repository.findById(href);
 
 		PlantInventoryEntry plant;
@@ -43,9 +43,9 @@ public class PlantInventoryEntryService {
 		if (!maybePlantInventoryEntry.isPresent()) {
 			PlantInventoryEntryDTO fetched = fetchByHref(href);
 
-			Supplier supplier = supplierService.getFirstAsModel(); // TODO needs to be changed to one that is queried
+			Supplier supplier = supplierService.readModel(supplierId);
 
-			plant = PlantInventoryEntry.of(href, null, fetched.getName(), supplier); // TODO needs external ID
+			plant = PlantInventoryEntry.of(href, fetched.getExternalId(), fetched.getName(), supplier);
 
 			plant = repository.save(plant);
 		} else {

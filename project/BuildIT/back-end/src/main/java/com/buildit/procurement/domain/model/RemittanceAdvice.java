@@ -16,7 +16,7 @@ public class RemittanceAdvice {
 	String note;
 
 	@JoinColumn(name = "invoice_id", nullable = false)
-	@ManyToOne(optional = false)
+	@OneToOne(optional = false)
 	Invoice invoice;
 
 }

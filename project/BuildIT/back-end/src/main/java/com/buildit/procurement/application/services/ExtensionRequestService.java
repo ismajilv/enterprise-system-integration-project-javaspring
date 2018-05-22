@@ -4,6 +4,7 @@ import com.buildit.procurement.application.dto.ExtensionRequestDTO;
 import com.buildit.procurement.domain.model.ExtensionRequest;
 import com.buildit.procurement.domain.model.PlantHireRequest;
 import com.buildit.procurement.domain.repository.ExtensionRequestRepository;
+import com.buildit.procurement.domain.repository.PlantHireRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,9 @@ public class ExtensionRequestService {
 	ExtensionRequestRepository repository;
 
 	@Autowired
+	PlantHireRequestRepository plantHireRequestRepository;
+
+	@Autowired
 	ExtensionRequestAssembler assembler;
 
 	@Autowired
@@ -26,15 +30,21 @@ public class ExtensionRequestService {
 	public ExtensionRequestDTO create(Long plantHireRequestId, LocalDate newEndDate) {
 		PlantHireRequest plantHireRequest = plantHireRequestService.readModel(plantHireRequestId);
 
-		ExtensionRequest request = new ExtensionRequest();
+		ExtensionRequest extensionRequest = new ExtensionRequest();
 
-		request.setPlantHireRequest(plantHireRequest);
+		extensionRequest.setPlantHireRequest(plantHireRequest);
 
-		request.setNewEndDate(newEndDate);
+		extensionRequest.setNewEndDate(newEndDate);
 
-		request = repository.save(request);
+		// TODO needs to go to RentIt with this...
 
-		return assembler.toResource(request);
+		extensionRequest = repository.save(extensionRequest);
+
+		plantHireRequest.setExtensionRequest(extensionRequest);
+
+		plantHireRequest = plantHireRequestRepository.save(plantHireRequest);
+
+		return assembler.toResource(extensionRequest);
 	}
 
 }

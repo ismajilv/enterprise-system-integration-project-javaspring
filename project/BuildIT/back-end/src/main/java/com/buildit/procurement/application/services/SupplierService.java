@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
+
 @Service
 public class SupplierService {
 
@@ -53,6 +55,19 @@ public class SupplierService {
 
 	public Supplier getFirstAsModel() {
 		return repository.findAll().iterator().next();
+	}
+
+	public SupplierDTO findOrCreateByName(String name) {
+		requireNonNull(name);
+		if (name.length() < 1) throw new IllegalArgumentException("Name is an empty string");
+		List<Supplier> suppliers = repository.findByName(name);
+		Supplier supplier;
+		if (suppliers.isEmpty()) {
+			supplier = create(name);
+		} else {
+			supplier = suppliers.get(0);
+		}
+		return assembler.toResource(supplier);
 	}
 
 }

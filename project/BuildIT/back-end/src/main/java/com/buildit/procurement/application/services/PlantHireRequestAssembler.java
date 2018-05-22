@@ -38,6 +38,9 @@ public class PlantHireRequestAssembler extends ResourceAssemblerSupport<PlantHir
 	@Autowired
 	EmployeeAssembler employeeAssembler;
 
+	@Autowired
+	ExtensionRequestAssembler extensionRequestAssembler;
+
 	public PlantHireRequestAssembler() {
 		super(PlantHireRequestController.class, PlantHireRequestDTO.class);
 
@@ -72,6 +75,10 @@ public class PlantHireRequestAssembler extends ResourceAssemblerSupport<PlantHir
 
 		if (!isNull(plantHireRequest.getApprovingWorksEngineer())) {
 			dto.setApprovingWorksEngineer(employeeAssembler.toResource(plantHireRequest.getApprovingWorksEngineer()));
+		}
+
+		if (!isNull(plantHireRequest.getExtensionRequest())) {
+			dto.setExtensionRequest(extensionRequestAssembler.toResource(plantHireRequest.getExtensionRequest()));
 		}
 
 		return dto;

@@ -4,16 +4,17 @@ import com.buildit.common.application.dto.EmployeeDTO;
 import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.procurement.application.dto.ExtensionRequestDTO;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
+import com.buildit.procurement.application.dto.SupplierDTO;
 import com.buildit.procurement.application.services.*;
 import com.buildit.procurement.domain.enums.Role;
 import com.buildit.procurement.domain.model.ConstructionSite;
-import com.buildit.procurement.domain.model.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+
+import static com.buildit.procurement.application.services.RentItService.RENTAL_PARTNER_NAME_1;
 
 // TODO delete before going live!
 @Service
@@ -40,8 +41,8 @@ public class TestDataProvider {
 	@Autowired
 	ExtensionRequestService extensionRequestService;
 
-	@Value("${rentItUrl}")
-	String rentItUrl;
+	@Autowired
+	RentItService rentItService;
 
 	@PostConstruct
 	public void init() {
@@ -56,9 +57,13 @@ public class TestDataProvider {
 		ConstructionSite constructionSite3 =
 				constructionSiteService.create("Kase 12, Narva");
 
-		Supplier supplierRamirent = supplierService.create("Ramirent");
+		SupplierDTO supplier = supplierService.findOrCreateByName(RENTAL_PARTNER_NAME_1);
 
-		Supplier supplierCramo = supplierService.create("Cramo");
+		// Supplier supplier = supplierService.readModel(supplierAsDTO.get_id());
+
+		// Supplier supplierRamirent = supplierService.create("Ramirent");
+
+		// Supplier supplierCramo = supplierService.create("Cramo");
 
 		EmployeeDTO employee1 = employeeService.create(Role.SITE_ENGINEER, "James", "Dean");
 
@@ -68,8 +73,8 @@ public class TestDataProvider {
 
 				plantHireRequestService.addRequest(
 						constructionSite1.getId(),
-						supplierRamirent.getId(),
-						rentItUrl + "/api/sales/plants/3",
+						supplier.get_id(),
+						rentItService.getRentItUrl() + "/api/sales/plants/3",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(1),
 								LocalDate.now().plusDays(5)
@@ -90,8 +95,8 @@ public class TestDataProvider {
 
 				plantHireRequestService.addRequest(
 						constructionSite2.getId(),
-						supplierCramo.getId(),
-						rentItUrl + "/api/sales/plants/6",
+						supplier.get_id(),
+						rentItService.getRentItUrl() + "/api/sales/plants/6",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(1),
 								LocalDate.now().plusDays(5)
@@ -104,8 +109,8 @@ public class TestDataProvider {
 
 				plantHireRequestService.addRequest(
 						constructionSite1.getId(),
-						supplierRamirent.getId(),
-						rentItUrl + "/api/sales/plants/3",
+						supplier.get_id(),
+						rentItService.getRentItUrl() + "/api/sales/plants/3",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(10),
 								LocalDate.now().plusDays(12)

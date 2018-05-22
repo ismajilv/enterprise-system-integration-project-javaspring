@@ -1,9 +1,6 @@
 package com.buildit.procurement.application.services;
 
-import com.buildit.procurement.application.dto.InvoiceDTO;
-import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.application.dto.RemittanceAdviceDTO;
-import com.buildit.procurement.domain.model.PurchaseOrder;
 import com.buildit.procurement.domain.model.RemittanceAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

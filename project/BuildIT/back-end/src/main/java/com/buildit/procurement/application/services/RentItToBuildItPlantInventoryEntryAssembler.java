@@ -20,6 +20,7 @@ public class RentItToBuildItPlantInventoryEntryAssembler extends ResourceAssembl
 		dto.setHref(plant.get_links().get("self").get("href"));
 		dto.setName(plant.getName());
 		dto.setPricePerDay(plant.getPrice());
+		dto.setExternalId(plant.get_id());
 
 		dto.removeLinks();
 

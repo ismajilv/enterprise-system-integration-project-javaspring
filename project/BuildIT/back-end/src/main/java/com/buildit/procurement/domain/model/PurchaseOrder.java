@@ -1,13 +1,9 @@
 package com.buildit.procurement.domain.model;
 
 import lombok.Data;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Entity
 @Data
@@ -24,8 +20,7 @@ public class PurchaseOrder {
 	@OneToOne(optional = false)
 	PlantHireRequest plantHireRequest;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "purchaseOrder", cascade = CascadeType.ALL)
-	@Fetch(value = FetchMode.SUBSELECT)
-	Collection<Invoice> invoices = new ArrayList<>();
+	@OneToOne(mappedBy = "purchaseOrder")
+	Invoice invoice;
 
 }
