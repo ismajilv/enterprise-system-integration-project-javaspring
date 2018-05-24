@@ -11,7 +11,9 @@ import com.rentit.inventory.domain.repository.PlantInventoryItemRepository;
 import com.rentit.inventory.domain.repository.PlantReservationRepository;
 import com.rentit.sales.application.dto.POCallbackDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
+import com.rentit.sales.application.exceptions.POStatusException;
 import com.rentit.sales.domain.model.Address;
+import com.rentit.sales.domain.model.POStatus;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,12 @@ public class SalesService {
         return save(po);
     }
 
+    public PurchaseOrder deliverPurchaseOrder(Long id){
+        PurchaseOrder po = findPurchaseOrder(id);
+        po.deliver();
+        return save(po);
+    }
+
     public PurchaseOrder acceptPurchaseOrder(Long poId, Long piiId){
         PurchaseOrder po = findPurchaseOrder(poId);
         PlantInventoryItem pii = plantInventoryItemRepository.getOne(piiId);
@@ -66,6 +74,33 @@ public class SalesService {
         reservation.setSchedule(po.getRentalPeriod());
         reservation = plantReservationRepository.save(reservation);
         po.registerFirstAllocation(reservation);
+        return save(po);
+    }
+
+    public PurchaseOrder cancelPurchaseOrder(Long id) throws POStatusException {
+        PurchaseOrder po = findPurchaseOrder(id);
+        if(!(po.getStatus().equals(POStatus.OPEN)||po.getStatus().equals(POStatus.PENDING))){
+            throw new POStatusException("cancel", po.getStatus());
+        }
+        po.cancel();
+        return save(po);
+    }
+
+    public PurchaseOrder dispatchPurchaseOrder(Long id){
+        PurchaseOrder po = findPurchaseOrder(id);
+        po.dispatch();
+        return save(po);
+    }
+
+    public PurchaseOrder customerRejectPurchaseOrder(Long id){
+        PurchaseOrder po = findPurchaseOrder(id);
+        po.customerReject();
+        return save(po);
+    }
+
+    public PurchaseOrder markAsReturned(Long id){
+        PurchaseOrder po = findPurchaseOrder(id);
+        po.markAsReturned();
         return save(po);
     }
 

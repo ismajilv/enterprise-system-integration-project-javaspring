@@ -81,4 +81,38 @@ public class PurchaseOrder {
         status = POStatus.REJECTED;
     }
 
+    public void cancel() {
+        status = POStatus.CANCELLED;
+    }
+
+    public void dispatch() {
+        status = POStatus.DISPATCHED;
+    }
+
+    public void deliver() {
+        status = POStatus.DELIVERED;
+    }
+
+    public void customerReject() {
+        status = POStatus.REJECTED_BY_CUSTOMER;
+    }
+
+    public void markAsReturned() {
+        status = POStatus.RETURNED;
+    }
+
+    @Override
+    public String toString() {
+        return "PurchaseOrder{" +
+                "id=" + id +
+                ", reservations=" + reservations +
+                ", plant=" + plant +
+                ", issueDate=" + issueDate +
+                ", paymentSchedule=" + paymentSchedule +
+                ", total=" + total +
+                ", status=" + status +
+                ", rentalPeriod=" + rentalPeriod +
+                ", extensions=" + extensions +
+                '}';
+    }
 }

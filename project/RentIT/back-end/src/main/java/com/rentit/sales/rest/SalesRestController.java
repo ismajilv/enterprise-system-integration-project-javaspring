@@ -9,6 +9,7 @@ import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.inventory.domain.model.PlantInventoryItem;
 import com.rentit.sales.application.dto.POExtensionDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
+import com.rentit.sales.application.exceptions.POStatusException;
 import com.rentit.sales.application.services.PurchaseOrderAssembler;
 import com.rentit.sales.application.services.SalesService;
 import com.rentit.sales.domain.model.POStatus;
@@ -90,6 +91,75 @@ public class SalesRestController {
         List<PurchaseOrderDTO> ret = pendingOrders.stream().map(po -> purchaseOrderAssembler.toResource(po)).collect(Collectors.toList());
 
         return new ResponseEntity<>(new Resources<>(ret), HttpStatus.OK);
+    }
+
+    @PostMapping("/orders/{poId}/dispatch")
+    public ResponseEntity<?> dispatchPurchaseOrder(@PathVariable("poId") Long poId) throws URISyntaxException {
+
+        final PurchaseOrder po = salesService.dispatchPurchaseOrder(poId);
+        PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
+        salesService.notifyCustomer(poDTO);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
+        return new ResponseEntity<>(
+                new Resource<PurchaseOrderDTO>(poDTO),
+                headers,
+                HttpStatus.OK);
+    }
+
+    @PostMapping("/orders/{poId}/return")
+    public ResponseEntity<?> markAsReturned(@PathVariable("poId") Long poId) throws URISyntaxException {
+
+        final PurchaseOrder po = salesService.markAsReturned(poId);
+        PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
+        salesService.notifyCustomer(poDTO);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
+        return new ResponseEntity<>(
+                new Resource<PurchaseOrderDTO>(poDTO),
+                headers, HttpStatus.OK);
+    }
+
+    @PostMapping("/orders/{poId}/deliver")
+    public ResponseEntity<?> deliverPurchaseOrder(@PathVariable("poId") Long poId) throws URISyntaxException {
+
+        final PurchaseOrder po = salesService.deliverPurchaseOrder(poId);
+        PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
+        salesService.notifyCustomer(poDTO);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
+        return new ResponseEntity<>(
+                new Resource<PurchaseOrderDTO>(poDTO),
+                headers, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/orders/{poId}/customer_reject")
+    public ResponseEntity<?> rejectByCustomer(@PathVariable("poId") Long poId) throws URISyntaxException {
+
+        final PurchaseOrder po = salesService.customerRejectPurchaseOrder(poId);
+        PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
+        salesService.notifyCustomer(poDTO);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
+        return new ResponseEntity<>(
+                new Resource<PurchaseOrderDTO>(poDTO),
+                headers, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/orders/{poId}/cancel")
+    public ResponseEntity<?> cancelPurchaseOrder(@PathVariable("poId") Long poId) throws POStatusException, URISyntaxException {
+
+        final PurchaseOrder po = salesService.cancelPurchaseOrder(poId);
+        PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
+        salesService.notifyCustomer(poDTO);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
+        return new ResponseEntity<>(
+                new Resource<PurchaseOrderDTO>(poDTO),
+                headers,
+                HttpStatus.OK);
     }
 
     @PostMapping("/orders/{poId}/reject")
