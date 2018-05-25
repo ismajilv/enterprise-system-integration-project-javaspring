@@ -34,6 +34,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.rentit.sales.domain.model.POStatus.CANCELLED;
 import static com.rentit.sales.domain.model.POStatus.OPEN;
 import static com.rentit.sales.domain.model.POStatus.PENDING;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -118,6 +119,126 @@ public class SalesRestControllerTests {
         // period must be in the future
         assertThat(createdPO.getRentalPeriod().getStartDate().isAfter(LocalDate.now().minusDays(1)));
     }
+
+    @Test
+    @Sql("/plants-dataset.sql")
+    public void testCancelPODefaultScenario() throws Exception {
+        PurchaseOrderDTO order = new PurchaseOrderDTO();
+
+        PlantInventoryEntryDTO plantToBeReserved = findAnyPlant();
+
+        order.setPlant(plantToBeReserved);
+
+        order.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now(), LocalDate.now().plusWeeks(1)));
+
+        MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/sales/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        PurchaseOrderDTO createdPO = mapper.readValue(createdPOAsMvcResult.getResponse().getContentAsString(), new TypeReference<PurchaseOrderDTO>() {});
+
+        Long itemId = findAnyItemForPlant(plantToBeReserved.get_id(), order.getRentalPeriod());
+
+        MvcResult canceledPOAsMvcResult = mockMvc.perform(post("/api/sales/orders/" + createdPO.get_id() + "/cancel").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        PurchaseOrderDTO canceledPO = mapper.readValue(canceledPOAsMvcResult.getResponse().getContentAsString(), new TypeReference<PurchaseOrderDTO>() {});
+
+        assertNotNull(canceledPO);
+        assertNotNull(canceledPO.get_id());
+        assertEquals(createdPO.get_id(), canceledPO.get_id());
+        assertNotNull(canceledPO.getStatus());
+        assertEquals(CANCELLED, canceledPO.getStatus());
+    }
+
+/*    @Test
+    @Sql("/plants-dataset.sql")
+    public void testCancelPORejectedScenario() throws Exception {
+
+        PurchaseOrderDTO order = new PurchaseOrderDTO();
+
+        PlantInventoryEntryDTO plantToBeReserved = findAnyPlant();
+
+        order.setPlant(plantToBeReserved);
+
+        order.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now(), LocalDate.now().plusWeeks(1)));
+
+        MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/sales/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        PurchaseOrderDTO createdPO = mapper.readValue(createdPOAsMvcResult.getResponse().getContentAsString(), new TypeReference<PurchaseOrderDTO>() {});
+
+        Long itemId = findAnyItemForPlant(plantToBeReserved.get_id(), order.getRentalPeriod());
+
+        MvcResult acceptedPOAsMvcResult = mockMvc.perform(post("/api/sales/orders/" + createdPO.get_id() + "/accept").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        PurchaseOrderDTO acceptedPO = mapper.readValue(acceptedPOAsMvcResult.getResponse().getContentAsString(), new TypeReference<PurchaseOrderDTO>() {});
+
+        MvcResult dispatchedPOAsMvcResult = mockMvc.perform(post("/api/sales/orders/" + acceptedPO.get_id() + "/dispatch").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        PurchaseOrderDTO dispatchedPO = mapper.readValue(dispatchedPOAsMvcResult.getResponse().getContentAsString(), new TypeReference<PurchaseOrderDTO>() {});
+
+
+        MvcResult canceledPOAsMvcResult = mockMvc.perform(post("/api/sales/orders/" + dispatchedPO.get_id() + "/cancel").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        PurchaseOrderDTO canceledPO = mapper.readValue(canceledPOAsMvcResult.getResponse().getContentAsString(), new TypeReference<PurchaseOrderDTO>() {});
+
+        assertNotNull(canceledPO);
+        assertNotNull(canceledPO.get_id());
+        assertEquals(createdPO.get_id(), canceledPO.get_id());
+        assertNotNull(canceledPO.getStatus());
+        assertEquals(CANCELLED, canceledPO.getStatus());
+
+    }
+*/
+    @Test
+    @Sql("/plants-dataset.sql")
+    public void testCancelAcceptedPOScenario() throws Exception {
+        PurchaseOrderDTO order = new PurchaseOrderDTO();
+
+        PlantInventoryEntryDTO plantToBeReserved = findAnyPlant();
+
+        order.setPlant(plantToBeReserved);
+
+        order.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now(), LocalDate.now().plusWeeks(1)));
+
+        MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/sales/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        PurchaseOrderDTO createdPO = mapper.readValue(createdPOAsMvcResult.getResponse().getContentAsString(), new TypeReference<PurchaseOrderDTO>() {});
+
+        Long itemId = findAnyItemForPlant(plantToBeReserved.get_id(), order.getRentalPeriod());
+
+        MvcResult acceptedPOAsMvcResult = mockMvc.perform(post("/api/sales/orders/" + createdPO.get_id() + "/accept").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        PurchaseOrderDTO acceptedPO = mapper.readValue(acceptedPOAsMvcResult.getResponse().getContentAsString(), new TypeReference<PurchaseOrderDTO>() {});
+
+
+        MvcResult canceledPOAsMvcResult = mockMvc.perform(post("/api/sales/orders/" + acceptedPO.get_id() + "/cancel").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        PurchaseOrderDTO canceledPO = mapper.readValue(canceledPOAsMvcResult.getResponse().getContentAsString(), new TypeReference<PurchaseOrderDTO>() {});
+
+        assertNotNull(canceledPO);
+        assertNotNull(canceledPO.get_id());
+        assertEquals(createdPO.get_id(), canceledPO.get_id());
+        assertNotNull(canceledPO.getStatus());
+        assertEquals(CANCELLED, canceledPO.getStatus());
+
+    }
+
 
     @Test
     @Sql("/plants-dataset.sql")
