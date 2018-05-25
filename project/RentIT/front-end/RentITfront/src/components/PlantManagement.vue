@@ -5,28 +5,28 @@
     <table class="table is-table-bordered is-table-striped is-fullwidth">
     <thead>
         <tr>
-            <th class="has-text-center">id</th>
+            <th class="has-text-center">Id</th>
             <th class="has-text-center">Name</th>
             <th class="has-text-center">Start Date</th>
             <th class="has-text-center">End Date</th>
-            <th class="has-text-center">Site Engineer</th>
-            <th class="has-text-center">Price</th>
+            <th class="has-text-center">Status</th>
+            <th class="has-text-center"></th>
             <th class="has-text-center"></th>
             <th class="has-text-center"></th>
             <th class="has-text-center"></th>
         </tr>
     </thead>
     <tbody>
-          <tr class="table-row-rentit" v-for="pending in allrequest" :key="pending._id" >
+          <tr class="table-row-rentit" v-for="(pending, index)  in allrequest" :key="pending._id" >
             <td class="has-text-center" id="name"> {{pending._id}}</td>
             <td id = "plantNameWE2" class="has-text-center">{{pending.plant.name}}</td>
             <td id = "plantStartDateWE2" class="has-text-center">{{pending.rentalPeriod.startDate}}</td>
             <td id = "plantEndDateWE2" class="has-text-center">{{pending.rentalPeriod.endDate}}</td>
-            <td class="has-text-center"></td>
-            <td id = "plantPriceWE2" class="has-text-center">{{pending.plant.price}}</td>
-            <td><a v-on:click="markDispatched" class="button is-success is-outlined">Dispatch</a> </td>
-            <td><a v-on:click="markDelivered" class="button is-success is-outlined">Deliver</a> </td>
-            <td><a v-on:click="markReturned" class="button is-success is-outlined">Return</a> </td>
+            <td>{{pending.status}}</td>
+            <td><button v-on:click="markDispatched(index)" :disabled="pending.status != 'PENDING'" class="button is-success is-outlined">Dispatch</button> </td>
+            <td><a v-on:click="markDelivered(index)" :disabled="pending.status != 'DISPATCHED'" class="button is-success is-outlined">Deliver</a> </td>
+            <td><button v-on:click="markRejectedByCustomer(index)" :disabled="pending.status != 'DISPATCHED'" class="button is-danger is-outlined">Rejected by customer</button> </td>
+            <td><a v-on:click="markReturned(index)" :disabled="pending.status != 'DELIVERED'" class="button is-success is-outlined">Return</a> </td>
         </tr>
     </tbody>
 </table>
@@ -46,46 +46,58 @@ export default {
       }
   },
    mounted:function(){
-    this.pendingpurchaseOrder();
+    this.findAllPOs();
   },
   methods: {
-      pendingpurchaseOrder: function(){
-         axios.get("http://localhost:8090/api/sales/orders")
+      findAllPOs: function(){
+         axios.get("http://localhost:8090/api/sales/orders/all")
         .then(response => {
-          this.allrequest = response.data._embedded.purchaseOrderDTOList;
-          console.log("Response", this.allrequest);
+          console.log("Response",response);
+          if(response.data != null && response.data._embedded != null){
+            this.allrequest = response.data._embedded.purchaseOrderDTOList;
+          }
         });
       },
       markDispatched: function(inputOrder){
-           let i= document.getElementById("name").innerHTML
-           let params = i + "/dispatch"
-           console.log("Dispatch", i);
-        axios.get("http://localhost:8080/api/requests/", params)
-        .then(response => {
-           this.$snackbar.open("You have dispatched this purchase order.");
-         console.log("Dispatch", response.data._embedded);
+         const poId = this.allrequest[inputOrder]._id;
+         console.log("Dispatch", poId);
+         axios.post("http://localhost:8090/api/sales/orders/"+poId+"/dispatch")
+         .then(response => {
+          this.$snackbar.open("You have dispatched this purchase order.");
+          console.log("Response " +response);
+          this.$set(this.allrequest, inputOrder, response.data);
         });
+      },
+      markRejectedByCustomer: function(inputOrder){
+        const poId = this.allrequest[inputOrder]._id;
+        console.log("Rejected by customer ", poId);
+        axios.post("http://localhost:8090/api/sales/orders/"+poId+"/customer_reject")
+          .then(response => {
+            this.$snackbar.open("This PO has been succesfully rejected by customer.");
+            console.log("Response " +response);
+            this.$set(this.allrequest, inputOrder, response.data);
+          });
       },
       markDelivered: function(inputOrder){
-           let i= document.getElementById("name").innerHTML
-           let params = i + "/deliver"
-           console.log("Deliver", i);
-        axios.get("http://localhost:8080/api/requests/", params)
-        .then(response => {
-          this.$snackbar.open("You have delivered this purchase order.");
-          console.log("Deliver", response);
-        });
+        const poId = this.allrequest[inputOrder]._id;
+        console.log("Delivered to customer ", poId);
+        axios.post("http://localhost:8090/api/sales/orders/"+poId+"/deliver")
+          .then(response => {
+            this.$snackbar.open("This PO has been succesfully delivered.");
+            console.log("Response " +response);
+            this.$set(this.allrequest, inputOrder, response.data);
+          });
       },
       markReturned: function(inputOrder){
-           let i= document.getElementById("name").innerHTML
-           let params = i + "/return"
-           console.log("Return", i);
-        axios.get("http://localhost:8080/api/requests/", params)
-        .then(response => {
-          this.$snackbar.open("You have returned this purchase order.");
-          console.log("Deliver", response);
-        });
-      },
+        const poId = this.allrequest[inputOrder]._id;
+        console.log("Returned by customer ", poId);
+        axios.post("http://localhost:8090/api/sales/orders/"+poId+"/return")
+          .then(response => {
+            this.$snackbar.open("This PO has been succesfully returned.");
+            console.log("Response " +response);
+            this.$set(this.allrequest, inputOrder, response.data);
+          });
+      }
   }
 }
 </script>

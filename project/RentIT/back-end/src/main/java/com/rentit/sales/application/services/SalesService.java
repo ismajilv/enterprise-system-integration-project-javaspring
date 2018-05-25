@@ -141,6 +141,10 @@ public class SalesService {
         return purchaseOrderRepository.findPendingPurchaseOrders();
     }
 
+    public List<PurchaseOrder> findAllOrders() {
+        return purchaseOrderRepository.findAll();
+    }
+
     public void notifyCustomer(PurchaseOrderDTO po) {
         POCallbackDTO callback = POCallbackDTO.of("http://localhost:8090/api/sales/orders/" + po.get_id(), po.getStatus());
 

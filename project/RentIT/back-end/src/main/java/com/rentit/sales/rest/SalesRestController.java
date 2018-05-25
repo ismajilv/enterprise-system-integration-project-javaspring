@@ -93,6 +93,15 @@ public class SalesRestController {
         return new ResponseEntity<>(new Resources<>(ret), HttpStatus.OK);
     }
 
+    @GetMapping("/orders/all")
+    public ResponseEntity<?> getAll() {
+        List<PurchaseOrder> allOrders = salesService.findAllOrders();
+
+        List<PurchaseOrderDTO> ret = allOrders.stream().map(po -> purchaseOrderAssembler.toResource(po)).collect(Collectors.toList());
+
+        return new ResponseEntity<>(new Resources<>(ret), HttpStatus.OK);
+    }
+
     @PostMapping("/orders/{poId}/dispatch")
     public ResponseEntity<?> dispatchPurchaseOrder(@PathVariable("poId") Long poId) throws URISyntaxException {
 
