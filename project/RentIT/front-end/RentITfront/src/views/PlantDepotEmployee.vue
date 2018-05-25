@@ -1,15 +1,15 @@
 <template>
   <div class="PlantDepotEmployee">
-   <order-creation></order-creation>
+   <plant-management></plant-management>
   </div>
 </template>
 
 <script>
-
+import PlantManagement from "../components/PlantManagement.vue"
 export default {
   name: 'PlantDepotEmployee',
   components: {
-    
+    PlantManagement
   },
   data () {
     return {
