@@ -1,4 +1,4 @@
-package com.buildit.procurement.application.services;
+package com.buildit.procurement.application.services.assemblers;
 
 import com.buildit.common.application.service.BusinessPeriodAssembler;
 import com.buildit.common.application.service.EmployeeAssembler;

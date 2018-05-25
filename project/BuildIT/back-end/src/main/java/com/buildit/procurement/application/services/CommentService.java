@@ -1,6 +1,7 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.CommentDTO;
+import com.buildit.procurement.application.services.assemblers.CommentAssembler;
 import com.buildit.procurement.domain.model.Comment;
 import com.buildit.procurement.domain.model.PlantHireRequest;
 import com.buildit.procurement.domain.repository.CommentRepository;
@@ -18,7 +19,7 @@ public class CommentService {
 	CommentRepository repository;
 
 	@Autowired
-	CommentAssembler assembler;
+    CommentAssembler assembler;
 
 	@Autowired
 	PlantHireRequestService plantHireRequestService;

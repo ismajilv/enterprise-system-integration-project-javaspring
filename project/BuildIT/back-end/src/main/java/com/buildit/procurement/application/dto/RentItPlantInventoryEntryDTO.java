@@ -17,5 +17,4 @@ public class RentItPlantInventoryEntryDTO {
 	@Column(precision = 8, scale = 2)
 	BigDecimal price;
 	Map<String, Map<String, String>> _links; // self->href->"http://..."
-
 }

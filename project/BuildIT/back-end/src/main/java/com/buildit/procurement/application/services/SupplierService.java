@@ -1,6 +1,7 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.SupplierDTO;
+import com.buildit.procurement.application.services.assemblers.SupplierAssembler;
 import com.buildit.procurement.domain.model.Supplier;
 import com.buildit.procurement.domain.repository.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class SupplierService {
 	SupplierRepository repository;
 
 	@Autowired
-	SupplierAssembler assembler;
+    SupplierAssembler assembler;
 
 	@Transactional
 	public Supplier create(String name) {

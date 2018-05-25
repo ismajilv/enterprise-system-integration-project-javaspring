@@ -6,6 +6,7 @@ import com.buildit.common.domain.model.Employee;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
 import com.buildit.procurement.application.dto.RentItPurchaseOrderDTO;
+import com.buildit.procurement.application.services.assemblers.PlantHireRequestAssembler;
 import com.buildit.procurement.domain.enums.PHRStatus;
 import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
 import com.buildit.procurement.domain.enums.Role;
@@ -41,7 +42,7 @@ public class PlantHireRequestService {
 	PlantInventoryEntryService plantInventoryEntryService;
 
 	@Autowired
-	PlantHireRequestAssembler assembler;
+    PlantHireRequestAssembler assembler;
 
 	@Autowired
 	BusinessPeriodAssembler businessPeriodAssembler;

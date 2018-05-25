@@ -1,6 +1,8 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
+import com.buildit.procurement.application.services.assemblers.PlantInventoryEntryAssembler;
+import com.buildit.procurement.application.services.assemblers.RentItToBuildItPlantInventoryEntryAssembler;
 import com.buildit.procurement.domain.model.PlantInventoryEntry;
 import com.buildit.procurement.domain.model.Supplier;
 import com.buildit.procurement.domain.repository.PlantInventoryEntryRepository;
@@ -19,10 +21,10 @@ public class PlantInventoryEntryService {
 	PlantInventoryEntryRepository repository;
 
 	@Autowired
-	PlantInventoryEntryAssembler assembler;
+    PlantInventoryEntryAssembler assembler;
 
 	@Autowired
-	RentItToBuildItPlantInventoryEntryAssembler rentItToBuildItPlantInventoryEntryAssembler;
+    RentItToBuildItPlantInventoryEntryAssembler rentItToBuildItPlantInventoryEntryAssembler;
 
 	@Autowired
 	RentItService integrationService;

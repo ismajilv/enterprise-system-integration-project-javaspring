@@ -2,6 +2,7 @@ package com.buildit.procurement.application.services;
 
 import com.buildit.common.application.dto.BusinessPeriodDTO;
 import com.buildit.procurement.application.dto.*;
+import com.buildit.procurement.application.services.assemblers.RentItToBuildItPlantInventoryEntryAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -19,7 +20,7 @@ public class RentItService {
 	public static final String RENTAL_PARTNER_NAME_1 = "Own RentIt";
 
 	@Autowired
-	RentItToBuildItPlantInventoryEntryAssembler rent2buildEntryAssembler;
+    RentItToBuildItPlantInventoryEntryAssembler rent2buildEntryAssembler;
 
 	@Autowired
 	private SupplierService supplierService;

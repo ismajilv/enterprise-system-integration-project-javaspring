@@ -1,6 +1,7 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.PurchaseOrderDTO;
+import com.buildit.procurement.application.services.assemblers.PurchaseOrderAssembler;
 import com.buildit.procurement.domain.model.PlantHireRequest;
 import com.buildit.procurement.domain.model.PurchaseOrder;
 import com.buildit.procurement.domain.repository.PurchaseOrderRepository;
@@ -20,7 +21,7 @@ public class PurchaseOrderService {
 	PurchaseOrderRepository repository;
 
 	@Autowired
-	PurchaseOrderAssembler assembler;
+    PurchaseOrderAssembler assembler;
 
 	@Autowired
 	PlantHireRequestService plantHireRequestService;

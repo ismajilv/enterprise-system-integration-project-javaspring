@@ -40,7 +40,7 @@ public class InvoiceService {
 
 		invoice = repository.save(invoice);
 
-		return null; // TODO assembler.toResource(invoice);
+		return null; // TODO assemblers.toResource(invoice);
 	}
 
 	@Transactional
