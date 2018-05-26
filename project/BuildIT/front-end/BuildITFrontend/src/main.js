@@ -8,25 +8,23 @@ import 'buefy/lib/buefy.css'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 
-import Datepicker from 'vuejs-datepicker'
 import moment from 'moment'
 
-Vue.use(VueMaterial)
-Vue.use(Buefy)
+Vue.use(VueMaterial);
+Vue.use(Buefy);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
-/* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   components: { App },
   template: '<App/>'
-})
+});
 
 Vue.filter('formatDate', function(value) {
   if (value) {
-    return moment(String(value)).format('MM/DD/YYYY')
+    return moment(String(value)).format('MM/DD/YYYY');
   }
-})
+});
 

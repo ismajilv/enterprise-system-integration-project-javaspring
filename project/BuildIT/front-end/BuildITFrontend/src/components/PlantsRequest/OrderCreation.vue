@@ -99,7 +99,7 @@ export default {
                 }).catch(error => {
                     this.$snackbar.open({
                         type: 'is-danger',
-                        message: "Something went wrong with purchase order submition."
+                        message: "Something went wrong with purchase order submission."
                     });
                 });
           this.activeTab = 3;
