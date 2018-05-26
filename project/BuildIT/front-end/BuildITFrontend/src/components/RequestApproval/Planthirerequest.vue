@@ -22,9 +22,10 @@
             <td class="has-text-center"> {{pending.requestingSiteEngineer.firstName}} {{pending.requestingSiteEngineer.lastName}} </td>
             <td id = "plantPriceWE2" class="has-text-center"> {{pending.rentalCost.total}}</td>
             <td>
-              <a v-on:click="accept" class="button is-success is-outlined">Accept</a>
-              <a v-on:click="reject" @click="isActiveReject = !isActiveReject" class="button is-danger is-outlined">Reject</a>
-              <a v-on:click="focus(pending._id)" @click="isActiveExtend = !isActiveExtend" class="button is-warning is-outlined">Extend</a>
+              <button v-on:click="accept" class="button is-success is-outlined">Accept</button>
+              <button v-on:click="reject" @click="isActiveReject = !isActiveReject" class="button is-danger is-outlined">Reject</button>
+              <button v-on:click="focus(pending._id)" @click="isActiveExtend = !isActiveExtend" class="button is-warning is-outlined">Extend</button>
+              <button v-on:click="cancel(pending._id)" class="button is-danger is-outlined">Cancel</button>
             </td>
         </tr>
     </tbody>
@@ -129,6 +130,15 @@ export default {
           .catch(error => {
             console.log('[Extension error]', error);
           });
+      },
+      cancel: (id) => {
+        axios.post(`http://localhost:8080/api/requests/${id}/cancel`)
+          .then(response => {
+            console.log('[Cancelled response]', response)
+          })
+          .catch(error => {
+            console.log('[Cancel error]', error)
+          })
       },
       focus: function(id) {
         console.log('[Focused on]', id);
