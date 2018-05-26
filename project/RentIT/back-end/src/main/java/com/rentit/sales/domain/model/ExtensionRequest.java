@@ -16,7 +16,7 @@ public class ExtensionRequest {
     @Column(name = "new_end_date", nullable = false)
     LocalDate newEndDate;
 
-    @JoinColumn(name = "plant_hire_request_id", nullable = false)
+    @JoinColumn(name = "purchase_order_id", nullable = false)
     @OneToOne(optional = false)
     PurchaseOrder purchaseOrder;
 
