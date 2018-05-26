@@ -47,7 +47,7 @@ export default {
       };
        axios.get(" http://localhost:8080/callbacks/orderStateChanged", changeStatus)
       .then(response => {
-          console.log("Status Response", response);
+          console.log("[Status Response]", response);
           return response.data;
       })
      }

@@ -11,6 +11,7 @@ import com.buildit.procurement.domain.enums.PHRStatus;
 import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
 import com.buildit.procurement.domain.enums.Role;
 import com.buildit.procurement.domain.model.*;
+import com.buildit.procurement.domain.repository.ExtensionRequestRepository;
 import com.buildit.procurement.domain.repository.PlantHireRequestRepository;
 import com.buildit.common.application.exceptions.StatusChangeNotAllowedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,9 @@ public class PlantHireRequestService {
 
 	@Autowired
 	EmployeeService employeeService;
+
+	@Autowired
+	ExtensionRequestRepository extensionRequestRepository;
 
 	@Transactional
 	public PlantHireRequestDTO updateRequest(Long id,
@@ -247,9 +251,11 @@ public class PlantHireRequestService {
 
 		ExtensionRequest extensionRequest = new ExtensionRequest();
 		extensionRequest.setComment(extensionRequestDTO.getComment());
-		//extensionRequest.setId(extensionRequestDTO.get_id());
 		extensionRequest.setNewEndDate(extensionRequestDTO.getNewEndDate());
 		extensionRequest.setPlantHireRequest(request);
+
+        request.setRentalPeriod(BusinessPeriod.of(request.getRentalPeriod().getStartDate(), extensionRequest.getNewEndDate()));
+		extensionRequest = extensionRequestRepository.save(extensionRequest);
 
 		request.setExtensionRequest(extensionRequest);
 		request.setStatus(PHRStatus.PENDING_EXTENSION);
