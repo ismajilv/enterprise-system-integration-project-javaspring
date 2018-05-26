@@ -28,6 +28,7 @@ public class PurchaseOrderAssembler extends ResourceAssemblerSupport<PurchaseOrd
         dto.setRentalPeriod(BusinessPeriodDTO.of(purchaseOrder.getRentalPeriod().getStartDate(),purchaseOrder.getRentalPeriod().getEndDate()));
         dto.setTotal(purchaseOrder.getTotal());
         dto.setStatus(purchaseOrder.getStatus());
+        dto.setDeliveryAddress(purchaseOrder.getDeliveryAddress());
         return dto;
     }
 }
