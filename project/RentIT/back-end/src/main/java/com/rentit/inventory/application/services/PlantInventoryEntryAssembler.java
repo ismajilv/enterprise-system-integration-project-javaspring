@@ -2,7 +2,7 @@ package com.rentit.inventory.application.services;
 
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
-import com.rentit.inventory.rest.InventoryRestController;
+import com.rentit.inventory.web.controller.PlantInventoryEntryController;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class PlantInventoryEntryAssembler extends ResourceAssemblerSupport<PlantInventoryEntry, PlantInventoryEntryDTO> {
 
     public PlantInventoryEntryAssembler() {
-        super(InventoryRestController.class, PlantInventoryEntryDTO.class);
+        super(PlantInventoryEntryController.class, PlantInventoryEntryDTO.class);
     }
 
     @Override

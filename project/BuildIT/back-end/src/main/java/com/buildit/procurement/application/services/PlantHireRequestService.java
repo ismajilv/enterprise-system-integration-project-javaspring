@@ -12,12 +12,15 @@ import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
 import com.buildit.procurement.domain.enums.Role;
 import com.buildit.procurement.domain.model.*;
 import com.buildit.procurement.domain.repository.PlantHireRequestRepository;
-import org.apache.commons.lang3.NotImplementedException;
+import com.buildit.common.application.exceptions.StatusChangeNotAllowedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.buildit.procurement.application.dto.ExtensionRequestDTO;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -154,8 +157,13 @@ public class PlantHireRequestService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<PlantHireRequestDTO> getAll() {
-		List<PlantHireRequest> all = repository.findAll();
+	public List<PlantHireRequestDTO> getAll(PHRStatus status) {
+		List<PlantHireRequest> all;
+		if (status == null) {
+			all = repository.findAll();
+		} else {
+			all = repository.findAllByStatus(status);
+		}
 
 		return all.stream().map(phr -> assembler.toResource(phr)).collect(Collectors.toList());
 	}
@@ -169,7 +177,7 @@ public class PlantHireRequestService {
 		requireNonNull(plantHref);
 
 		RentItPurchaseOrderDTO createdPO =
-				rentItService.createPurchaseOrder(plantHref, businessPeriodAssembler.toResource(request.getRentalPeriod()));
+				rentItService.createPurchaseOrder(plantHref, businessPeriodAssembler.toResource(request.getRentalPeriod()), request.getConstructionSite().getId());
 
 		String href = createdPO.get_links().get("self").get("href");
 
@@ -205,11 +213,25 @@ public class PlantHireRequestService {
 	}
 
 	@Transactional
-	public PlantHireRequestDTO cancel(Long id) {
-		// TODO
-		// check previous state, so cancelling is allowed.
-		// may need to notify rentit partner as well
-		throw new NotImplementedException("");
+	public PlantHireRequestDTO cancel(Long id) throws Exception {
+		PlantHireRequest request = readModel(id);
+
+		if(LocalDate.now().until(request.getRentalPeriod().getStartDate(), ChronoUnit.DAYS) < 1) {
+			throw new StatusChangeNotAllowedException("Cancellation is rejected");
+		}
+
+		if(request.getStatus() == PHRStatus.PENDING_WORKS_ENGINEER_APPROVAL) {
+			request.setStatus(PHRStatus.CANCELLED);
+		} else if (request.getStatus() == PHRStatus.PENDING_RENTAL_PARTNER_APPROVAL ||
+				request.getStatus() == PHRStatus.ACCEPTED_BY_RENTAL_PARTNER) {
+			// TODO: Send cancellation to RentIt
+		} else {
+			throw new StatusChangeNotAllowedException("Cancellation is rejected");
+		}
+
+		request = repository.save(request);
+
+		return assembler.toResource(request);
 	}
 
 	@Transactional
@@ -225,4 +247,23 @@ public class PlantHireRequestService {
 		repository.save(phr);
 	}
 
+	@Transactional
+	public PlantHireRequestDTO extend(Long id, ExtensionRequestDTO extensionRequestDTO) {
+		PlantHireRequest request = readModel(id);
+
+		ExtensionRequest extensionRequest = new ExtensionRequest();
+		extensionRequest.setComment(extensionRequestDTO.getComment());
+		//extensionRequest.setId(extensionRequestDTO.get_id());
+		extensionRequest.setNewEndDate(extensionRequestDTO.getNewEndDate());
+		extensionRequest.setPlantHireRequest(request);
+
+		request.setExtensionRequest(extensionRequest);
+		request.setStatus(PHRStatus.PENDING_EXTENSION);
+
+		request = repository.save(request);
+
+		//TODO sending extension request to rentit
+
+		return assembler.toResource(request);
+	}
 }

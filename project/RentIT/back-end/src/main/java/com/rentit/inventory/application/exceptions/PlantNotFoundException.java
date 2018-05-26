@@ -1,4 +1,4 @@
-package com.rentit.common.application.exceptions;
+package com.rentit.inventory.application.exceptions;
 
 public class PlantNotFoundException extends Exception{
     public PlantNotFoundException(Long id) {
