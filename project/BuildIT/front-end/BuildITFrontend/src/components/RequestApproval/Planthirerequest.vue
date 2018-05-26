@@ -11,7 +11,6 @@
             <th class="has-text-center">Site Engineer</th>
             <th class="has-text-center">Price</th>
             <th class="has-text-center">Actions</th>
-            <th class="has-text-center">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -22,21 +21,42 @@
             <td id = "plantEndDateWE2" class="has-text-center"> {{pending.rentalPeriod.endDate}}</td>
             <td class="has-text-center"> {{pending.requestingSiteEngineer.firstName}} {{pending.requestingSiteEngineer.lastName}} </td>
             <td id = "plantPriceWE2" class="has-text-center"> {{pending.rentalCost.total}}</td>
-            <td><a v-on:click="accept" class="button is-success is-outlined">Accept</a> </td>
-            <td> <a v-on:click="reject" @click="isActive = !isActive" class="button is-danger is-outlined">Reject</a> </td>
+            <td>
+              <a v-on:click="accept" class="button is-success is-outlined">Accept</a>
+              <a v-on:click="reject" @click="isActiveReject = !isActiveReject" class="button is-danger is-outlined">Reject</a>
+              <a v-on:click="focus(pending._id)" @click="isActiveExtend = !isActiveExtend" class="button is-warning is-outlined">Extend</a>
+            </td>
         </tr>
     </tbody>
 </table>
-    <b-message title="You have rejected this order, Why?" :active.sync="isActive">
-     <textarea rows="4" cols="120" name="comment" form="usrform" v-model="comments">
-      Enter text here...</textarea>
-     <a v-on:click="comment" class="button is-success"> Comment </a>
-     </b-message>
+    <b-message title="You have rejected this order, Why?" :active.sync="isActiveReject">
+       <textarea rows="4" cols="120" name="comment" form="usrform" v-model="request.comments">
+        Enter text here...</textarea>
+       <a v-on:click="comment" class="button is-success"> Comment </a>
+    </b-message>
+
+    <b-message title="Extension Request" :active.sync="isActiveExtend">
+      <div>
+        Enter End date:
+        <input type="date"
+               id="end-date"
+               name="startdate"
+               v-model="request.newEndDate"
+               icon="calendar-today">
+      </div>
+      <br>
+      <textarea rows="4" cols="120" name="comment"
+                form="usrform" v-model="request.comments"
+                placeholder="Enter comment here..."></textarea>
+      <br>
+      <button v-on:click="extend" class="button is-success"> Submit </button>
+    </b-message>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
   name: "Planthirerequest",
@@ -44,10 +64,12 @@ export default {
   data: function(){
       return{
         allrequest: [],
-        isActive: false,
+        isActiveReject: false,
+        isActiveExtend: false,
         rejectedRequest:{},
         request: {
           id: 0,
+          newEndDate: null,
           comments: ''
         }
       }
@@ -64,8 +86,8 @@ export default {
         });
       },
       accept: function(inputOrder){
-           let i= document.getElementById("name").innerHTML
-           let params = i + "/accept"
+           let i= document.getElementById("name").innerHTML;
+           let params = i + "/accept";
         axios.get("http://localhost:8080/api/requests/", params)
         .then(response => {
            this.$snackbar.open("Plant hire request accepted for site engineer.");
@@ -73,30 +95,46 @@ export default {
         });
       },
       reject: function(inputOrder){
-           let i= document.getElementById("name").innerHTML
-           let params = i + "/reject"
-           console.log("Reject", i);
+           let i= document.getElementById("name").innerHTML;
+           let params = i + "/reject";
+           console.log("[Reject id]", i);
         axios.get("http://localhost:8080/api/requests/", params)
         .then(response => {
-          console.log("Reject", response.data._embedded.plantHireRequestDTOList);
+          console.log("[After Reject]", response.data._embedded.plantHireRequestDTOList);
           this.rejectedRequest = response.data._embedded.plantHireRequestDTOList;
         });
       },
       comment: function(){
-           let i= document.getElementById("name").innerHTML
-           let obj = {"value": "abc"}
-           let params = i + "/addComment"
+           let i= document.getElementById("name").innerHTML;
+           let obj = {"value": this.request.comments};
+           let params = i + "/addComment";
         axios.get("http://localhost:8080/api/requests/", params, obj)
         .then(response => {
           console.log("Comment", response);
            this.$snackbar.open("Comment submitted successfully");
         });
+      },
+      extend: function() {
+          console.log('[Extending]', this.request);
+          const params = {
+            newEndDate: moment(String(this.request.newEndDate)).format("YYYY-MM-DD"),
+            comment: this.request.comments
+          };
+          const id = this.request.id;
+          axios.post(`http://localhost:8080/api/requests/${id}/requestExtension`, params)
+          .then(response => {
+            this.isActiveExtend = false;
+            console.log('[Extension response]', response);
+          })
+          .catch(error => {
+            console.log('[Extension error]', error);
+          });
+      },
+      focus: function(id) {
+        console.log('[Focused on]', id);
+        this.request.id = id;
       }
   }
 }
 </script>
-
-<style>
-
-</style>
 

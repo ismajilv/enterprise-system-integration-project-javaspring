@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import Datepicker from 'vuejs-datepicker';
 
 export default {
   name: "CatalogQuery",
@@ -43,7 +42,7 @@ export default {
   },
   methods: {
     submit: function(){
-      console.log(this.query);
+      console.log('[Query]', this.query);
       this.$emit("submitCatalogQuery", this.query)
     }
   }

@@ -1,22 +1,21 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
+import SiteEngineer from '../views/SiteEngineer.vue';
+import AllEngineers from '../views/AllEngineers.vue';
 
-import SiteEngineer from '../views/SiteEngineer.vue'
-import WorkEngineer from '../views/WorkEngineer.vue'
-
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/SiteEngineer',
       name: 'SiteEngineer',
-      component: Home
+      component: SiteEngineer
     },
     {
-      path: '/WorkEngineer',
-      name: 'WorkEngineer',
-      component: About
+      path: '/',
+      name: 'AllEngineers',
+      component: AllEngineers
     }
   ]
 })
