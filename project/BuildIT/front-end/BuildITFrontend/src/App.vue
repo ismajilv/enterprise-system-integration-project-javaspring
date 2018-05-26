@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <router-link to="/"> Site Engineer</router-link> |
-    <router-link to="/WorkEngineer">Work Engineer</router-link>
+    <router-link to="/SiteEngineer"> Site Engineer</router-link> |
+    <router-link to="/">All Engineers</router-link>
     <router-view/>
   </div>
 </template>

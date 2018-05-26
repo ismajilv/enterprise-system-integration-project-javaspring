@@ -86,9 +86,9 @@ export default {
            "supplierId": this.order.suppliersid,
            "plantHref":  this.order.plant._links.self.href,
            "rentalPeriod" : {
-           "startDate" : this.order.rentalPeriod.startDate,
-           "endDate" : this.order.rentalPeriod.endDate
-          }
+             "startDate" : this.order.rentalPeriod.startDate,
+             "endDate" : this.order.rentalPeriod.endDate
+            }
         };
         console.log("Plant submission before", obj);
               axios.post("http://localhost:8080/api/requests", obj)
@@ -99,7 +99,7 @@ export default {
                 }).catch(error => {
                     this.$snackbar.open({
                         type: 'is-danger',
-                        message: "Something went wrong with purchase order submition."
+                        message: "Something went wrong with purchase order submission."
                     });
                 });
           this.activeTab = 3;

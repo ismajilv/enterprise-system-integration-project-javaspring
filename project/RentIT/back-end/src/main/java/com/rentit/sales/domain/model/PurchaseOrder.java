@@ -50,14 +50,21 @@ public class PurchaseOrder {
         PurchaseOrder po = new PurchaseOrder();
         po.plant = plant;
         po.rentalPeriod = rentalPeriod;
-        po.status = POStatus.PENDING;
+        po.status = POStatus.PENDING_APPROVAL;
         po.deliveryAddress = deliveryAddress;
         return po;
     }
 
+    public void setStatus(POStatus status) {
+        if (!this.status.isTransitionAllowed(status)) {
+            throw new IllegalArgumentException("Purchase order transition not allowed: " + this.status + "=>" + status);
+        }
+        this.status = status;
+    }
+
     public void requestExtension(ExtensionRequest extension) {
         this.extensionRequest = extension;
-        status = POStatus.PENDING_EXTENSION;
+        setStatus(POStatus.PENDING_EXTENSION);
     }
 
     public LocalDate pendingExtensionEndDate() {
@@ -69,7 +76,7 @@ public class PurchaseOrder {
 
     public void acceptExtension(PlantReservation reservation) {
         reservations.add(reservation);
-        status = POStatus.OPEN;
+        setStatus(POStatus.ACCEPTED);
         rentalPeriod = BusinessPeriod.of(rentalPeriod.getStartDate(), reservation.getSchedule().getEndDate());
         Long nrOfDaysExtendedFor = ChronoUnit.DAYS.between(reservation.getSchedule().getStartDate(), reservation.getSchedule().getEndDate());
         total = total.add(new BigDecimal(nrOfDaysExtendedFor));
@@ -77,34 +84,34 @@ public class PurchaseOrder {
 
     public void registerFirstAllocation(PlantReservation reservation) {
         reservations.add(reservation);
-        status = POStatus.OPEN;
+        setStatus(POStatus.ACCEPTED);
         rentalPeriod = BusinessPeriod.of(reservation.getSchedule().getStartDate(), reservation.getSchedule().getEndDate());
         Long nrOfDaysRented = ChronoUnit.DAYS.between(rentalPeriod.getStartDate(), rentalPeriod.getEndDate());
         total = plant.getPrice().multiply(new BigDecimal(nrOfDaysRented));
     }
 
     public void reject() {
-        status = POStatus.REJECTED;
+        setStatus(POStatus.REJECTED);
     }
 
     public void cancel() {
-        status = POStatus.CANCELLED;
+        setStatus(POStatus.CANCELLED);
     }
 
     public void dispatch() {
-        status = POStatus.DISPATCHED;
+        setStatus(POStatus.PLANT_DISPATCHED);
     }
 
     public void deliver() {
-        status = POStatus.DELIVERED;
+        setStatus(POStatus.PLANT_DELIVERED);
     }
 
     public void customerReject() {
-        status = POStatus.REJECTED_BY_CUSTOMER;
+        setStatus(POStatus.REJECTED_BY_CUSTOMER);
     }
 
     public void markAsReturned() {
-        status = POStatus.RETURNED;
+        setStatus(POStatus.PLANT_RETURNED);
     }
 
     @Override

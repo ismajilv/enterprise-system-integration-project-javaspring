@@ -23,5 +23,4 @@ public class ExtensionRequest {
 
 	@Column
 	String comment; // Sent & filled from RentIt if this ER gets rejected
-
 }
