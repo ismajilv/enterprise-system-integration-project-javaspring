@@ -7,16 +7,13 @@ import com.rentit.common.application.dto.BusinessPeriodDTO;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.application.dto.PlantInventoryItemDTO;
 import com.rentit.inventory.application.dto.PlantReservationDTO;
-import com.rentit.inventory.domain.model.PlantInventoryItem;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
-import com.rentit.sales.domain.model.POStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
@@ -25,18 +22,16 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.rentit.sales.domain.model.POStatus.ACCEPTED;
 import static com.rentit.sales.domain.model.POStatus.CANCELLED;
-import static com.rentit.sales.domain.model.POStatus.OPEN;
-import static com.rentit.sales.domain.model.POStatus.PENDING;
+import static com.rentit.sales.domain.model.POStatus.PENDING_APPROVAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.text.IsEmptyString.isEmptyOrNullString;
 import static org.junit.Assert.assertEquals;
@@ -101,7 +96,7 @@ public class SalesRestControllerTests {
         assertNotNull(createdPO.get_id());
         assertNull(createdPO.getTotal());
         assertNotNull(createdPO.getStatus());
-        assertEquals(PENDING, createdPO.getStatus());
+        assertEquals(PENDING_APPROVAL, createdPO.getStatus());
 
         // check reference to a plant inventory entry
         assertNotNull(createdPO.getPlant());
@@ -271,7 +266,7 @@ public class SalesRestControllerTests {
         assertNotNull(acceptedPO.getTotal());
         assertThat(acceptedPO.getTotal().signum() > 0);
         assertNotNull(acceptedPO.getStatus());
-        assertEquals(OPEN, acceptedPO.getStatus());
+        assertEquals(ACCEPTED, acceptedPO.getStatus());
 
         // check reference to a plant inventory entry
         assertNotNull(acceptedPO.getPlant());

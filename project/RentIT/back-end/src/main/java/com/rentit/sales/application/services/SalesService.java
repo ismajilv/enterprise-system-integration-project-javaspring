@@ -76,7 +76,7 @@ public class SalesService {
 
     public PurchaseOrder cancelPurchaseOrder(Long id) throws POStatusException {
         PurchaseOrder po = findPurchaseOrder(id);
-        if(!(po.getStatus().equals(POStatus.OPEN)||po.getStatus().equals(POStatus.PENDING))){
+        if(!(po.getStatus().equals(POStatus.ACCEPTED)||po.getStatus().equals(POStatus.PENDING_APPROVAL))){
             throw new POStatusException("cancel", po.getStatus());
         }
         po.cancel();

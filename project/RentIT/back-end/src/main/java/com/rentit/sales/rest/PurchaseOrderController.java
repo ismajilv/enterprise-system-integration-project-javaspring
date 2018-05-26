@@ -1,7 +1,6 @@
 package com.rentit.sales.rest;
 
 import com.rentit.inventory.application.exceptions.PlantNotFoundException;
-import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.application.services.InventoryService;
 import com.rentit.inventory.application.services.PlantInventoryEntryAssembler;
 import com.rentit.sales.application.dto.CreatePORequestDTO;
@@ -13,7 +12,6 @@ import com.rentit.sales.application.services.SalesService;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.validator.PurchaseOrderValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpHeaders;
@@ -35,8 +33,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 @CrossOrigin()
-@RequestMapping("/api/sales")
-public class SalesRestController {
+@RequestMapping("/api/orders")
+public class PurchaseOrderController {
+
     @Autowired
     InventoryService inventoryService;
     @Autowired
@@ -46,60 +45,23 @@ public class SalesRestController {
     @Autowired
     PurchaseOrderAssembler purchaseOrderAssembler;
 
-    @GetMapping("/plants")
-    public List<PlantInventoryEntryDTO> findAvailablePlants(
-            @RequestParam(name = "name") String plantName,
-            @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        List<PlantInventoryEntryDTO> found = inventoryService.findAvailable(plantName, startDate, endDate);
+    @GetMapping()
+    public ResponseEntity<?> getOrders(@RequestParam String status) {
 
-        fixLinks(found);
+        List<PurchaseOrder> orders;
+        if(status != null && status.equalsIgnoreCase("ALL")){
+            orders = salesService.findAllOrders();
+        } else {
+            orders  = salesService.findPendingOrders();
+        }
 
-        return found;
-    }
-
-    private void fixLinks(List<PlantInventoryEntryDTO> found) {
-        found.forEach(p -> fixLinks(p));
-    }
-
-    private void fixLinks(PlantInventoryEntryDTO p) {
-        p.removeLinks();
-        p.getLinks().add(
-                linkTo(
-                        methodOn(SalesRestController.class)
-                                .readOnePlant(p.get_id()))
-                        .withSelfRel()
-        );
-    }
-
-    @GetMapping("/plants/{id}")
-    public PlantInventoryEntryDTO readOnePlant(@PathVariable Long id) {
-        PlantInventoryEntryDTO plant = plantInventoryEntryAssembler.toResource(inventoryService.findPlantInventoryEntry(id));
-
-        fixLinks(plant);
-
-        return plant;
-    }
-
-    @GetMapping("/orders")
-    public ResponseEntity<?> getPending() {
-        List<PurchaseOrder> pendingOrders = salesService.findPendingOrders();
-
-        List<PurchaseOrderDTO> ret = pendingOrders.stream().map(po -> purchaseOrderAssembler.toResource(po)).collect(Collectors.toList());
+        List<PurchaseOrderDTO> ret = orders.stream().map(po -> purchaseOrderAssembler.toResource(po)).collect(Collectors.toList());
 
         return new ResponseEntity<>(new Resources<>(ret), HttpStatus.OK);
     }
 
-    @GetMapping("/orders/all")
-    public ResponseEntity<?> getAll() {
-        List<PurchaseOrder> allOrders = salesService.findAllOrders();
 
-        List<PurchaseOrderDTO> ret = allOrders.stream().map(po -> purchaseOrderAssembler.toResource(po)).collect(Collectors.toList());
-
-        return new ResponseEntity<>(new Resources<>(ret), HttpStatus.OK);
-    }
-
-    @PostMapping("/orders/{poId}/dispatch")
+    @PostMapping("/{poId}/dispatch")
     public ResponseEntity<?> dispatchPurchaseOrder(@PathVariable("poId") Long poId) throws URISyntaxException {
 
         final PurchaseOrder po = salesService.dispatchPurchaseOrder(poId);
@@ -113,7 +75,7 @@ public class SalesRestController {
                 HttpStatus.OK);
     }
 
-    @PostMapping("/orders/{poId}/return")
+    @PostMapping("/{poId}/return")
     public ResponseEntity<?> markAsReturned(@PathVariable("poId") Long poId) throws URISyntaxException {
 
         final PurchaseOrder po = salesService.markAsReturned(poId);
@@ -126,7 +88,7 @@ public class SalesRestController {
                 headers, HttpStatus.OK);
     }
 
-    @PostMapping("/orders/{poId}/deliver")
+    @PostMapping("/{poId}/deliver")
     public ResponseEntity<?> deliverPurchaseOrder(@PathVariable("poId") Long poId) throws URISyntaxException {
 
         final PurchaseOrder po = salesService.deliverPurchaseOrder(poId);
@@ -140,7 +102,7 @@ public class SalesRestController {
     }
 
 
-    @PostMapping("/orders/{poId}/customer_reject")
+    @PostMapping("/{poId}/customer_reject")
     public ResponseEntity<?> rejectByCustomer(@PathVariable("poId") Long poId) throws URISyntaxException {
 
         final PurchaseOrder po = salesService.customerRejectPurchaseOrder(poId);
@@ -154,7 +116,7 @@ public class SalesRestController {
     }
 
 
-    @PostMapping("/orders/{poId}/cancel")
+    @PostMapping("/{poId}/cancel")
     public ResponseEntity<?> cancelPurchaseOrder(@PathVariable("poId") Long poId) throws POStatusException, URISyntaxException {
 
         final PurchaseOrder po = salesService.cancelPurchaseOrder(poId);
@@ -168,7 +130,7 @@ public class SalesRestController {
                 HttpStatus.OK);
     }
 
-    @PostMapping("/orders/{poId}/reject")
+    @PostMapping("/{poId}/reject")
     public ResponseEntity<?> rejectPurchaseOrder(@PathVariable("poId") Long poId)  throws URISyntaxException {
         final PurchaseOrder po = salesService.rejectPurchaseOrder(poId);
 
@@ -193,7 +155,7 @@ public class SalesRestController {
                 HttpStatus.OK);
     }
 
-    @PostMapping("/orders/{poId}/accept")
+    @PostMapping("/{poId}/accept")
     public ResponseEntity<?> acceptPurchaseOrder(
             @RequestParam(name = "piiId") Long piiId,
             @PathVariable("poId") Long poId)  throws URISyntaxException, PlantNotFoundException {
@@ -225,7 +187,7 @@ public class SalesRestController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/orders/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> fetchPurchaseOrder(@PathVariable("id") Long id) {
         final PurchaseOrder foundPO = salesService.findPurchaseOrder(id);
@@ -239,7 +201,7 @@ public class SalesRestController {
                 HttpStatus.OK);
     }
 
-    @PostMapping("/orders")
+    @PostMapping()
     public ResponseEntity<?> createPurchaseOrder(@RequestBody CreatePORequestDTO partialPODTO) throws URISyntaxException, PlantNotFoundException {
 
         if(!inventoryService.isPlantInventoryEntryExisting(partialPODTO.getPlantId())) {
@@ -248,8 +210,8 @@ public class SalesRestController {
 
         PurchaseOrder preparedForSavePO =
                 salesService.preparePurchaseOrderForSave(partialPODTO.getPlantId(),
-                                                         partialPODTO.getRentalPeriod().getStartDate(),
-                                                         partialPODTO.getRentalPeriod().getEndDate(),
+                        partialPODTO.getRentalPeriod().getStartDate(),
+                        partialPODTO.getRentalPeriod().getEndDate(),
                         partialPODTO.getDeliveryAddress());
 
         DataBinder binder = new DataBinder(preparedForSavePO);
@@ -272,22 +234,22 @@ public class SalesRestController {
 
         return new ResponseEntity<>(
                 new Resource<PurchaseOrderDTO>(dto,
-                        linkTo(methodOn(SalesRestController.class).
+                        linkTo(methodOn(PurchaseOrderController.class).
                                 fetchPurchaseOrder(newlyCreatedPO.getId())).withSelfRel()),
                 headers,
                 HttpStatus.CREATED);
     }
 
-    @GetMapping("/orders/{id}/extensions")
+    @GetMapping("/{id}/extensions")
     public Resources<Resource<POExtensionDTO>> retrievePurchaseOrderExtensions(@PathVariable("id") Long id) {
         List<Resource<POExtensionDTO>> result = new ArrayList<>();
         POExtensionDTO extension = new POExtensionDTO();
         extension.setEndDate(LocalDate.now().plusWeeks(1));
         result.add(new Resource<>(extension));
-        return new Resources<>(result, linkTo(methodOn(SalesRestController.class).retrievePurchaseOrderExtensions(id)).withSelfRel().andAffordance(afford(methodOn(SalesRestController.class).requestPurchaseOrderExtension(null, id))));
+        return new Resources<>(result, linkTo(methodOn(PurchaseOrderController.class).retrievePurchaseOrderExtensions(id)).withSelfRel().andAffordance(afford(methodOn(PurchaseOrderController.class).requestPurchaseOrderExtension(null, id))));
     }
 
-    @PostMapping("/orders/{id}/extensions")
+    @PostMapping("/{id}/extensions")
     public Resource<?> requestPurchaseOrderExtension(@RequestBody POExtensionDTO extension, @PathVariable("id") Long id) {
         return null;
     }
