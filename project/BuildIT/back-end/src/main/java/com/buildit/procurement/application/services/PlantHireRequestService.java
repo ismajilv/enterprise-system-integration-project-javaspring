@@ -157,14 +157,8 @@ public class PlantHireRequestService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<PlantHireRequestDTO> getAll(PHRStatus status) {
-		List<PlantHireRequest> all;
-		if (status == null) {
-			all = repository.findAll();
-		} else {
-			all = repository.findAllByStatus(status);
-		}
-
+	public List<PlantHireRequestDTO> getAll() {
+		List<PlantHireRequest> all = repository.findAll();
 		return all.stream().map(phr -> assembler.toResource(phr)).collect(Collectors.toList());
 	}
 

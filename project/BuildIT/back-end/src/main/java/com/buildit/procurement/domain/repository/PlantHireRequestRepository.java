@@ -8,6 +8,4 @@ import com.buildit.procurement.domain.enums.PHRStatus;
 import java.util.List;
 
 @Repository
-public interface PlantHireRequestRepository extends JpaRepository<PlantHireRequest, Long> {
-    List<PlantHireRequest> findAllByStatus(PHRStatus status);
-}
+public interface PlantHireRequestRepository extends JpaRepository<PlantHireRequest, Long> {}

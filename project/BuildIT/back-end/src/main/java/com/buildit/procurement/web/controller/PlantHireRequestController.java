@@ -40,8 +40,8 @@ public class PlantHireRequestController {
 	CommentService commentService;
 
 	@GetMapping
-	public ResponseEntity<Resources<PlantHireRequestDTO>> readAll(@PathVariable PHRStatus status) {
-		List<PlantHireRequestDTO> requests = service.getAll(status);
+	public ResponseEntity<Resources<PlantHireRequestDTO>> readAll() {
+		List<PlantHireRequestDTO> requests = service.getAll();
 
 		return transformIntoResponse(requests);
 	}
