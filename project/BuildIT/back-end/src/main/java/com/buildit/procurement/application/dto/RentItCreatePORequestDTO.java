@@ -11,8 +11,10 @@ import org.springframework.hateoas.ResourceSupport;
 @AllArgsConstructor(staticName = "of")
 public class RentItCreatePORequestDTO extends ResourceSupport {
 
-	RentItPlantInventoryEntryDTO plant;
+	Long plantId;
 
 	BusinessPeriodDTO rentalPeriod;
+
+	String deliveryAddress;
 
 }

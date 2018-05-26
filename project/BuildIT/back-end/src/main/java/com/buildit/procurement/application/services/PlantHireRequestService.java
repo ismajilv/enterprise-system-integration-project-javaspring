@@ -169,7 +169,7 @@ public class PlantHireRequestService {
 		requireNonNull(plantHref);
 
 		RentItPurchaseOrderDTO createdPO =
-				rentItService.createPurchaseOrder(plantHref, businessPeriodAssembler.toResource(request.getRentalPeriod()));
+				rentItService.createPurchaseOrder(plantHref, businessPeriodAssembler.toResource(request.getRentalPeriod()), request.getConstructionSite().getId());
 
 		String href = createdPO.get_links().get("self").get("href");
 

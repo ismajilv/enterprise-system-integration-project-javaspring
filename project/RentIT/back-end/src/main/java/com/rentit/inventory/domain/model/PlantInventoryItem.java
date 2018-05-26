@@ -13,8 +13,6 @@ public class PlantInventoryItem {
     Long id;
 
     String serialNumber;
-    @Enumerated(EnumType.STRING)
-    EquipmentCondition equipmentCondition;
 
     @ManyToOne
     PlantInventoryEntry plantInfo;

@@ -12,6 +12,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Entity
 @Getter
 @NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
@@ -36,27 +38,31 @@ public class PurchaseOrder {
     @Embedded
     BusinessPeriod rentalPeriod;
 
-    @ElementCollection
-    List<POExtension> extensions = new ArrayList<>();
+    @OneToOne(mappedBy = "purchaseOrder")
+    ExtensionRequest extensionRequest;
+
+    @Column
+    String deliveryAddress;
 
     public static PurchaseOrder of(PlantInventoryEntry plant,
-                                   BusinessPeriod rentalPeriod) {
+                                   BusinessPeriod rentalPeriod,
+                                   String deliveryAddress) {
         PurchaseOrder po = new PurchaseOrder();
         po.plant = plant;
         po.rentalPeriod = rentalPeriod;
         po.status = POStatus.PENDING;
+        po.deliveryAddress = deliveryAddress;
         return po;
     }
 
-    public void requestExtension(POExtension extension) {
-        extensions.add(extension);
+    public void requestExtension(ExtensionRequest extension) {
+        this.extensionRequest = extension;
         status = POStatus.PENDING_EXTENSION;
     }
 
     public LocalDate pendingExtensionEndDate() {
-        if (extensions.size() > 0) {
-            POExtension openExtension = extensions.get(extensions.size() - 1);
-            return openExtension.getEndDate();
+        if (!isNull(extensionRequest)) {
+            return extensionRequest.newEndDate;
         }
         return null;
     }
@@ -112,7 +118,7 @@ public class PurchaseOrder {
                 ", total=" + total +
                 ", status=" + status +
                 ", rentalPeriod=" + rentalPeriod +
-                ", extensions=" + extensions +
+                ", extension=" + extensionRequest +
                 '}';
     }
 }
