@@ -6,7 +6,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlDateInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.rentit.RentitApplication;
-import com.rentit.inventory.domain.model.EquipmentCondition;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.inventory.domain.model.PlantInventoryItem;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
@@ -74,7 +73,6 @@ public class CreationOfPurchaseOrderSteps {
                     PlantInventoryItem.of(
                             Long.parseLong(row.get("id")),
                             row.get("serialNumber"),
-                            EquipmentCondition.valueOf(row.get("equipmentCondition")),
                             plantInventoryEntryRepository.findOneById(Long.parseLong(row.get("plantInfo")))
                     )
             );

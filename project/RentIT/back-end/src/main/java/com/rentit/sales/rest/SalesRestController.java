@@ -1,18 +1,15 @@
 package com.rentit.sales.rest;
 
-import com.rentit.common.application.exceptions.PlantNotFoundException;
+import com.rentit.inventory.application.exceptions.PlantNotFoundException;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
-import com.rentit.inventory.application.dto.PlantInventoryItemDTO;
 import com.rentit.inventory.application.services.InventoryService;
 import com.rentit.inventory.application.services.PlantInventoryEntryAssembler;
-import com.rentit.inventory.domain.model.PlantInventoryEntry;
-import com.rentit.inventory.domain.model.PlantInventoryItem;
+import com.rentit.sales.application.dto.CreatePORequestDTO;
 import com.rentit.sales.application.dto.POExtensionDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.exceptions.POStatusException;
 import com.rentit.sales.application.services.PurchaseOrderAssembler;
 import com.rentit.sales.application.services.SalesService;
-import com.rentit.sales.domain.model.POStatus;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.validator.PurchaseOrderValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -243,16 +240,17 @@ public class SalesRestController {
     }
 
     @PostMapping("/orders")
-    public ResponseEntity<?> createPurchaseOrder(@RequestBody PurchaseOrderDTO partialPODTO) throws URISyntaxException, PlantNotFoundException {
+    public ResponseEntity<?> createPurchaseOrder(@RequestBody CreatePORequestDTO partialPODTO) throws URISyntaxException, PlantNotFoundException {
 
-        if(!inventoryService.isPlantInventoryEntryExisting(partialPODTO.getPlant().get_id())) {
-            throw new PlantNotFoundException(partialPODTO.getPlant().get_id());
+        if(!inventoryService.isPlantInventoryEntryExisting(partialPODTO.getPlantId())) {
+            throw new PlantNotFoundException(partialPODTO.getPlantId());
         }
 
         PurchaseOrder preparedForSavePO =
-                salesService.preparePurchaseOrderForSave(partialPODTO.getPlant().get_id(),
+                salesService.preparePurchaseOrderForSave(partialPODTO.getPlantId(),
                                                          partialPODTO.getRentalPeriod().getStartDate(),
-                                                         partialPODTO.getRentalPeriod().getEndDate());
+                                                         partialPODTO.getRentalPeriod().getEndDate(),
+                        partialPODTO.getDeliveryAddress());
 
         DataBinder binder = new DataBinder(preparedForSavePO);
 

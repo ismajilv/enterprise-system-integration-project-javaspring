@@ -3,6 +3,7 @@ package com.buildit.procurement.application.services;
 import com.buildit.common.application.dto.BusinessPeriodDTO;
 import com.buildit.procurement.application.dto.*;
 import com.buildit.procurement.application.services.assemblers.RentItToBuildItPlantInventoryEntryAssembler;
+import com.buildit.procurement.domain.model.ConstructionSite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -24,6 +25,9 @@ public class RentItService {
 
 	@Autowired
 	private SupplierService supplierService;
+
+	@Autowired
+	ConstructionSiteService constructionSiteService;
 
 	private Map<SupplierDTO, String> supplier2Url = new HashMap<>();
 
@@ -99,11 +103,12 @@ public class RentItService {
 		return entry;
 	}
 
-	public RentItPurchaseOrderDTO createPurchaseOrder(String href, BusinessPeriodDTO businessPeriodDTO) {
+	public RentItPurchaseOrderDTO createPurchaseOrder(String href, BusinessPeriodDTO businessPeriodDTO, Long constructionSiteId) {
 		RentItPlantInventoryEntryDTO rentItEntry = fetchPlantEntryFromRentIt(href);
 		String respondTo = supplier2Url.entrySet().iterator().next().getValue() + "/callbacks/orderStateChanged";
+		ConstructionSiteDTO site = constructionSiteService.readOne(constructionSiteId);
 		RentItCreatePORequestDTO rentItPORequest =
-				RentItCreatePORequestDTO.of(rentItEntry, businessPeriodDTO);
+				RentItCreatePORequestDTO.of(rentItEntry.get_id(), businessPeriodDTO, site.getAddress());
 
 		return doCreatePurchaseOrder(rentItPORequest);
 	}

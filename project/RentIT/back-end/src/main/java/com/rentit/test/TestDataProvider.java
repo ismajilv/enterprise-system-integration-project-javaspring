@@ -1,6 +1,5 @@
 package com.rentit.test;
 
-import com.rentit.inventory.domain.model.EquipmentCondition;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.inventory.domain.model.PlantInventoryItem;
 import com.rentit.inventory.domain.repository.InventoryRepository;
@@ -44,7 +43,7 @@ public class TestDataProvider {
 
 			plantInventoryEntryRepository.saveAndFlush(entry);
 
-			PlantInventoryItem item = PlantInventoryItem.of(i, "A" + i, EquipmentCondition.SERVICEABLE, entry);
+			PlantInventoryItem item = PlantInventoryItem.of(i, "A" + i, entry);
 
 			plantInventoryItemRepository.save(item);
 		}

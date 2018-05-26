@@ -106,7 +106,7 @@ public class PlantHireRequestController {
 
     @PostMapping("/{id}/requestExtension")
     public ResponseEntity<Resource<PlantHireRequestDTO>> extend(@PathVariable Long id,
-                                                                @RequestBody @Valid ExtensionRequestDTO extensionRequestDTO) {
+                                                                @RequestBody ExtensionRequestDTO extensionRequestDTO) {
         PlantHireRequestDTO extendRequest = service.extend(id, extensionRequestDTO);
 
         return transformIntoResponse(extendRequest, HttpStatus.OK);
