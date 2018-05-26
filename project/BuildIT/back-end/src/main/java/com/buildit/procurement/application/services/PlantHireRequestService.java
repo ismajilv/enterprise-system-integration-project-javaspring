@@ -12,7 +12,7 @@ import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
 import com.buildit.procurement.domain.enums.Role;
 import com.buildit.procurement.domain.model.*;
 import com.buildit.procurement.domain.repository.PlantHireRequestRepository;
-import org.apache.commons.lang3.NotImplementedException;
+import com.buildit.common.application.exceptions.StatusChangeNotAllowedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -205,11 +205,20 @@ public class PlantHireRequestService {
 	}
 
 	@Transactional
-	public PlantHireRequestDTO cancel(Long id) {
+	public PlantHireRequestDTO cancel(Long id) throws Exception {
+		PlantHireRequest request = readModel(id);
+
+		if(request.getStatus() == PHRStatus.PENDING_WORKS_ENGINEER_APPROVAL) {
+			request.setStatus(PHRStatus.CANCELLED);
+		} else {
+			throw new StatusChangeNotAllowedException("Cancellation is rejected");
+		}
+
+		request = repository.save(request);
 		// TODO
 		// check previous state, so cancelling is allowed.
 		// may need to notify rentit partner as well
-		throw new NotImplementedException("");
+		return assembler.toResource(request);
 	}
 
 	@Transactional

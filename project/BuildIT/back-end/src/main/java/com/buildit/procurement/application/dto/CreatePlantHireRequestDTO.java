@@ -22,5 +22,4 @@ public class CreatePlantHireRequestDTO extends ResourceSupport {
 
 	@NotNull
 	BusinessPeriodDTO rentalPeriod;
-
 }
