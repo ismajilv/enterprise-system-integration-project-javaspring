@@ -1,8 +1,10 @@
 package com.buildit.procurement.web.controller;
 
 import com.buildit.procurement.application.dto.ConstructionSiteDTO;
+import org.springframework.http.ResponseEntity;
 import com.buildit.procurement.application.services.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.*;
 import com.buildit.procurement.application.dto.InvoiceDTO;
 
@@ -21,11 +23,11 @@ public class InvoiceController {
 
     @GetMapping
     public List<InvoiceDTO> readAll() {
-        List<InvoiceDTO> sites = service.readAll();
+        List<InvoiceDTO> invoices = service.readAll();
 
-        sites.forEach(site -> fixLinks(site));
+        invoices.forEach(inv -> fixLinks(inv));
 
-        return sites;
+        return invoices;
     }
 
     @GetMapping("/{id}")
@@ -35,6 +37,11 @@ public class InvoiceController {
         fixLinks(invoiceDTO);
 
         return invoiceDTO;
+    }
+
+    @PostMapping("/{id}/accept")
+    public void accept(@PathVariable Long id) {
+        service.accept(id);
     }
 
     private void fixLinks(InvoiceDTO invoice) {
