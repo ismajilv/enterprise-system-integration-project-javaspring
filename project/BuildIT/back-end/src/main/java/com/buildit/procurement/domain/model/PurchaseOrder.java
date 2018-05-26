@@ -20,8 +20,8 @@ public class PurchaseOrder {
 	@OneToOne(optional = false)
 	PlantHireRequest plantHireRequest;
 
-	@JoinColumn(name = "invoice_id", nullable = false)
-	@OneToOne(optional = false)
+	@JoinColumn(name = "invoice_id")
+	@OneToOne
 	Invoice invoice;
 
 }
