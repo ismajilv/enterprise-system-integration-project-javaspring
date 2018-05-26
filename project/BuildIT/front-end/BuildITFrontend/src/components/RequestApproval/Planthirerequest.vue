@@ -1,10 +1,13 @@
 <template>
   <div>
     <h2> Lists of plants</h2>
+    <label class="checkbox">
+      <input type="checkbox" v-model="checkbox" v-on:click="fetchHireRequests()">
+      Show only pending
+    </label>
     <table class="table is-table-bordered is-table-striped is-fullwidth">
     <thead>
         <tr>
-            <th class="has-text-center">id</th>
             <th class="has-text-center">Name</th>
             <th class="has-text-center">Start Date</th>
             <th class="has-text-center">End Date</th>
@@ -15,21 +18,20 @@
         </tr>
     </thead>
     <tbody>
-          <tr class="table-row-we2" v-for="pending in allrequest" :key="pending._id" >
-            <td class="has-text-center" id="name"> {{pending._id}}</td>
-            <td id = "plantNameWE2" class="has-text-center"> {{pending.plant.name}}</td>
-            <td id = "plantStartDateWE2" class="has-text-center"> {{pending.rentalPeriod.startDate}}</td>
-            <td id = "plantEndDateWE2" class="has-text-center">{{pending.rentalPeriod.endDate}}</td>
-            <td class="has-text-center"> {{pending.requestingSiteEngineer.firstName}} {{pending.requestingSiteEngineer.lastName}} </td>
+          <tr class="table-row-we2" v-for="request in allRequests" :key="request._id" >
+            <td id = "plantNameWE2" class="has-text-center"> {{request.plant.name}}</td>
+            <td id = "plantStartDateWE2" class="has-text-center"> {{request.rentalPeriod.startDate}}</td>
+            <td id = "plantEndDateWE2" class="has-text-center">{{request.rentalPeriod.endDate}}</td>
+            <td class="has-text-center"> {{request.requestingSiteEngineer.firstName}} {{request.requestingSiteEngineer.lastName}} </td>
             <td id = "plantPriceWE2" class="has-text-center">
-              {{countPrice(pending.rentalPeriod.startDate, pending.rentalPeriod.endDate, pending.rentalCost)}}
+              {{countPrice(request.rentalPeriod.startDate, request.rentalPeriod.endDate, request.rentalCost)}}
             </td>
-            <td>{{pending.status.replace(/_/g, ' ')}}</td>
+            <td>{{request.status.replace(/_/g, ' ')}}</td>
             <td>
               <button v-on:click="accept" class="button is-success is-outlined">Accept</button>
               <button v-on:click="reject" @click="isActiveReject = !isActiveReject" class="button is-danger is-outlined">Reject</button>
-              <button v-on:click="focus(pending._id)" @click="isActiveExtend = !isActiveExtend" class="button is-warning is-outlined">Extend</button>
-              <button v-on:click="cancel(pending._id)" class="button is-danger is-outlined">Cancel</button>
+              <button v-on:click="focus(request._id)" @click="isActiveExtend = !isActiveExtend" class="button is-warning is-outlined">Extend</button>
+              <button v-on:click="cancel(request._id)" class="button is-danger is-outlined">Cancel</button>
             </td>
         </tr>
     </tbody>
@@ -68,7 +70,8 @@ export default {
   props: ["orderStatus"],
   data: function(){
       return{
-        allrequest: [],
+        allRequests: [],
+        checkbox: false,
         isActiveReject: false,
         isActiveExtend: false,
         rejectedRequest:{},
@@ -80,14 +83,18 @@ export default {
       }
   },
    mounted:function(){
-    this.pendingHire();
+    this.fetchHireRequests();
   },
   methods: {
-      pendingHire: function(){
-         axios.get("http://localhost:8080/api/requests?status=PENDING")
+    fetchHireRequests: function(){
+         axios.get("http://localhost:8080/api/requests")
         .then(response => {
-          this.allrequest = response.data._embedded.plantHireRequestDTOList;
-          console.log("Response", this.allrequest);
+          let requests = response.data._embedded.plantHireRequestDTOList;
+          if (this.checkbox){
+            requests = requests.filter(req => req.status === 'PENDING_WORKS_ENGINEER_APPROVAL');
+          }
+          this.allRequests = requests;
+          console.log("[Fetching response]", this.allRequests);
         });
       },
       countPrice: (start, end, price) => {
@@ -158,4 +165,13 @@ export default {
   }
 }
 </script>
+
+<style>
+  label {
+    text-align: left;
+    display: block;
+    float: left;
+    margin-left: 5%;
+  }
+</style>
 
