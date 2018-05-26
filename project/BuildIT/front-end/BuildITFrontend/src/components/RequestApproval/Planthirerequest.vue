@@ -77,7 +77,7 @@ export default {
         request: {
           id: 0,
           newEndDate: null,
-          comments: ''
+          comments: null
         }
       }
   },
@@ -141,6 +141,12 @@ export default {
             axios.post(`http://localhost:8080/api/requests/${id}/requestExtension`, params)
               .then(response => {
                 this.isActiveExtend = false;
+                this.allRequests = this.allRequests.map(req => {
+                  if(response.data._id === req._id) {
+                    return response.data;
+                  }
+                  return req;
+                });
                 console.log('[Extension response]', response);
               })
               .catch(error => {
