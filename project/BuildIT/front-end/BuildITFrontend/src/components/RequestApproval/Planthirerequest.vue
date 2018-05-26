@@ -18,9 +18,11 @@
             <td class="has-text-center" id="name"> {{pending._id}}</td>
             <td id = "plantNameWE2" class="has-text-center"> {{pending.plant.name}}</td>
             <td id = "plantStartDateWE2" class="has-text-center"> {{pending.rentalPeriod.startDate}}</td>
-            <td id = "plantEndDateWE2" class="has-text-center"> {{pending.rentalPeriod.endDate}}</td>
+            <td id = "plantEndDateWE2" class="has-text-center">{{pending.rentalPeriod.endDate}}</td>
             <td class="has-text-center"> {{pending.requestingSiteEngineer.firstName}} {{pending.requestingSiteEngineer.lastName}} </td>
-            <td id = "plantPriceWE2" class="has-text-center"> {{pending.rentalCost.total}}</td>
+            <td id = "plantPriceWE2" class="has-text-center">
+              {{countPrice(pending.rentalPeriod.startDate, pending.rentalPeriod.endDate, pending.rentalCost)}}
+            </td>
             <td>
               <button v-on:click="accept" class="button is-success is-outlined">Accept</button>
               <button v-on:click="reject" @click="isActiveReject = !isActiveReject" class="button is-danger is-outlined">Reject</button>
@@ -86,6 +88,11 @@ export default {
           console.log("Response", this.allrequest);
         });
       },
+      countPrice: (start, end, price) => {
+        const sd = moment(start, 'YYYY-MM-DD');
+        const ed = moment(end, 'YYYY-MM-DD');
+        return ed.diff(sd, 'days')*price;
+      },
       accept: function(inputOrder){
            let i= document.getElementById("name").innerHTML;
            let params = i + "/accept";
@@ -122,14 +129,16 @@ export default {
             comment: this.request.comments
           };
           const id = this.request.id;
-          axios.post(`http://localhost:8080/api/requests/${id}/requestExtension`, params)
-          .then(response => {
-            this.isActiveExtend = false;
-            console.log('[Extension response]', response);
-          })
-          .catch(error => {
-            console.log('[Extension error]', error);
-          });
+          if (params.newEndDate && id) {
+            axios.post(`http://localhost:8080/api/requests/${id}/requestExtension`, params)
+              .then(response => {
+                this.isActiveExtend = false;
+                console.log('[Extension response]', response);
+              })
+              .catch(error => {
+                console.log('[Extension error]', error);
+              });
+          }
       },
       cancel: (id) => {
         axios.post(`http://localhost:8080/api/requests/${id}/cancel`)
