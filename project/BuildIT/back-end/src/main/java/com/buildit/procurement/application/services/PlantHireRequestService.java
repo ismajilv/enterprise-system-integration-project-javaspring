@@ -154,8 +154,13 @@ public class PlantHireRequestService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<PlantHireRequestDTO> getAll() {
-		List<PlantHireRequest> all = repository.findAll();
+	public List<PlantHireRequestDTO> getAll(PHRStatus status) {
+		List<PlantHireRequest> all;
+		if (status == null) {
+			all = repository.findAll();
+		} else {
+			all = repository.findAllByStatus(status);
+		}
 
 		return all.stream().map(phr -> assembler.toResource(phr)).collect(Collectors.toList());
 	}
@@ -215,7 +220,6 @@ public class PlantHireRequestService {
 		}
 
 		request = repository.save(request);
-		// TODO
 		// check previous state, so cancelling is allowed.
 		// may need to notify rentit partner as well
 		return assembler.toResource(request);

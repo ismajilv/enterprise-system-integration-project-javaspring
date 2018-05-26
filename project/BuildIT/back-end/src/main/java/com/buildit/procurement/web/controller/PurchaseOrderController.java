@@ -27,6 +27,7 @@ public class PurchaseOrderController {
 		return suppliers;
 	}
 
+
 	private void fixLinks(PurchaseOrderDTO order) {
 		order.removeLinks();
 	}

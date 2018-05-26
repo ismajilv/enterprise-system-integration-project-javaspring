@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.buildit.procurement.domain.enums.PHRStatus;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -38,8 +39,8 @@ public class PlantHireRequestController {
 	CommentService commentService;
 
 	@GetMapping
-	public ResponseEntity<Resources<PlantHireRequestDTO>> readAll() {
-		List<PlantHireRequestDTO> requests = service.getAll();
+	public ResponseEntity<Resources<PlantHireRequestDTO>> readAll(@PathVariable PHRStatus status) {
+		List<PlantHireRequestDTO> requests = service.getAll(status);
 
 		return transformIntoResponse(requests);
 	}
@@ -89,7 +90,7 @@ public class PlantHireRequestController {
 	}
 
 	@PostMapping("/{id}/cancel")
-	public ResponseEntity<Resource<PlantHireRequestDTO>> cancel(@PathVariable Long id) {
+	public ResponseEntity<Resource<PlantHireRequestDTO>> cancel(@PathVariable Long id) throws Exception {
 		PlantHireRequestDTO cancelledRequest = service.cancel(id);
 
 		return transformIntoResponse(cancelledRequest, HttpStatus.OK);
