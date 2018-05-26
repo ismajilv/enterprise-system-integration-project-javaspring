@@ -4,30 +4,23 @@ import com.rentit.common.application.dto.BusinessPeriodDTO;
 import com.rentit.inventory.application.services.PlantInventoryEntryAssembler;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.domain.model.PurchaseOrder;
-import com.rentit.sales.rest.SalesRestController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
 
-import static java.util.Objects.isNull;
-
 @Service
-public class PurchaseOrderAssembler extends ResourceAssemblerSupport<PurchaseOrder, PurchaseOrderDTO> {
+public class PurchaseOrderAssembler {
 
     @Autowired
     PlantInventoryEntryAssembler plantInventoryEntryAssembler;
 
-    public PurchaseOrderAssembler() {
-        super(SalesRestController.class, PurchaseOrderDTO.class);
-    }
+    public PurchaseOrderDTO toResource(PurchaseOrder po) {
+        PurchaseOrderDTO dto = new PurchaseOrderDTO();
+        dto.set_id(po.getId());
+        dto.setPlant(plantInventoryEntryAssembler.toResource(po.getPlant()));
+        dto.setRentalPeriod(BusinessPeriodDTO.of(po.getRentalPeriod().getStartDate(), po.getRentalPeriod().getEndDate()));
+        dto.setTotal(po.getTotal());
+        dto.setStatus(po.getStatus());
 
-    public PurchaseOrderDTO toResource(PurchaseOrder purchaseOrder) {
-        PurchaseOrderDTO dto = createResourceWithId(purchaseOrder.getId(), purchaseOrder);
-        dto.set_id(purchaseOrder.getId());
-        dto.setPlant(plantInventoryEntryAssembler.toResource(purchaseOrder.getPlant()));
-        dto.setRentalPeriod(BusinessPeriodDTO.of(purchaseOrder.getRentalPeriod().getStartDate(),purchaseOrder.getRentalPeriod().getEndDate()));
-        dto.setTotal(purchaseOrder.getTotal());
-        dto.setStatus(purchaseOrder.getStatus());
         return dto;
     }
 }

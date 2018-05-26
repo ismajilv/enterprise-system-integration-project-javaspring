@@ -64,21 +64,20 @@ public class CreationOfPurchaseOrderSteps {
 
     @Given("^the following plant catalog$")
     public void the_following_plant_catalog(List<PlantInventoryEntry> entries) throws Throwable {
-        plantInventoryEntryRepository.saveAll(entries);
+//        plantInventoryEntryRepository.save(entries);
     }
 
     @Given("^the following inventory$")
     public void the_following_inventory(DataTable table) throws Throwable {
-        for (Map<String, String> row: table.asMaps(String.class, String.class)){
+        for (Map<String, String> row: table.asMaps(String.class, String.class))
             plantInventoryItemRepository.save(
                     PlantInventoryItem.of(
                             Long.parseLong(row.get("id")),
                             row.get("serialNumber"),
                             EquipmentCondition.valueOf(row.get("equipmentCondition")),
-                            plantInventoryEntryRepository.findOneById(Long.parseLong(row.get("plantInfo")))
+                            plantInventoryEntryRepository.getOne(Long.parseLong(row.get("plantInfo")))
                     )
             );
-        }
     }
 
     @Given("^a customer is in the \"([^\"]*)\" web page$")
@@ -103,18 +102,6 @@ public class CreationOfPurchaseOrderSteps {
         endDateInput.setValueAttribute(endDate);
 
         customerPage = submit.click();
-    }
-
-    @When("^the customer selects a \"([^\"]*)\"$")
-    public void the_customer_selects_a(String plantDescription) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        List<?> buttons = customerPage.getByXPath(String.format("//tr[./td = '%s']//button", plantDescription));
-        throw new PendingException();
-    }
-    @Then("^a purchase order should be created with a total price of (\\d+)\\.(\\d+)$")
-    public void a_purchase_order_should_be_created_with_a_total_price_of(int arg1, int arg2) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
     }
 
     @Then("^(\\d+) plants are shown$")

@@ -8,16 +8,14 @@ import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.Column;
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
-public class PurchaseOrderDTO extends ResourceSupport{
+public class PurchaseOrderDTO {
     Long _id;
     PlantInventoryEntryDTO plant;
     BusinessPeriodDTO rentalPeriod;
 
     @Column(precision = 8, scale = 2)
     BigDecimal total;
-
     POStatus status;
 }
