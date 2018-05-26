@@ -30,8 +30,8 @@
             </td>
             <td>{{request.status.replace(/_/g, ' ')}}</td>
             <td>
-              <button v-on:click="accept" class="button is-success is-outlined">Accept</button>
-              <button v-on:click="reject" @click="isActiveReject = !isActiveReject" class="button is-danger is-outlined">Reject</button>
+              <button v-on:click="accept(request._id)" class="button is-success is-outlined">Accept</button>
+              <button v-on:click="reject(request._id)" @click="isActiveReject = !isActiveReject" class="button is-danger is-outlined">Reject</button>
               <button v-on:click="focus(request._id)" @click="isActiveExtend = !isActiveExtend" class="button is-warning is-outlined">Extend</button>
               <button v-on:click="cancel(request._id)" class="button is-danger is-outlined">Cancel</button>
             </td>
@@ -75,7 +75,7 @@ export default {
         isActiveExtend: false,
         rejectedRequest:{},
         request: {
-          id: 0,
+          id: null,
           newEndDate: null,
           comments: null
         }
@@ -101,32 +101,34 @@ export default {
         const ed = moment(end, 'YYYY-MM-DD');
         return ed.diff(sd, 'days')*price;
       },
-      accept: function(inputOrder){
-           let i= document.getElementById("name").innerHTML;
-           let params = i + "/accept";
-        axios.get("http://localhost:8080/api/requests/", params)
-        .then(response => {
-           this.$snackbar.open("Plant hire request accepted for site engineer.");
-         console.log("Accept", response.data._embedded);
-        });
+      accept: function(id){
+        console.log('[Accept Id]', id);
+        axios.post(`http://localhost:8080/api/requests/${id}/accept`)
+          .then(response => {
+             this.updatePHR(response.data);
+             this.$snackbar.open("Plant hire request accepted for site engineer.");
+          })
+          .catch(error => {
+            console.log('[Accept error]', error);
+          });
       },
-      reject: function(inputOrder){
-           let i= document.getElementById("name").innerHTML;
-           let params = i + "/reject";
-           console.log("[Reject id]", i);
-        axios.get("http://localhost:8080/api/requests/", params)
+      reject: function(id){
+        console.log("[Reject id]", id);
+        this.request.id = id;
+        axios.post(`http://localhost:8080/api/requests/${id}/reject`)
         .then(response => {
-          console.log("[After Reject]", response.data._embedded.plantHireRequestDTOList);
-          this.rejectedRequest = response.data._embedded.plantHireRequestDTOList;
+          this.updatePHR(response.data);
+        })
+        .catch(error => {
+          console.log('[Rejection error]', error);
         });
       },
       comment: function(){
-           let i= document.getElementById("name").innerHTML;
-           let obj = {"value": this.request.comments};
-           let params = i + "/addComment";
-        axios.get("http://localhost:8080/api/requests/", params, obj)
+        const params = {value: this.request.comments};
+        axios.post(`http://localhost:8080/api/requests/${this.request.id}/addComment`, params)
         .then(response => {
-          console.log("Comment", response);
+          console.log("[Comment]", response);
+            this.isActiveReject = false;
            this.$snackbar.open("Comment submitted successfully");
         });
       },
@@ -141,12 +143,7 @@ export default {
             axios.post(`http://localhost:8080/api/requests/${id}/requestExtension`, params)
               .then(response => {
                 this.isActiveExtend = false;
-                this.allRequests = this.allRequests.map(req => {
-                  if(response.data._id === req._id) {
-                    return response.data;
-                  }
-                  return req;
-                });
+                this.updatePHR(response.data);
                 console.log('[Extension response]', response);
               })
               .catch(error => {
@@ -157,6 +154,7 @@ export default {
       cancel: (id) => {
         axios.post(`http://localhost:8080/api/requests/${id}/cancel`)
           .then(response => {
+            this.updatePHR(response.data);
             console.log('[Cancelled response]', response)
           })
           .catch(error => {
@@ -166,6 +164,14 @@ export default {
       focus: function(id) {
         console.log('[Focused on]', id);
         this.request.id = id;
+      },
+      updatePHR: function(phr) {
+        this.allRequests = this.allRequests.map(req => {
+          if(phr._id === req._id) {
+            return phr;
+          }
+          return req;
+        });
       }
   }
 }
