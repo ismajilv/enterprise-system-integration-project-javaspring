@@ -9,7 +9,8 @@
             <th class="has-text-center">Start Date</th>
             <th class="has-text-center">End Date</th>
             <th class="has-text-center">Site Engineer</th>
-            <th class="has-text-center">Price</th>
+            <th class="has-text-center">Total Price</th>
+            <th class="has-text-center">Status</th>
             <th class="has-text-center">Actions</th>
         </tr>
     </thead>
@@ -23,6 +24,7 @@
             <td id = "plantPriceWE2" class="has-text-center">
               {{countPrice(pending.rentalPeriod.startDate, pending.rentalPeriod.endDate, pending.rentalCost)}}
             </td>
+            <td>{{pending.status.replace(/_/g, ' ')}}</td>
             <td>
               <button v-on:click="accept" class="button is-success is-outlined">Accept</button>
               <button v-on:click="reject" @click="isActiveReject = !isActiveReject" class="button is-danger is-outlined">Reject</button>
