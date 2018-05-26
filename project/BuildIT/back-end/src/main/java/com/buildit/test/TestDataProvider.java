@@ -74,7 +74,7 @@ public class TestDataProvider {
 				plantHireRequestService.addRequest(
 						constructionSite1.getId(),
 						supplier.get_id(),
-						rentItService.getRentItUrl() + "/api/sales/plants/3",
+						rentItService.getRentItUrl() + "/api/plants/3",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(1),
 								LocalDate.now().plusDays(5)
@@ -96,7 +96,7 @@ public class TestDataProvider {
 				plantHireRequestService.addRequest(
 						constructionSite2.getId(),
 						supplier.get_id(),
-						rentItService.getRentItUrl() + "/api/sales/plants/6",
+						rentItService.getRentItUrl() + "/api/plants/6",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(1),
 								LocalDate.now().plusDays(5)
@@ -110,7 +110,7 @@ public class TestDataProvider {
 				plantHireRequestService.addRequest(
 						constructionSite1.getId(),
 						supplier.get_id(),
-						rentItService.getRentItUrl() + "/api/sales/plants/3",
+						rentItService.getRentItUrl() + "/api/plants/3",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(10),
 								LocalDate.now().plusDays(12)
