@@ -1,9 +1,6 @@
 package com.example.rentit;
 
-import com.example.rentit.sales.rest.dtos.ConstructionSite;
-import com.example.rentit.sales.rest.dtos.PlantInventoryEntry;
-import com.example.rentit.sales.rest.dtos.PlantInventoryItem;
-import com.example.rentit.sales.rest.dtos.Supplier;
+import com.example.rentit.sales.rest.dtos.*;
 import cucumber.api.DataTable;
 import cucumber.api.PendingException;
 import cucumber.api.java.After;
@@ -45,16 +42,16 @@ public class Stepdefs {
     @Before
     public void setup() {
         rentItEmployee = new ChromeDriver();
-        siteEngineer = new ChromeDriver();
-        workEngineer = new ChromeDriver();
+        //siteEngineer = new ChromeDriver();
+        //workEngineer = new ChromeDriver();
     }
 
     @After
     public void tearoff() {
         // Comment the following line if you want to check the application's final state on the browser
-       rentItEmployee.close();
-       siteEngineer.close();
-       workEngineer.close();
+      // rentItEmployee.close();
+       //siteEngineer.close();
+       //workEngineer.close();
     }
 
     @Given("^the following plant catalog$")
@@ -65,7 +62,32 @@ public class Stepdefs {
                 .collect(Collectors.toList());
 
         PlantInventoryEntry[] result = restTemplate.postForObject(host+rentItBEPort+"/api/entries", entries, PlantInventoryEntry[].class);
-        assertThat(result).hasSize(8);
+        assertThat(result).hasSize(11);
+    }
+
+    /*
+    {
+        "constructionSiteId": 2,
+        "supplierId": 4,
+        "plantHref": "http://localhost:8090/api/sales/plants/3",
+        "rentalPeriod" : {
+        "startDate" : "2018-05-26",
+        "endDate" : "2018-05-30"
+        }
+        }
+     */
+
+    @Given("^plant hire requests have been set up$")
+    public void plant_hire_requests_have_been_set_up() throws Throwable {    // Write code here that turns the phrase above into concrete actions
+        PlantHireRequest[] result = restTemplate.postForObject(host+buildItBEPort+"/api/phr", 8, PlantHireRequest[].class);
+        assertThat(result).hasSize(11);
+    }
+
+    @Given("^purchase orders have been set up$")
+    public void purchase_orders_have_been_set_up() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        PurchaseOrder[] result = restTemplate.postForObject(host+rentItBEPort+"/api/pos",8, PurchaseOrder[].class);
+        assertThat(result).hasSize(11);
     }
 
     @Given("^the following inventory$")
@@ -77,6 +99,86 @@ public class Stepdefs {
         PlantInventoryItem[] result = restTemplate.postForObject(host+rentItBEPort+"/api/items", items, PlantInventoryItem[].class);
         assertThat(result).hasSize(8);*/
     }
+
+    @Given("^the following Purchase Orders$")
+    public void the_following_Purchase_Orders(DataTable arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        // For automatic transformation, change DataTable to one of
+        // List<YourType>, List<List<E>>, List<Map<K,V>> or Map<K,V>.
+        // E,K,V must be a scalar (String, Integer, Date, enum etc)
+       // throw new PendingException();
+    }
+
+    @Given("^employee is in the RentIt webpage \"([^\"]*)\" tab$")public void employee_is_in_the_RentIt_webpage_tab(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        rentItEmployee.get(host+rentItFEPort+"/#/PlantDepotEmployee");
+    }
+
+    @When("^employee selects \"([^\"]*)\" tab$")
+    public void employee_selects_tab(String arg1) throws Throwable {
+        rentItEmployee.get(host+rentItFEPort+"/#/PlantDepotEmployee");
+    }
+
+    @Then("^(\\d+) purchase orders are shown$")
+    public void purchase_orders_are_shown(int arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^(\\d+) of them has status \"([^\"]*)\"$")
+    public void of_them_has_status(int arg1, String arg2) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^employee dispatches \"([^\"]*)\" purchase order with id (\\d+)$")
+    public void employee_dispatches_purchase_order_with_id(String arg1, int arg2) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^the status of po with id (\\d+) changes to \"([^\"]*)\"$")
+    public void the_status_of_po_with_id_changes_to(int arg1, String arg2) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^button \"([^\"]*)\" is enabled for po with id (\\d+)$")
+    public void button_is_enabled_for_po_with_id(String arg1, int arg2) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^button \"([^\"]*)\" is disabled for po with id (\\d+)$")
+    public void button_is_disabled_for_po_with_id(String arg1, int arg2) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^purchase order status is not \"([^\"]*)\"$")
+    public void purchase_order_status_is_not(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^button \"([^\"]*)\" is disabled$")
+    public void button_is_disabled(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^disabled \"([^\"]*)\" button is clicked$")
+    public void disabled_button_is_clicked(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^status of the purchase order is not changed$")
+    public void status_of_the_purchase_order_is_not_changed() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
 
     @Given("^the following suppliers$")
     public void the_following_suppliers(DataTable table) throws Throwable {
