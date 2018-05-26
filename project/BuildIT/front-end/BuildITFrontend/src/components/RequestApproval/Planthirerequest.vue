@@ -8,6 +8,7 @@
     <table class="table is-table-bordered is-table-striped is-fullwidth">
     <thead>
         <tr>
+            <th class="has-text-center">Id</th>
             <th class="has-text-center">Name</th>
             <th class="has-text-center">Start Date</th>
             <th class="has-text-center">End Date</th>
@@ -19,6 +20,7 @@
     </thead>
     <tbody>
           <tr class="table-row-we2" v-for="request in allRequests" :key="request._id" >
+            <td id = "name" class="has-text-center"> {{request._id}}</td>
             <td id = "plantNameWE2" class="has-text-center"> {{request.plant.name}}</td>
             <td id = "plantStartDateWE2" class="has-text-center"> {{request.rentalPeriod.startDate}}</td>
             <td id = "plantEndDateWE2" class="has-text-center">{{request.rentalPeriod.endDate}}</td>
@@ -36,13 +38,12 @@
         </tr>
     </tbody>
 </table>
-    <b-message title="You have rejected this order, Why?" :active.sync="isActiveReject">
-       <textarea rows="4" cols="120" name="comment" form="usrform" v-model="request.comments">
-        Enter text here...</textarea>
-       <a v-on:click="comment" class="button is-success"> Comment </a>
-    </b-message>
+    <b-modal title="You have rejected this order, Why?" :active.sync="isActiveReject">
+       <textarea name="comment" form="usrform" v-model="request.comments" placeholder="Enter comment here..."></textarea>
+       <button v-on:click="comment" class="button is-success"> Comment </button>
+    </b-modal>
 
-    <b-message title="Extension Request" :active.sync="isActiveExtend">
+    <b-modal title="Extension Request" :active.sync="isActiveExtend">
       <div>
         Enter End date:
         <input type="date"
@@ -52,12 +53,10 @@
                icon="calendar-today">
       </div>
       <br>
-      <textarea rows="4" cols="120" name="comment"
-                form="usrform" v-model="request.comments"
-                placeholder="Enter comment here..."></textarea>
+      <textarea name="comment" form="usrform" v-model="request.comments" placeholder="Enter comment here..."></textarea>
       <br>
       <button v-on:click="extend" class="button is-success"> Submit </button>
-    </b-message>
+    </b-modal>
   </div>
 </template>
 
@@ -172,6 +171,10 @@ export default {
     display: block;
     float: left;
     margin-left: 5%;
+  }
+  textarea {
+    width: 100%;
+    height: 60px;
   }
 </style>
 

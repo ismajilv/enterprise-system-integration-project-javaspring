@@ -25,7 +25,6 @@
             <th class="has-text-center">End Date</th>
             <th class="has-text-center">Price</th>
             <th class="has-text-center">Actions</th>
-            <th class="has-text-center">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -34,8 +33,8 @@
             <td>{{order.rentalPeriod.startDate}}</td>
             <td>{{order.rentalPeriod.endDate}}</td>
             <td class="has-text-right">{{order.plant.price}}</td>
-            <td><a v-on:click="update" @click="isupdateModalActive = true" class="button is-success is-outlined">Update</a> </td>
-            <td> <a class="button is-danger is-outlined">Remove</a> </td>
+            <td><button v-on:click="update" @click="isupdateModalActive = true" class="button is-success is-outlined">Update</button>
+            <button class="button is-danger is-outlined">Remove</button> </td>
         </tr>
     </tbody>
 </table>
