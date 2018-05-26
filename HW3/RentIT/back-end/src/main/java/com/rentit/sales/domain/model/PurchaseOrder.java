@@ -8,7 +8,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +38,7 @@ public class PurchaseOrder {
     @ElementCollection
     List<POExtension> extensions = new ArrayList<>();
 
-    public static PurchaseOrder of(PlantInventoryEntry plant,
-                                   BusinessPeriod rentalPeriod) {
+    public static PurchaseOrder of(PlantInventoryEntry plant, BusinessPeriod rentalPeriod) {
         PurchaseOrder po = new PurchaseOrder();
         po.plant = plant;
         po.rentalPeriod = rentalPeriod;
@@ -65,20 +63,17 @@ public class PurchaseOrder {
         reservations.add(reservation);
         status = POStatus.OPEN;
         rentalPeriod = BusinessPeriod.of(rentalPeriod.getStartDate(), reservation.getSchedule().getEndDate());
-        Long nrOfDaysExtendedFor = ChronoUnit.DAYS.between(reservation.getSchedule().getStartDate(), reservation.getSchedule().getEndDate());
-        total = total.add(new BigDecimal(nrOfDaysExtendedFor));
+        // UPDATE PO total!!
     }
 
     public void registerFirstAllocation(PlantReservation reservation) {
         reservations.add(reservation);
         status = POStatus.OPEN;
         rentalPeriod = BusinessPeriod.of(reservation.getSchedule().getStartDate(), reservation.getSchedule().getEndDate());
-        Long nrOfDaysRented = ChronoUnit.DAYS.between(rentalPeriod.getStartDate(), rentalPeriod.getEndDate());
-        total = plant.getPrice().multiply(new BigDecimal(nrOfDaysRented));
+        // UPDATE PO total!!
     }
 
     public void reject() {
         status = POStatus.REJECTED;
     }
-
 }

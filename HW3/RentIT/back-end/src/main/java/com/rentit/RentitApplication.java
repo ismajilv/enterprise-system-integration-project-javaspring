@@ -11,11 +11,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 @SpringBootApplication
-@EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
-@CrossOrigin(origins = "http://localhost:7070")
+//@EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class RentitApplication {
 
 //	@Configuration

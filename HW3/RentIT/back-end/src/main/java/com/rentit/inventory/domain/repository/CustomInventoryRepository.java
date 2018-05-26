@@ -9,7 +9,5 @@ import java.util.List;
 public interface CustomInventoryRepository {
     List<PlantInventoryEntry> findAvailablePlants(String name, LocalDate startDate, LocalDate endDate);
     Boolean isAvailableFor(PlantInventoryItem item, LocalDate startDate, LocalDate endDate);
-    Boolean isPlantInventoryItemExisting(Long piiId);
-    Boolean isPlantInventoryEntryExisting(Long pieId);
     List<PlantInventoryItem> findAvailableItems(PlantInventoryEntry entry, LocalDate startDate, LocalDate endDate);
 }
