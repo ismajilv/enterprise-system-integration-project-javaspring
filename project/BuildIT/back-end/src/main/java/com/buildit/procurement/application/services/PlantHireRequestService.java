@@ -16,8 +16,11 @@ import com.buildit.common.application.exceptions.StatusChangeNotAllowedException
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.buildit.procurement.application.dto.ExtensionRequestDTO;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -213,15 +216,21 @@ public class PlantHireRequestService {
 	public PlantHireRequestDTO cancel(Long id) throws Exception {
 		PlantHireRequest request = readModel(id);
 
+		if(LocalDate.now().until(request.getRentalPeriod().getStartDate(), ChronoUnit.DAYS) < 1) {
+			throw new StatusChangeNotAllowedException("Cancellation is rejected");
+		}
+
 		if(request.getStatus() == PHRStatus.PENDING_WORKS_ENGINEER_APPROVAL) {
 			request.setStatus(PHRStatus.CANCELLED);
+		} else if (request.getStatus() == PHRStatus.PENDING_RENTAL_PARTNER_APPROVAL ||
+				request.getStatus() == PHRStatus.ACCEPTED_BY_RENTAL_PARTNER) {
+			// TODO: Send cancellation to RentIt
 		} else {
 			throw new StatusChangeNotAllowedException("Cancellation is rejected");
 		}
 
 		request = repository.save(request);
-		// check previous state, so cancelling is allowed.
-		// may need to notify rentit partner as well
+
 		return assembler.toResource(request);
 	}
 
@@ -238,4 +247,23 @@ public class PlantHireRequestService {
 		repository.save(phr);
 	}
 
+	@Transactional
+	public PlantHireRequestDTO extend(Long id, ExtensionRequestDTO extensionRequestDTO) {
+		PlantHireRequest request = readModel(id);
+
+		ExtensionRequest extensionRequest = new ExtensionRequest();
+		extensionRequest.setComment(extensionRequestDTO.getComment());
+		extensionRequest.setId(extensionRequestDTO.get_id());
+		extensionRequest.setNewEndDate(extensionRequest.getNewEndDate());
+		extensionRequest.setPlantHireRequest(extensionRequest.getPlantHireRequest());
+
+		request.setExtensionRequest(extensionRequest);
+		request.setStatus(PHRStatus.PENDING_EXTENSION);
+
+		request = repository.save(request);
+
+		//TODO sending extension request to rentit
+
+		return assembler.toResource(request);
+	}
 }
