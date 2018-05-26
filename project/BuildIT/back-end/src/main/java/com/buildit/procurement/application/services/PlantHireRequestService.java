@@ -253,9 +253,9 @@ public class PlantHireRequestService {
 
 		ExtensionRequest extensionRequest = new ExtensionRequest();
 		extensionRequest.setComment(extensionRequestDTO.getComment());
-		extensionRequest.setId(extensionRequestDTO.get_id());
-		extensionRequest.setNewEndDate(extensionRequest.getNewEndDate());
-		extensionRequest.setPlantHireRequest(extensionRequest.getPlantHireRequest());
+		//extensionRequest.setId(extensionRequestDTO.get_id());
+		extensionRequest.setNewEndDate(extensionRequestDTO.getNewEndDate());
+		extensionRequest.setPlantHireRequest(request);
 
 		request.setExtensionRequest(extensionRequest);
 		request.setStatus(PHRStatus.PENDING_EXTENSION);
