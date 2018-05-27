@@ -50,16 +50,8 @@ public class InvoiceController {
     }
 
     @PostMapping("/{id}/accept")
-    public ResponseEntity<Resource<InvoiceDTO>> accept(@PathVariable Long id) {
-        InvoiceDTO invoiceDTO = service.accept(id);
-
-        fixLinks(invoiceDTO);
-
-        return new ResponseEntity<>(
-                new Resource<>(invoiceDTO),
-                new HttpHeaders(),
-                HttpStatus.OK
-        );
+    public void accept(@PathVariable Long id) {
+        service.accept(id);
     }
 
     private void fixLinks(InvoiceDTO invoice) {
