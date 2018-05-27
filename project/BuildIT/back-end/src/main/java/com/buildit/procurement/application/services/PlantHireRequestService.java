@@ -13,6 +13,7 @@ import com.buildit.procurement.domain.model.*;
 import com.buildit.procurement.domain.repository.ExtensionRequestRepository;
 import com.buildit.procurement.domain.repository.PlantHireRequestRepository;
 import com.buildit.common.application.exceptions.StatusChangeNotAllowedException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -172,21 +173,16 @@ public class PlantHireRequestService {
 		String plantHref = request.getPlant().getHref();
 		requireNonNull(plantHref);
 
-		RentItPurchaseOrderDTO remotePurchaseOrder =
+		Pair<PurchaseOrderDTO, PHRStatus> remotePurchaseOrderAndNewPHRStatus =
 				integrationService.createPurchaseOrder(request.getSupplier().getId(), plantHref, businessPeriodAssembler.toResource(request.getRentalPeriod()), request.getConstructionSite().getId());
-
-		String href = remotePurchaseOrder.get_links().get("self").get("href");
-
-		PHRStatus status = remotePurchaseOrder.getStatus().convertToPHRStatus();
-		request.setStatus(status);
 
 		request.setApprovingWorksEngineer(employeeService.getLoggedInEmployee(Role.WORKS_ENGINEER));
 
-		PurchaseOrder purchaseOrder = purchaseOrderService.create(href, id, remotePurchaseOrder.get_id());
+		PurchaseOrder purchaseOrder = purchaseOrderService.create(remotePurchaseOrderAndNewPHRStatus.getLeft().getHref(), id, remotePurchaseOrderAndNewPHRStatus.getLeft().getExternalId());
 
 		request.setPurchaseOrder(purchaseOrder);
 
-		request.setStatus(PHRStatus.PENDING_RENTAL_PARTNER_APPROVAL);
+		request.setStatus(remotePurchaseOrderAndNewPHRStatus.getRight());
 
 		request.setApprovingWorksEngineer(approvingWorksEngineer);
 
