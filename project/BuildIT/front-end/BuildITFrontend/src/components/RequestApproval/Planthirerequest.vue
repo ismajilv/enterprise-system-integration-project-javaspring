@@ -98,8 +98,7 @@ export default {
          axios.get("http://localhost:8080/api/requests")
         .then(response => {
           console.log('[Response]', response);
-          // let requests = response.data._embedded.plantHireRequestDTOList;
-          let requests = response.data;
+          let requests = response.data._embedded.plantHireRequestDTOList;
           if (this.checkbox){
             requests = requests.filter(req => req.status === 'PENDING_WORKS_ENGINEER_APPROVAL');
           }
