@@ -65,7 +65,7 @@ public class PlantHireRequestControllerTest {
         dto.setConstructionSiteId(10L);
         dto.setPlantHref("http://localhost:8090/api/plants/3");
         dto.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now().plusDays(1), LocalDate.now().plusDays(3)));
-        dto.setSupplierId(10L);
+        dto.setSupplierId(1L);
 
         MvcResult result = mockMvc.perform(post("/api/requests")
                 .content(mapper.writeValueAsString(dto))
@@ -80,6 +80,6 @@ public class PlantHireRequestControllerTest {
         assertThat(plantHireRequestDTO.getRentalPeriod().getStartDate()).isEqualTo("2018-05-28");
         assertThat(plantHireRequestDTO.getRentalPeriod().getEndDate()).isEqualTo("2018-05-30");
         assertThat(plantHireRequestDTO.getPlant().getHref()).isEqualTo("http://localhost:8090/api/plants/3");
-        assertThat(plantHireRequestDTO.getSupplier().getName()).isEqualTo("RentIt");
+        assertThat(plantHireRequestDTO.getSupplier().getName()).isEqualTo("LocalRentIt");
     }
 }
