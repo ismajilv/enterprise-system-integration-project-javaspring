@@ -50,7 +50,7 @@ export default {
   },
   methods: {
       findAllPOs: function(){
-         axios.get("http://localhost:8090/api/sales/orders/all")
+         axios.get("http://localhost:8090/api/orders?status=ALL")
         .then(response => {
           console.log("Response",response);
           if(response.data != null && response.data._embedded != null){
@@ -61,7 +61,7 @@ export default {
       markDispatched: function(inputOrder){
          const poId = this.allrequest[inputOrder]._id;
          console.log("Dispatch", poId);
-         axios.post("http://localhost:8090/api/sales/orders/"+poId+"/dispatch")
+         axios.post("http://localhost:8090/api/orders/"+poId+"/dispatch")
          .then(response => {
           this.$snackbar.open("You have dispatched this purchase order.");
           console.log("Response " +response);
@@ -71,7 +71,7 @@ export default {
       markRejectedByCustomer: function(inputOrder){
         const poId = this.allrequest[inputOrder]._id;
         console.log("Rejected by customer ", poId);
-        axios.post("http://localhost:8090/api/sales/orders/"+poId+"/customer_reject")
+        axios.post("http://localhost:8090/api/orders/"+poId+"/customer_reject")
           .then(response => {
             this.$snackbar.open("This PO has been succesfully rejected by customer.");
             console.log("Response " +response);
@@ -81,7 +81,7 @@ export default {
       markDelivered: function(inputOrder){
         const poId = this.allrequest[inputOrder]._id;
         console.log("Delivered to customer ", poId);
-        axios.post("http://localhost:8090/api/sales/orders/"+poId+"/deliver")
+        axios.post("http://localhost:8090/api/orders/"+poId+"/deliver")
           .then(response => {
             this.$snackbar.open("This PO has been succesfully delivered.");
             console.log("Response " +response);
@@ -91,7 +91,7 @@ export default {
       markReturned: function(inputOrder){
         const poId = this.allrequest[inputOrder]._id;
         console.log("Returned by customer ", poId);
-        axios.post("http://localhost:8090/api/sales/orders/"+poId+"/return")
+        axios.post("http://localhost:8090/api/orders/"+poId+"/return")
           .then(response => {
             this.$snackbar.open("This PO has been succesfully returned.");
             console.log("Response " +response);
