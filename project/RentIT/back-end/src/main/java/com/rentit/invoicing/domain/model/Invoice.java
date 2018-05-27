@@ -1,6 +1,5 @@
-package com.buildit.procurement.domain.model;
+package com.rentit.invoicing.domain.model;
 
-import com.buildit.procurement.domain.enums.InvoiceStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -15,6 +14,9 @@ public class Invoice {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	Long id;
 
+	@Column(nullable = false)
+	Long purchaseOrderId;
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	InvoiceStatus status;
@@ -22,18 +24,14 @@ public class Invoice {
 	@Column(name = "due_date", nullable = false)
 	LocalDate dueDate;
 
-	@JoinColumn(name = "purchase_order_id", nullable = false)
-	@OneToOne(optional = false)
-	PurchaseOrder purchaseOrder;
-
-	@Column(nullable = false)
-	Boolean latePayment;
-
 	@JoinColumn(name = "remittance_advice_id")
 	@OneToOne
 	RemittanceAdvice remittanceAdvice;
 
 	@Column(nullable = false)
 	BigDecimal payableAmount;
+
+	@Column
+	String rejectionNote;
 
 }

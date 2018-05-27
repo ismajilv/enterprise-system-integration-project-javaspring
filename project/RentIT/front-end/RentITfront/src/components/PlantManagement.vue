@@ -2,10 +2,9 @@
   <div id="app">
     <h2> RentIT </h2>
     <h2> Lists of purchase Order</h2>
-    <table class="table is-table-bordered is-table-striped is-fullwidth">
+    <table class="table table-dark">
     <thead>
         <tr>
-            <th class="has-text-center">Id</th>
             <th class="has-text-center">Name</th>
             <th class="has-text-center">Start Date</th>
             <th class="has-text-center">End Date</th>
@@ -18,7 +17,7 @@
     </thead>
     <tbody>
           <tr class="table-row-rentit" v-for="(pending, index)  in allrequest" :key="pending._id" >
-            <td class="has-text-center" id="name"> {{pending._id}}</td>
+            <td v-show="display" class="has-text-center" id="name"> {{pending._id}}</td>
             <td id = "plantNameWE2" class="has-text-center">{{pending.plant.name}}</td>
             <td id = "plantStartDateWE2" class="has-text-center">{{pending.rentalPeriod.startDate}}</td>
             <td id = "plantEndDateWE2" class="has-text-center">{{pending.rentalPeriod.endDate}}</td>
@@ -43,6 +42,7 @@ export default {
       return{
         allrequest: [],
         rejectedRequest:{},
+        display: false
       }
   },
    mounted:function(){

@@ -21,13 +21,11 @@ public class PurchaseOrder {
     @Id @GeneratedValue
     Long id;
 
-    @OneToMany
-    List<PlantReservation> reservations = new ArrayList<>();
+    @OneToOne(mappedBy = "purchaseOrder")
+    PlantReservation reservation;
+
     @ManyToOne
     PlantInventoryEntry plant;
-
-    LocalDate issueDate;
-    LocalDate paymentSchedule;
 
     @Column(precision = 8, scale = 2)
     BigDecimal total;
@@ -43,6 +41,14 @@ public class PurchaseOrder {
 
     @Column
     String deliveryAddress;
+
+    @JoinColumn(name = "customer_id") // , nullable = false)
+    @ManyToOne // (optional = false)
+    Customer customer;
+
+    @Embedded
+    @Column // (nullable = false)
+    CustomerContactPerson contact;
 
     public static PurchaseOrder of(PlantInventoryEntry plant,
                                    BusinessPeriod rentalPeriod,
@@ -75,15 +81,15 @@ public class PurchaseOrder {
     }
 
     public void acceptExtension(PlantReservation reservation) {
-        reservations.add(reservation);
         setStatus(POStatus.ACCEPTED);
-        rentalPeriod = BusinessPeriod.of(rentalPeriod.getStartDate(), reservation.getSchedule().getEndDate());
+        this.rentalPeriod = BusinessPeriod.of(rentalPeriod.getStartDate(), reservation.getSchedule().getEndDate());
+        this.reservation.setSchedule(this.rentalPeriod);
         Long nrOfDaysExtendedFor = ChronoUnit.DAYS.between(reservation.getSchedule().getStartDate(), reservation.getSchedule().getEndDate());
         total = total.add(new BigDecimal(nrOfDaysExtendedFor));
     }
 
     public void registerFirstAllocation(PlantReservation reservation) {
-        reservations.add(reservation);
+        this.reservation = reservation;
         setStatus(POStatus.ACCEPTED);
         rentalPeriod = BusinessPeriod.of(reservation.getSchedule().getStartDate(), reservation.getSchedule().getEndDate());
         Long nrOfDaysRented = ChronoUnit.DAYS.between(rentalPeriod.getStartDate(), rentalPeriod.getEndDate());
@@ -118,10 +124,8 @@ public class PurchaseOrder {
     public String toString() {
         return "PurchaseOrder{" +
                 "id=" + id +
-                ", reservations=" + reservations +
+                ", reservation=" + reservation +
                 ", plant=" + plant +
-                ", issueDate=" + issueDate +
-                ", paymentSchedule=" + paymentSchedule +
                 ", total=" + total +
                 ", status=" + status +
                 ", rentalPeriod=" + rentalPeriod +
