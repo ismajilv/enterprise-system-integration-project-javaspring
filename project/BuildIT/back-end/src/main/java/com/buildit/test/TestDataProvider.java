@@ -2,7 +2,9 @@ package com.buildit.test;
 
 import com.buildit.common.application.dto.EmployeeDTO;
 import com.buildit.common.domain.model.BusinessPeriod;
+import com.buildit.procurement.application.dto.RentItInvoiceDTO;
 import com.buildit.procurement.application.dto.ExtensionRequestDTO;
+import com.buildit.procurement.application.dto.PurchaseOrderDTO;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.application.dto.SupplierDTO;
 import com.buildit.procurement.application.services.*;
@@ -10,11 +12,11 @@ import com.buildit.procurement.domain.enums.Role;
 import com.buildit.procurement.domain.model.ConstructionSite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.buildit.procurement.application.dto.InvoiceDTO;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import static com.buildit.procurement.application.services.RentItService.RENTAL_PARTNER_NAME_1;
 
 // TODO delete before going live!
 @Service
@@ -38,13 +40,8 @@ public class TestDataProvider {
 	@Autowired
 	EmployeeService employeeService;
 
-	@Autowired
-	ExtensionRequestService extensionRequestService;
 
-	@Autowired
-	RentItService rentItService;
-
-	@PostConstruct
+	//@PostConstruct
 	public void init() {
 		System.out.println("== Adding test data ==");
 
@@ -57,7 +54,7 @@ public class TestDataProvider {
 		ConstructionSite constructionSite3 =
 				constructionSiteService.create("Kase 12, Narva");
 
-		SupplierDTO supplier = supplierService.findOrCreateByName(RENTAL_PARTNER_NAME_1);
+		SupplierDTO supplier = supplierService.findOrCreateByName("LocalRentIt");
 
 		// Supplier supplier = supplierService.readModel(supplierAsDTO.get_id());
 
@@ -74,7 +71,7 @@ public class TestDataProvider {
 				plantHireRequestService.addRequest(
 						constructionSite1.getId(),
 						supplier.get_id(),
-						rentItService.getRentItUrl() + "/api/plants/3",
+						"http://localhost:8090/api/plants/3",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(1),
 								LocalDate.now().plusDays(5)
@@ -96,7 +93,7 @@ public class TestDataProvider {
 				plantHireRequestService.addRequest(
 						constructionSite2.getId(),
 						supplier.get_id(),
-						rentItService.getRentItUrl() + "/api/plants/6",
+						"http://localhost:8090/api/plants/6",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(1),
 								LocalDate.now().plusDays(5)
@@ -110,7 +107,7 @@ public class TestDataProvider {
 				plantHireRequestService.addRequest(
 						constructionSite1.getId(),
 						supplier.get_id(),
-						rentItService.getRentItUrl() + "/api/plants/3",
+						"http://localhost:8090/api/plants/3",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(10),
 								LocalDate.now().plusDays(12)
@@ -119,9 +116,14 @@ public class TestDataProvider {
 
 		plantHireRequestService.accept(acceptedPlantHireRequest.get_id());
 
-//		ExtensionRequestDTO extension = extensionRequestService.create(acceptedPlantHireRequest.get_id(), acceptedPlantHireRequest.getRentalPeriod().getEndDate().plusDays(3));
-
-		// TODO add some seed data with PurchaseOrder Invoice RemittanceAdvice
+		PlantHireRequestDTO extended = plantHireRequestService.extend(
+				acceptedPlantHireRequest.get_id(),
+				new ExtensionRequestDTO(
+						null,
+						acceptedPlantHireRequest.getRentalPeriod().getEndDate().plusDays(3),
+						null
+				)
+		);
 	}
 
 }

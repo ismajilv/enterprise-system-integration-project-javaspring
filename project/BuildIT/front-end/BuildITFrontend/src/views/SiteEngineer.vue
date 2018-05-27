@@ -1,25 +1,34 @@
 d<template>
   <div class="SiteEngineer">
-   <order-creation></order-creation>
+    <b-tabs type="is-toggle" expanded v-model="activeTab">
+      <b-tab-item label="Order Creation">
+        <order-creation></order-creation>
+      </b-tab-item>
+      <b-tab-item label="Invoices">
+        <invoice-list></invoice-list>
+      </b-tab-item>
+    </b-tabs>
   </div>
 </template>
 
 <script>
 import OrderCreation from "../components/PlantsRequest/OrderCreation.vue"
+import InvoiceList from "../components/InvoiceRequest/InvoiceList.vue"
 
 export default {
   name: 'SiteEngineer',
   components: {
-    OrderCreation
+    OrderCreation,
+    InvoiceList
   },
   data () {
     return {
+      activeTab: 0
     }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h1, h2 {
   font-weight: normal;

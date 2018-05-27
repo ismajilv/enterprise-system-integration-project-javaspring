@@ -1,9 +1,12 @@
 package com.rentit.invoicing.application.services;
 
 import com.rentit.invoicing.application.dto.InvoiceDTO;
+import com.rentit.invoicing.application.dto.RemittanceAdviceDTO;
 import com.rentit.invoicing.domain.model.Invoice;
 import com.rentit.invoicing.domain.model.InvoiceStatus;
+import com.rentit.invoicing.domain.model.RemittanceAdvice;
 import com.rentit.invoicing.domain.repository.InvoiceRepository;
+import com.rentit.invoicing.domain.repository.RemittanceAdviceRepository;
 import com.rentit.sales.application.dto.POCallbackDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.domain.model.PurchaseOrder;
@@ -36,6 +39,9 @@ public class InvoiceService {
 	PurchaseOrderRepository purchaseOrderRepository;
 
 	@Autowired
+	RemittanceAdviceRepository remittanceAdviceRepository;
+
+	@Autowired
 	InvoiceAssembler assembler;
 
 	public InvoiceDTO readOne(Long id) {
@@ -46,6 +52,34 @@ public class InvoiceService {
 		}
 
 		return assembler.toResource(maybeInvoice.get());
+	}
+
+	public Invoice findInvoice(Long id) {
+		return repository.getOne(id);
+	}
+
+	public Boolean isInvoiceExisting(Long id) { return  repository.getOne(id) == null;}
+
+	public Invoice rejectInvoice(Long invoiceId){
+		Invoice invoice = findInvoice(invoiceId);
+		invoice.setStatus(InvoiceStatus.REJECTED_BY_CUSTOMER);
+		return  repository.save(invoice);
+	}
+
+	public Invoice confirmInvoice(Long invoiceId){
+		Invoice invoice = findInvoice(invoiceId);
+		invoice.setStatus(InvoiceStatus.PAID);
+		return  repository.save(invoice);
+	}
+
+	public Invoice acceptInvoice(Long invoiceId, RemittanceAdviceDTO dto){
+		Invoice invoice = findInvoice(invoiceId);
+		RemittanceAdvice remittanceAdvice = new RemittanceAdvice();
+		remittanceAdvice.setInvoice(invoice);
+		remittanceAdvice.setNote(dto.getNote());
+		final RemittanceAdvice savedRem = remittanceAdviceRepository.save(remittanceAdvice);
+		invoice.setRemittanceAdvice(savedRem);
+		return repository.save(invoice);
 	}
 
 	public void createInvoice(Long poId){

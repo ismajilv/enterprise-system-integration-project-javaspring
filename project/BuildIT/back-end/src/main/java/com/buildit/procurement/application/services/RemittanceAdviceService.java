@@ -1,6 +1,7 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.RemittanceAdviceDTO;
+import com.buildit.procurement.application.services.integration.IntegrationService;
 import com.buildit.procurement.domain.model.RemittanceAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class RemittanceAdviceService {
 	InvoiceService invoiceService;
 
 	@Autowired
-	RentItService rentItService;
+	IntegrationService integrationService;
 
 	@Autowired
 	SupplierService supplierService;
@@ -30,7 +31,7 @@ public class RemittanceAdviceService {
 
 		RemittanceAdviceDTO remittanceAdviceDTO = null; // TODO assemblers etc.
 
-		rentItService.sendRemittanceAdvice(supplierId, remittanceAdviceDTO);
+		integrationService.sendRemittanceAdvice(supplierId, remittanceAdviceDTO);
 
 		return null; // TODO
 	}

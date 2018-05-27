@@ -64,11 +64,6 @@ public class PurchaseOrder {
         this.status = status;
     }
 
-    public void requestExtension(ExtensionRequest extension) {
-        this.extensionRequest = extension;
-        setStatus(POStatus.PENDING_EXTENSION);
-    }
-
     public LocalDate pendingExtensionEndDate() {
         if (!isNull(extensionRequest)) {
             return extensionRequest.newEndDate;

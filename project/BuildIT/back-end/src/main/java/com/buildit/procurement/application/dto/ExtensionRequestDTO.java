@@ -20,7 +20,7 @@ public class ExtensionRequestDTO extends ResourceSupport {
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	LocalDate newEndDate;
 
-	String comment;
+	String rejectionComment;
 
 	@Override
 	public boolean hasLinks() {

@@ -21,5 +21,6 @@ public class ExtensionRequest {
 	PlantHireRequest plantHireRequest;
 
 	@Column
-	String comment; // Sent & filled from RentIt if this ER gets rejected
+	String rejectionComment; // Sent & filled from RentIt if this ER gets rejected
+
 }

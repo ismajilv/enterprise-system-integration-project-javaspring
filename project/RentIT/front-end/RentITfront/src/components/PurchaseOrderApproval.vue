@@ -21,9 +21,9 @@
             <td id = "plantStartDateWE2" class="has-text-center">{{pending.rentalPeriod.startDate}}</td>
             <td id = "plantEndDateWE2" class="has-text-center">{{pending.rentalPeriod.endDate}}</td>
             <td id = "plantPriceWE2" class="has-text-center">{{pending.plant.price}}</td>
-            <td id = "plantPriceWE2" class="has-text-center">{{pending.status}}</td>
-            <td><a v-on:click="accept(index)" class="button is-success is-outlined">Accept</a> </td>
-            <td><a v-on:click="reject(index)" class="button is-danger is-outlined">Reject</a> </td>
+            <td id = "plantStatusWE2" class="has-text-center">{{pending.status}}</td>
+            <td><button v-on:click="accept(index)" :disabled="pending.status != 'PENDING_APPROVAL'" class="button is-success is-outlined">Accept</button> </td>
+            <td><button v-on:click="reject(index)" :disabled="pending.status != 'PENDING_APPROVAL'" class="button is-danger is-outlined">Reject</button> </td>
         </tr>
     </tbody>
 </table>
@@ -51,7 +51,7 @@ export default {
   },
   methods: {
       pendingpurchaseOrder: function(){
-         axios.get("http://localhost:8090/api/orders")
+         axios.get("http://localhost:8090/api/orders?status=ALL")
         .then(response => {
           this.allrequest = response.data._embedded.purchaseOrderDTOList;
           console.log("Response", this.allrequest);
@@ -64,19 +64,34 @@ export default {
       //      return orderInfo;
       // },const poId = this.allrequest[inputOrder]._id;
       accept: function(inputOrder){
-           let poId= this.allrequest[inputOrder]._id;
-              console.log("Input id", poId);
-           let piiId = this.allrequest[inputOrder].plant._id;
-           console.log("piiId plant ID", piiId);
-        axios.post("http://localhost:8090/api/orders/"+ poId +"/accept?piiId="+ piiId)
-        .then(response => {
-          this.updatePHR(response.data);
-           this.$snackbar.open("You have accepted this plant request.");
-           var acceptStatus;
-           acceptStatus = response.data._embedded;
-           console.log("Accept Status", acceptStatus)
-           return acceptStatus;
-        });
+        let po = this.allrequest[inputOrder];
+
+        let obj = {
+          "pieId": po.plant._id,
+          "startDate": po.rentalPeriod.startDate,
+          "endDate":  po.rentalPeriod.endDate
+        };
+        console.log("Plant submission before", obj);
+
+        axios.get("http://localhost:8090/api/pitems/items?pieId="+obj.pieId+"" +
+          "&startDate="+obj.startDate+"&endDate="+obj.endDate)
+          .then(response => {
+            if(response.data !== null && response.data.length > 0){
+              axios.post("http://localhost:8090/api/orders/"+ po._id +"/accept?"+ "piiId="+ response.data[0]._id )
+                .then(response => {
+                  this.$snackbar.open("You have succesfully accepted this plant request.");
+                  this.$set(this.allrequest, inputOrder, response.data);
+                });
+            } else {
+              this.$snackbar.open({
+                type: 'is-danger',
+                message: "No available items left, you can't accept the order."
+              });
+            }
+          }
+        );
+
+
       },
       reject: function(inputOrder){
            let i= this.allrequest[inputOrder]._id;
@@ -85,6 +100,7 @@ export default {
         axios.post("http://localhost:8090/api/orders/" + params)
         .then(response => {
           this.$snackbar.open("You have rejected this plant request.");
+          this.$set(this.allrequest, inputOrder, response.data);
         });
       },
   }
