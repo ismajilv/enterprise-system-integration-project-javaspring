@@ -17,7 +17,7 @@
             <td id="plantNameHire">{{orderStatus.plant.name}}</td>
             <td id="plantStartDateHire">{{orderStatus.rentalPeriod.startDate}}</td>
             <td id="plantEndDateHire">{{orderStatus.rentalPeriod.endDate}}</td>
-            <td id="plantTotalCostHire">{{orderStatus.rentalCost.total}}</td>
+            <td id="plantTotalCostHire">{{orderStatus.rentalCost}}</td>
             <td id="plantStatusHire">{{orderStatus.status}}</td>
         </tr>
     </tbody>
@@ -26,31 +26,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   name: "Hirerequest",
-  props: ["orderStatus"],
-  data: function(){
-      return{
-      }
-  },
-  mounted: function(){
-    this.statusofOrder();
-    console.log('[orderStatus]', this.orderStatus);
-  },
-  methods: {
-     statusofOrder: function(){
-        let changeStatus = {
-        "href": this.orderStatus.plant.href,
-        "value": "APPROVED"
-      };
-       axios.get(" http://localhost:8080/callbacks/orderStateChanged", changeStatus)
-      .then(response => {
-          console.log("[Status Response]", response);
-          return response.data;
-      })
-     }
-  }
+  props: ["orderStatus"]
 }
 </script>

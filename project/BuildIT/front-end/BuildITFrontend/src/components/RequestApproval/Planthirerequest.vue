@@ -8,7 +8,6 @@
     <table class="table is-table-bordered is-table-striped is-fullwidth">
     <thead>
         <tr>
-            <th class="has-text-center">Id</th>
             <th class="has-text-center">Name</th>
             <th class="has-text-center">Start Date</th>
             <th class="has-text-center">End Date</th>
@@ -20,7 +19,6 @@
     </thead>
     <tbody>
           <tr class="table-row-we2" v-for="request in allRequests" :key="request._id" >
-            <td id = "name" class="has-text-center"> {{request._id}}</td>
             <td id = "plantNameWE2" class="has-text-center"> {{request.plant.name}}</td>
             <td id = "plantStartDateWE2" class="has-text-center"> {{request.rentalPeriod.startDate}}</td>
             <td id = "plantEndDateWE2" class="has-text-center">{{request.rentalPeriod.endDate}}</td>

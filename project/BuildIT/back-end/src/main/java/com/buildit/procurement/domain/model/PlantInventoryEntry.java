@@ -8,7 +8,6 @@ import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 
-// TODO - VALUE OBJECT?
 @Entity
 @Getter
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)

@@ -40,7 +40,15 @@ export default {
     return {
       activeTab: 0,
       plants: [],
-      orderStatus: {},
+      orderStatus: {
+        plant: {name: null},
+        rentalPeriod: {
+          startDate: null,
+            endDate: null
+        },
+        rentalCost: null,
+          status: null
+      },
       order: {
           id: 1,
           plant: {},

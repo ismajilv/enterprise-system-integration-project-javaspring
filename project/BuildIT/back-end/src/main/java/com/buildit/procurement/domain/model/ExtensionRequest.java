@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-// TODO bind to PHR or PO?
 public class ExtensionRequest {
 
 	@Id
