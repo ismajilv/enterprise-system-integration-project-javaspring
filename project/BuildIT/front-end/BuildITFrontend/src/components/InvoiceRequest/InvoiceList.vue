@@ -44,9 +44,14 @@
           })
           .catch(error => {
             console.log('[Fetching error]', error);
-          })
+          });
       },
       accept: function (id) {
+        axios.post(`http://localhost:8080/api/invoices/${id}/accept`)
+          .catch(error => {
+            console.log('[Approve error]', error);
+          });
+        this.fetchAllInvoices();
         console.log('[Approve request]', id)
       }
     }
