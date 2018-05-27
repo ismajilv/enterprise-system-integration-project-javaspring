@@ -88,7 +88,7 @@ export default {
          let obj = {
            "constructionSiteId": this.order.siteid,
            "supplierId": this.order.suppliersid,
-           "plantHref":  this.order.plant._links.self.href,
+
            "rentalPeriod" : {
              "startDate" : this.order.rentalPeriod.startDate,
              "endDate" : this.order.rentalPeriod.endDate
