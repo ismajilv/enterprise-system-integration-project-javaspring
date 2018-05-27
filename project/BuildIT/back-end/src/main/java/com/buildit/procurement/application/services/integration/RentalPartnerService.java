@@ -2,6 +2,8 @@ package com.buildit.procurement.application.services.integration;
 
 import com.buildit.common.application.dto.BusinessPeriodDTO;
 import com.buildit.procurement.application.dto.*;
+import com.buildit.procurement.domain.enums.PHRStatus;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -12,11 +14,11 @@ interface RentalPartnerService {
 
 	String getApiUrl();
 
-	Collection<PlantInventoryEntryDTO> querySupplierPlantCatalog(String name, LocalDate startDate, LocalDate endDate);
+	Collection<PlantInventoryEntryDTO> queryPlantCatalog(String name, LocalDate startDate, LocalDate endDate);
 
-	RentItPlantInventoryEntryDTO fetchPlantEntry(String href);
+	PlantInventoryEntryDTO fetchPlantEntry(String href);
 
-	RentItPurchaseOrderDTO createPurchaseOrder(String href, BusinessPeriodDTO businessPeriodDTO, Long constructionSiteId);
+	Pair<PurchaseOrderDTO, PHRStatus> createPurchaseOrder(String href, BusinessPeriodDTO businessPeriodDTO, Long constructionSiteId);
 
 	void sendRemittanceAdvice(Long supplierId, RemittanceAdviceDTO remittanceAdvice);
 

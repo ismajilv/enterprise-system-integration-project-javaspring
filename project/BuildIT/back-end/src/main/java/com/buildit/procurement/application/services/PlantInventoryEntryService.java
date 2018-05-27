@@ -34,7 +34,7 @@ public class PlantInventoryEntryService {
 	SupplierService supplierService;
 
 	public PlantInventoryEntryDTO fetchByHref(Long supplierId, String href) {
-		return rentItToBuildItPlantInventoryEntryAssembler.toResource(integrationService.fetchPlantEntry(supplierId, href));
+		return integrationService.fetchPlantEntry(supplierId, href);
 	}
 
 	@Transactional

@@ -4,6 +4,8 @@ import com.buildit.common.application.dto.BusinessPeriodDTO;
 import com.buildit.procurement.application.dto.*;
 import com.buildit.procurement.application.services.ConstructionSiteService;
 import com.buildit.procurement.application.services.assemblers.RentItToBuildItPlantInventoryEntryAssembler;
+import com.buildit.procurement.domain.enums.PHRStatus;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -70,7 +72,7 @@ class LocalRentItService implements RentalPartnerService {
 //		return true;
 //	}
 
-	public RentItPlantInventoryEntryDTO fetchPlantEntry(String href) {
+	public PlantInventoryEntryDTO fetchPlantEntry(String href) {
 		HttpHeaders headers = new HttpHeaders();
 
 		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -88,22 +90,28 @@ class LocalRentItService implements RentalPartnerService {
 
 		RentItPlantInventoryEntryDTO entry = response.getBody();
 
-		return entry;
+		return rent2buildEntryAssembler.toResource(entry);
 	}
 
-	@Override
-	public Collection<PlantInventoryEntryDTO> querySupplierPlantCatalog(String name, LocalDate startDate, LocalDate endDate) {
-		return null;
-	}
-
-	public RentItPurchaseOrderDTO createPurchaseOrder(String href, BusinessPeriodDTO businessPeriodDTO, Long constructionSiteId) {
-		RentItPlantInventoryEntryDTO rentItEntry = fetchPlantEntry(href);
+	public Pair<PurchaseOrderDTO, PHRStatus> createPurchaseOrder(String href, BusinessPeriodDTO businessPeriodDTO, Long constructionSiteId) {
+		PlantInventoryEntryDTO rentItEntry = fetchPlantEntry(href);
 		// String respondTo = getApiUrl() + "/callbacks/orderStateChanged";
 		ConstructionSiteDTO site = constructionSiteService.readOne(constructionSiteId);
 		RentItCreatePORequestDTO rentItPORequest =
-				RentItCreatePORequestDTO.of(rentItEntry.get_id(), businessPeriodDTO, site.getAddress());
+				RentItCreatePORequestDTO.of(rentItEntry.getExternalId(), businessPeriodDTO, site.getAddress());
 
-		return doCreatePurchaseOrder(rentItPORequest);
+		RentItPurchaseOrderDTO createdRemotePO = doCreatePurchaseOrder(rentItPORequest);
+
+		PHRStatus newPHRStatus = createdRemotePO.getStatus().convertToPHRStatus();
+
+		PurchaseOrderDTO po = new PurchaseOrderDTO();
+
+		po.setExternalId(createdRemotePO.get_id());
+		po.setHref(createdRemotePO.get_links().get("self").get("href"));
+
+		Pair<PurchaseOrderDTO,PHRStatus> ret = Pair.of(po, newPHRStatus);
+
+		return ret;
 	}
 
 	private RentItPurchaseOrderDTO doCreatePurchaseOrder(RentItCreatePORequestDTO request) {
