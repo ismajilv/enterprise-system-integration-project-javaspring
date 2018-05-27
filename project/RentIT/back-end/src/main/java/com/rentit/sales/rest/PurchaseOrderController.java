@@ -258,7 +258,8 @@ public class PurchaseOrderController {
         final LocalDate from = oldPO.getRentalPeriod().getEndDate().plusDays(1);
         final LocalDate to = request.getNewEndDate();
         PlantInventoryItem extendableItem = null;
-        if(salesService.isPIIExtentable(oldPO.getReservation().getPlant(), from, to)){
+        final PlantReservation reservation = oldPO.getReservation();
+        if(reservation != null && salesService.isPIIExtentable(reservation.getPlant(), from, to)){
             extendableItem = oldPO.getReservation().getPlant();
         } else {
             extendableItem = salesService.getAlternativeItem(oldPO.getPlant(), from, to);

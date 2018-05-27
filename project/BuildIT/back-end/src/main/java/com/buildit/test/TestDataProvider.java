@@ -102,27 +102,28 @@ public class TestDataProvider {
 
 		plantHireRequestService.reject(rejectedPlantHireRequest.get_id());
 
-//		PlantHireRequestDTO acceptedPlantHireRequest =
-//
-//				plantHireRequestService.addRequest(
-//						constructionSite1.getId(),
-//						supplier.get_id(),
-//						"http://localhost:8090/api/plants/3",
-//						BusinessPeriod.of(
-//								LocalDate.now().plusDays(10),
-//								LocalDate.now().plusDays(12)
-//						)
-//				);
-//		plantHireRequestService.accept(acceptedPlantHireRequest.get_id());
-////
-//		PlantHireRequestDTO extended = plantHireRequestService.extend(
-//				acceptedPlantHireRequest.get_id(),
-//				new ExtensionRequestDTO(
-//						null,
-//						acceptedPlantHireRequest.getRentalPeriod().getEndDate().plusDays(3),
-//						null
-//				)
-//		);
+		PlantHireRequestDTO acceptedPlantHireRequest =
+
+				plantHireRequestService.addRequest(
+						constructionSite1.getId(),
+						supplier.get_id(),
+						"http://localhost:8090/api/plants/3",
+						BusinessPeriod.of(
+								LocalDate.now().plusDays(10),
+								LocalDate.now().plusDays(12)
+						)
+				);
+
+		PlantHireRequestDTO accepted = plantHireRequestService.accept(acceptedPlantHireRequest.get_id());
+
+		PlantHireRequestDTO extended = plantHireRequestService.extend(
+				acceptedPlantHireRequest.get_id(),
+				new ExtensionRequestDTO(
+						accepted.getPurchaseOrder().getExternalId(),
+						acceptedPlantHireRequest.getRentalPeriod().getEndDate().plusDays(3),
+						null
+				)
+		);
 	}
 
 }
