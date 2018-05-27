@@ -9,6 +9,7 @@ import com.rentit.inventory.domain.repository.InventoryRepository;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import com.rentit.inventory.domain.repository.PlantInventoryItemRepository;
 import com.rentit.inventory.domain.repository.PlantReservationRepository;
+import com.rentit.invoicing.application.services.InvoiceService;
 import com.rentit.sales.application.dto.POCallbackDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.exceptions.POStatusException;
@@ -46,6 +47,9 @@ public class SalesService {
 
     @Autowired
     PurchaseOrderRepository purchaseOrderRepository;
+
+    @Autowired
+    InvoiceService invoiceService;
 
     public PurchaseOrder findPurchaseOrder(Long id) {
         return purchaseOrderRepository.getOne(id);
