@@ -3,6 +3,8 @@ package com.rentit.sales.rest;
 import com.rentit.inventory.application.exceptions.PlantNotFoundException;
 import com.rentit.inventory.application.services.InventoryService;
 import com.rentit.inventory.application.services.PlantInventoryEntryAssembler;
+import com.rentit.inventory.domain.model.PlantInventoryItem;
+import com.rentit.inventory.domain.model.PlantReservation;
 import com.rentit.sales.application.dto.CreatePORequestDTO;
 import com.rentit.sales.application.dto.ExtensionRequestDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
@@ -45,6 +47,7 @@ public class PurchaseOrderController {
     PlantInventoryEntryAssembler plantInventoryEntryAssembler;
     @Autowired
     PurchaseOrderAssembler purchaseOrderAssembler;
+
 
     @GetMapping()
     public ResponseEntity<?> getOrders(@RequestParam(required = false) String status) {
@@ -251,9 +254,21 @@ public class PurchaseOrderController {
 
     @PostMapping("/{id}/requestExtension")
     public ExtensionRequestDTO requestPurchaseOrderExtension(@RequestBody ExtensionRequestDTO request, @PathVariable("id") Long purchaseOrderId) {
-        // incoming ExtensionRequestDTO only contains new end date
-        // resolve and return decision with additional data
-        return ExtensionRequestDTO.of(request.getNewEndDate(), Boolean.TRUE, null, new BigDecimal("1234.56"));
+        final PurchaseOrder oldPO= salesService.findPurchaseOrder(purchaseOrderId);
+        final LocalDate from = oldPO.getRentalPeriod().getEndDate().plusDays(1);
+        final LocalDate to = request.getNewEndDate();
+        PlantInventoryItem extendableItem = null;
+        if(salesService.isPIIExtentable(oldPO.getReservation().getPlant(), from, to)){
+            extendableItem = oldPO.getReservation().getPlant();
+        } else {
+            extendableItem = salesService.getAlternativeItem(oldPO.getPlant(), from, to);
+        }
+        final PurchaseOrder extendedPO = salesService.extendPo(oldPO.getId(), extendableItem, from, to);
+        if(extendableItem == null){
+            return ExtensionRequestDTO.of(oldPO.getRentalPeriod().getEndDate(), Boolean.FALSE, "Couldn't find any available items.", oldPO.getTotal());
+        }
+
+        return ExtensionRequestDTO.of(oldPO.getRentalPeriod().getEndDate(), Boolean.TRUE, null, extendedPO.getTotal());
     }
 
     @ExceptionHandler(PlantNotFoundException.class)
