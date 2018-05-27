@@ -158,7 +158,18 @@ public class PlantHireRequestControllerTest {
 
     @Test
     @Sql("/plants-dataset.sql")
-    public void cancelPlantHireRequestTest_CC4() throws Exception {
+    public void checkStatusPlantHireRequestTest_CC4() throws Exception {
+        CreatePlantHireRequestDTO dto = createPHRDTO();
 
+        MvcResult result = mockMvc.perform(post("/api/requests")
+                .content(mapper.writeValueAsString(dto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", isEmptyOrNullString()))
+                .andReturn();
+
+        PlantHireRequestDTO dto2 = mapper.readValue(result.getResponse().getContentAsString(), PlantHireRequestDTO.class);
+
+        assertThat(dto2.getStatus()).isEqualTo(PHRStatus.PENDING_WORKS_ENGINEER_APPROVAL);
     }
 }
