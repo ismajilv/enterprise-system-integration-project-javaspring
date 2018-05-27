@@ -25,6 +25,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/plants")
 public class PlantInventoryEntryRestController {
 

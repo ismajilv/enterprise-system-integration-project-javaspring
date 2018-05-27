@@ -1,18 +1,19 @@
 <template>
 <div>
    <b-field label="Choose supplier">
-            <b-select id="v-for-object" v-model="order.suppliersid"
+          <b-select autofocus id="v-for-object" v-model="order.moreInfo.suppliersid"
             placeholder="Choose supplier" expanded>
                 <option v-for="supplier in suppliers" :key="supplier._id">
                 {{supplier._id}}
                 </option>
-            </b-select>
+          </b-select>
    </b-field>
+{{order.suppliersid}}
+
 
    <b-field label="Choose construction site">
-            <b-select  v-model="order.siteid"
-            placeholder="Choose supplier" expanded>
-                <option v-for="site in sites" :key="site._id">
+            <b-select autofocus v-model="order.moreInfo.siteid" placeholder="Choose supplier" expanded>
+                <option v-for="site in sites" :value="site" :key="site._id">
                   {{site._id}} </option>
   </b-select>
    </b-field>
