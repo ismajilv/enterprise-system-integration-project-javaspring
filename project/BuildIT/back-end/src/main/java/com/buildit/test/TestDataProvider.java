@@ -2,7 +2,9 @@ package com.buildit.test;
 
 import com.buildit.common.application.dto.EmployeeDTO;
 import com.buildit.common.domain.model.BusinessPeriod;
+import com.buildit.procurement.application.dto.RentItInvoiceDTO;
 import com.buildit.procurement.application.dto.ExtensionRequestDTO;
+import com.buildit.procurement.application.dto.PurchaseOrderDTO;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
 import com.buildit.procurement.application.dto.SupplierDTO;
 import com.buildit.procurement.application.services.*;
@@ -10,8 +12,10 @@ import com.buildit.procurement.domain.enums.Role;
 import com.buildit.procurement.domain.model.ConstructionSite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.buildit.procurement.application.dto.InvoiceDTO;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 // TODO delete before going live!
@@ -35,6 +39,7 @@ public class TestDataProvider {
 
 	@Autowired
 	EmployeeService employeeService;
+
 
 	@PostConstruct
 	public void init() {
@@ -119,8 +124,6 @@ public class TestDataProvider {
 						null
 				)
 		);
-
-		// TODO add some seed data with PurchaseOrder Invoice RemittanceAdvice
 	}
 
 }
