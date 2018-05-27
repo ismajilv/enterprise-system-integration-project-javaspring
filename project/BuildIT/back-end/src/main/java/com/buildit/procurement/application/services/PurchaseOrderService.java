@@ -58,4 +58,16 @@ public class PurchaseOrderService {
 		return maybePurchaseOrder.get();
 	}
 
+	public PurchaseOrder findByExternalId(Long purchaseOrderExternalId) {
+		List<PurchaseOrder> found = repository.findByExternalId(purchaseOrderExternalId);
+
+		if (found.isEmpty()) {
+			throw new IllegalArgumentException("No purchase order found with external ID: " + purchaseOrderExternalId);
+		} else if (found.size() > 1) {
+			throw new IllegalStateException("More than one purchase order found with external ID: " + purchaseOrderExternalId);
+		}
+
+		return found.get(0);
+	}
+
 }
