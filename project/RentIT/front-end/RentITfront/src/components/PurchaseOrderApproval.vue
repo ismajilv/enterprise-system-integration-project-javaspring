@@ -62,12 +62,13 @@ export default {
       //     this.orderInfo = this.acceptStatus;
       //      console.log("View Order Information", orderInfo);
       //      return orderInfo;
-      // },
+      // },const poId = this.allrequest[inputOrder]._id;
       accept: function(inputOrder){
-           let i= this.allrequest[inputOrder]._id;
-           let params = i + "/accept"
+           let poId= this.allrequest[inputOrder];
+           let params = poId + "/accept?"
+           piiId={piiId}
            console.log("Accept", i);
-        axios.get("http://localhost:8080/api/requests/", params)
+        axios.post("http:/localhost:8090/api/orders", params)
         .then(response => {
            this.$snackbar.open("You have accepted this plant request.");
            var acceptStatus;
@@ -80,7 +81,7 @@ export default {
            let i= this.allrequest[inputOrder]._id;
            let params = i + "/reject"
            console.log("Reject", i);
-        axios.get("http://localhost:8080/api/requests/", params)
+        axios.post("http://localhost:8080/api/requests/", params)
         .then(response => {
           this.$snackbar.open("You have rejected this plant request.");
         });
