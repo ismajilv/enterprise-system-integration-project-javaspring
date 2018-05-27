@@ -46,10 +46,6 @@ public class PurchaseOrder {
     @ManyToOne // (optional = false)
     Customer customer;
 
-    @Embedded
-    @Column // (nullable = false)
-    CustomerContactPerson contact;
-
     public static PurchaseOrder of(PlantInventoryEntry plant,
                                    BusinessPeriod rentalPeriod,
                                    String deliveryAddress) {
