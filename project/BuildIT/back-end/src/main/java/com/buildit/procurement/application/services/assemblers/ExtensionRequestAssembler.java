@@ -19,7 +19,7 @@ public class ExtensionRequestAssembler extends ResourceAssemblerSupport<Extensio
 
 		dto.set_id(request.getId());
 		dto.setNewEndDate(request.getNewEndDate());
-		dto.setComment(request.getComment());
+		dto.setRejectionComment(request.getRejectionComment());
 
 		return dto;
 	}

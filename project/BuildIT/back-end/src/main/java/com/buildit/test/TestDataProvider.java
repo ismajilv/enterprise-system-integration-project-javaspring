@@ -39,9 +39,6 @@ public class TestDataProvider {
 	EmployeeService employeeService;
 
 	@Autowired
-	ExtensionRequestService extensionRequestService;
-
-	@Autowired
 	RentItService rentItService;
 
 	@PostConstruct
@@ -119,7 +116,14 @@ public class TestDataProvider {
 
 		plantHireRequestService.accept(acceptedPlantHireRequest.get_id());
 
-//		ExtensionRequestDTO extension = extensionRequestService.create(acceptedPlantHireRequest.get_id(), acceptedPlantHireRequest.getRentalPeriod().getEndDate().plusDays(3));
+		PlantHireRequestDTO extended = plantHireRequestService.extend(
+				acceptedPlantHireRequest.get_id(),
+				new ExtensionRequestDTO(
+						null,
+						acceptedPlantHireRequest.getRentalPeriod().getEndDate().plusDays(3),
+						null
+				)
+		);
 
 		// TODO add some seed data with PurchaseOrder Invoice RemittanceAdvice
 	}

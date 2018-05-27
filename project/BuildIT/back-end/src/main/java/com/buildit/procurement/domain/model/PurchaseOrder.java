@@ -13,7 +13,7 @@ public class PurchaseOrder {
 	@URL
 	String href;
 
-	@Column
+	@Column(nullable = false)
 	Long externalId;
 
 	@JoinColumn(name = "plant_hire_request_id", nullable = false)

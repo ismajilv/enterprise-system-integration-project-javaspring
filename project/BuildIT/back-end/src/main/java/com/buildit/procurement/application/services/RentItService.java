@@ -3,7 +3,6 @@ package com.buildit.procurement.application.services;
 import com.buildit.common.application.dto.BusinessPeriodDTO;
 import com.buildit.procurement.application.dto.*;
 import com.buildit.procurement.application.services.assemblers.RentItToBuildItPlantInventoryEntryAssembler;
-import com.buildit.procurement.domain.model.ConstructionSite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -142,6 +141,35 @@ public class RentItService {
 
 	public String getRentItUrl() {
 		return supplier2Url.entrySet().iterator().next().getValue();
+	}
+
+	public RentItExtensionRequestDTO sendExtensionRequest(Long supplierId, Long purchaseOrderExternalId, LocalDate newEndDate) {
+		HttpHeaders headers = new HttpHeaders();
+
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+		ExtensionRequestDTO request = new ExtensionRequestDTO();
+
+		request.setNewEndDate(newEndDate);
+
+		HttpEntity<ExtensionRequestDTO> entity = new HttpEntity<>(request, headers);
+
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = supplier2Url.entrySet().iterator().next().getValue() + "/api/orders/" + purchaseOrderExternalId + "/requestExtension";
+
+		ResponseEntity<RentItExtensionRequestDTO> response =
+				restTemplate.exchange(
+						url,
+						HttpMethod.POST,
+						entity,
+						new ParameterizedTypeReference<RentItExtensionRequestDTO>() {
+						}
+				);
+
+		RentItExtensionRequestDTO rentItExtensionRequestDTO = response.getBody();
+
+		return rentItExtensionRequestDTO;
 	}
 
 }

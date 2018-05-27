@@ -18,8 +18,6 @@ public enum POStatus {
 
 	PLANT_RETURNED,
 
-	PENDING_EXTENSION,
-
 	INVOICED;
 
 	public boolean isTransitionAllowed(POStatus newStatus) {
@@ -61,21 +59,13 @@ public enum POStatus {
 
 			case PLANT_DELIVERED:
 				switch (newStatus) {
-					case PENDING_EXTENSION:
 					case PLANT_RETURNED:
 						return true;
 					default:
 						return false;
 
 				}
-			case PENDING_EXTENSION:
-				switch (newStatus) {
-					case PLANT_DELIVERED:
-						return true;
-					default:
-						return false;
 
-				}
 			case PLANT_RETURNED:
 				switch (newStatus) {
 					case INVOICED:
