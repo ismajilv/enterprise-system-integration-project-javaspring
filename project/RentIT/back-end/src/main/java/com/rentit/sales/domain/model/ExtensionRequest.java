@@ -20,7 +20,10 @@ public class ExtensionRequest {
     @OneToOne(optional = false)
     PurchaseOrder purchaseOrder;
 
+    @Column(nullable = false)
+    Boolean accepted;
+
     @Column
-    String comment; // Filled if this ER gets rejected
+    String rejectionComment; // Filled with possible replacement info if this ER gets rejected
 
 }
