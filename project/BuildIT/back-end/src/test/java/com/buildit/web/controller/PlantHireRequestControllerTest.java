@@ -7,6 +7,7 @@ import com.buildit.procurement.application.dto.SupplierDTO;
 import com.buildit.procurement.domain.model.Supplier;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.buildit.procurement.domain.enums.PHRStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -127,5 +128,27 @@ public class PlantHireRequestControllerTest {
         assertThat(plantHireRequestDTO2.getSite().get_id()).isEqualTo(11L);
         assertThat(plantHireRequestDTO2.getRentalPeriod().getStartDate()).isEqualTo(LocalDate.now().plusDays(4));
         assertThat(plantHireRequestDTO2.getRentalPeriod().getEndDate()).isEqualTo(LocalDate.now().plusDays(6));
+    }
+
+    @Test
+    @Sql("/plants-dataset.sql")
+    public void cancelPlantHireRequestTest_CC3() throws Exception{
+        CreatePlantHireRequestDTO dto = createPHRDTO();
+
+        MvcResult result = mockMvc.perform(post("/api/requests")
+                .content(mapper.writeValueAsString(dto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        PlantHireRequestDTO dto2 = mapper.readValue(result.getResponse().getContentAsString(), PlantHireRequestDTO.class);
+
+        MvcResult result2 = mockMvc.perform(post("/api/requests/" + dto2.get_id() + "/cancel")
+                .content(mapper.writeValueAsString(dto2))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        dto2 = mapper.readValue(result2.getResponse().getContentAsString(), PlantHireRequestDTO.class);
+
+        assertThat(dto2.getStatus()).isEqualTo(PHRStatus.CANCELLED);
     }
 }
