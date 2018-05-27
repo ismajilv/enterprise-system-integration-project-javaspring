@@ -30,7 +30,8 @@ import static java.util.Objects.requireNonNull;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @Service
-public class SalesService {
+public class
+SalesService {
 
     @Value("${buildItUrl}")
     String buildItUrl;

@@ -68,8 +68,9 @@ export default {
               console.log("Input id", poId);
            let piiId = this.allrequest[inputOrder].plant._id;
            console.log("piiId plant ID", piiId);
-        axios.post("http://localhost:8090/api/orders/"+ poId +"/accept?"+ "piiId="+ piiId )
+        axios.post("http://localhost:8090/api/orders/"+ poId +"/accept?piiId="+ piiId)
         .then(response => {
+          this.updatePHR(response.data);
            this.$snackbar.open("You have accepted this plant request.");
            var acceptStatus;
            acceptStatus = response.data._embedded;
