@@ -1,6 +1,7 @@
 package com.buildit.procurement.application.services;
 
 import com.buildit.procurement.application.dto.InvoiceDTO;
+import com.buildit.procurement.application.dto.RentItInvoiceDTO;
 import com.buildit.procurement.application.services.assemblers.InvoiceAssembler;
 import com.buildit.procurement.domain.enums.InvoiceStatus;
 import com.buildit.procurement.domain.model.Invoice;
@@ -32,19 +33,25 @@ public class InvoiceService {
 	InvoiceAssembler assembler;
 
 	@Transactional
-	public InvoiceDTO add(String purchaseOrderHref, LocalDate dueDate) {
-		PurchaseOrder po = purchaseOrderService.readModel(purchaseOrderHref);
+	public InvoiceDTO add(RentItInvoiceDTO invoice) {
+        PurchaseOrder po;
+	    try {
+            po = purchaseOrderService.readModel(invoice.get_links().get("self").get("href"));
+        }
+        catch (IllegalArgumentException ex) {
+	        return null;
+        }
 
-		Invoice invoice = new Invoice();
+		Invoice localInvoice = new Invoice();
 
-		invoice.setPurchaseOrder(po);
-		invoice.setDueDate(dueDate);
-		invoice.setLatePayment(false);
-		invoice.setStatus(InvoiceStatus.PENDING);
+		localInvoice.setPurchaseOrder(po);
+		localInvoice.setDueDate(invoice.getDueDate());
+		localInvoice.setLatePayment(false);
+		localInvoice.setStatus(InvoiceStatus.PENDING);
 
-		invoice = repository.save(invoice);
+		localInvoice = repository.save(localInvoice);
 
-		return assembler.toResource(invoice);
+		return assembler.toResource(localInvoice);
 	}
 
 	@Transactional

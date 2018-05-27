@@ -48,7 +48,7 @@ public class PurchaseOrderService {
 		return assembler.toResources(repository.findAll());
 	}
 
-	public PurchaseOrder readModel(String id) {
+	public PurchaseOrder readModel(String id) throws IllegalArgumentException {
 		Optional<PurchaseOrder> maybePurchaseOrder = repository.findById(id);
 
 		if (!maybePurchaseOrder.isPresent()) {
