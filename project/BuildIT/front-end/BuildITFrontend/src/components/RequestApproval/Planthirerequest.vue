@@ -74,7 +74,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 export default {
-  name: "Planthirerequest",
+  name: "PlantHireRequest",
   props: ["orderStatus"],
   data: function(){
       return{
