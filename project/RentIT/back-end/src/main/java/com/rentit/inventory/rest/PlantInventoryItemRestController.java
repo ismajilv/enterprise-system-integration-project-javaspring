@@ -9,10 +9,7 @@ import com.rentit.inventory.domain.repository.InventoryRepository;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/pitems")
 public class PlantInventoryItemRestController {
 
@@ -42,7 +40,5 @@ public class PlantInventoryItemRestController {
         List<PlantInventoryItem> items = inventoryRepository.findAvailableItems(plant, startDate, endDate);
         return items.stream().map(pii -> plantInventoryItemAssembler.toResource(pii)).collect(Collectors.toList());
     }
-
-
 
 }

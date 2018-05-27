@@ -39,8 +39,6 @@ public class SalesService {
     PlantInventoryEntryRepository plantInventoryEntryRepository;
     @Autowired
     PlantInventoryItemRepository plantInventoryItemRepository;
-    @Autowired
-    InventoryRepository inventoryRepository;
 
     @Autowired
     PlantReservationRepository plantReservationRepository;
@@ -50,6 +48,9 @@ public class SalesService {
 
     @Autowired
     InvoiceService invoiceService;
+
+    @Autowired
+    InventoryRepository inventoryRepository;
 
     public PurchaseOrder findPurchaseOrder(Long id) {
         return purchaseOrderRepository.getOne(id);
@@ -76,6 +77,20 @@ public class SalesService {
         reservation = plantReservationRepository.save(reservation);
         po.registerFirstAllocation(reservation);
         return save(po);
+    }
+
+    public PurchaseOrder extendPo(Long poId, PlantInventoryItem pii, LocalDate from, LocalDate to){
+        PurchaseOrder po = findPurchaseOrder(poId);
+        PlantReservation reservation = new PlantReservation();
+        reservation.setPlant(pii);
+        reservation.setSchedule(BusinessPeriod.of(from, to));
+        reservation = plantReservationRepository.save(reservation);
+        po.acceptExtension(reservation);
+        return save(po);
+    }
+
+    public boolean isPIIExtentable(PlantInventoryItem pii, LocalDate from, LocalDate to){
+        return inventoryRepository.isAvailableFor(pii, from, to);
     }
 
     public PurchaseOrder cancelPurchaseOrder(Long id) throws POStatusException {
@@ -105,6 +120,15 @@ public class SalesService {
         invoiceService.createInvoice(id);
         return save(po);
     }
+
+    public PlantInventoryItem getAlternativeItem(PlantInventoryEntry plant, LocalDate from, LocalDate to) {
+        List<PlantInventoryItem> items = inventoryRepository.findAvailableItems(plant, from, to);
+        if(!items.isEmpty()){
+            return items.get(0);
+        }
+        return null;
+    }
+
 
     public PurchaseOrder preparePurchaseOrderForSave(Long plantId, LocalDate startDate, LocalDate endDate, String deliveryAddress) throws PlantNotFoundException {
         PlantInventoryEntry plant = plantInventoryEntryRepository.getOne(plantId);
