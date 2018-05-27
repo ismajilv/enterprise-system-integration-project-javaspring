@@ -3,6 +3,7 @@ package com.buildit.procurement.application.services;
 import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
 import com.buildit.procurement.application.services.assemblers.PlantInventoryEntryAssembler;
 import com.buildit.procurement.application.services.assemblers.RentItToBuildItPlantInventoryEntryAssembler;
+import com.buildit.procurement.application.services.integration.IntegrationService;
 import com.buildit.procurement.domain.model.PlantInventoryEntry;
 import com.buildit.procurement.domain.model.Supplier;
 import com.buildit.procurement.domain.repository.PlantInventoryEntryRepository;
@@ -27,13 +28,13 @@ public class PlantInventoryEntryService {
     RentItToBuildItPlantInventoryEntryAssembler rentItToBuildItPlantInventoryEntryAssembler;
 
 	@Autowired
-	RentItService integrationService;
+	IntegrationService integrationService;
 
 	@Autowired
 	SupplierService supplierService;
 
-	public PlantInventoryEntryDTO fetchByHref(String href) {
-		return rentItToBuildItPlantInventoryEntryAssembler.toResource(integrationService.fetchPlantEntryFromRentIt(href));
+	public PlantInventoryEntryDTO fetchByHref(Long supplierId, String href) {
+		return rentItToBuildItPlantInventoryEntryAssembler.toResource(integrationService.fetchPlantEntry(supplierId, href));
 	}
 
 	@Transactional
@@ -43,7 +44,7 @@ public class PlantInventoryEntryService {
 		PlantInventoryEntry plant;
 
 		if (!maybePlantInventoryEntry.isPresent()) {
-			PlantInventoryEntryDTO fetched = fetchByHref(href);
+			PlantInventoryEntryDTO fetched = fetchByHref(supplierId, href);
 
 			Supplier supplier = supplierService.readModel(supplierId);
 

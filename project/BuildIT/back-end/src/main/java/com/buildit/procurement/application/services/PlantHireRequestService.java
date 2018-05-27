@@ -5,6 +5,7 @@ import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.common.domain.model.Employee;
 import com.buildit.procurement.application.dto.*;
 import com.buildit.procurement.application.services.assemblers.PlantHireRequestAssembler;
+import com.buildit.procurement.application.services.integration.IntegrationService;
 import com.buildit.procurement.domain.enums.PHRStatus;
 import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
 import com.buildit.procurement.domain.enums.Role;
@@ -49,7 +50,7 @@ public class PlantHireRequestService {
 	BusinessPeriodAssembler businessPeriodAssembler;
 
 	@Autowired
-	RentItService rentItService;
+	IntegrationService integrationService;
 
 	@Autowired
 	PurchaseOrderService purchaseOrderService;
@@ -94,7 +95,7 @@ public class PlantHireRequestService {
 			}
 		}
 
-		BigDecimal cost = calculateCost(request.getPlant().getHref(), request.getRentalPeriod());
+		BigDecimal cost = calculateCost(request.getSupplier().getId(), request.getPlant().getHref(), request.getRentalPeriod());
 
 		request.setRentalCost(cost);
 
@@ -123,7 +124,7 @@ public class PlantHireRequestService {
 		plantHireRequest.setSupplier(supplier);
 		plantHireRequest.setPlant(plant);
 
-		plantHireRequest.setRentalCost(calculateCost(plantHref, rentalPeriod));
+		plantHireRequest.setRentalCost(calculateCost(supplierId, plantHref, rentalPeriod));
 
 		Employee requestingSiteEngineer = employeeService.getLoggedInEmployee(Role.SITE_ENGINEER);
 		plantHireRequest.setRequestingSiteEngineer(requestingSiteEngineer);
@@ -133,8 +134,8 @@ public class PlantHireRequestService {
 		return assembler.toResource(plantHireRequest);
 	}
 
-	private BigDecimal calculateCost(String plantHref, BusinessPeriod rentalPeriod) {
-		PlantInventoryEntryDTO plantDTO = plantInventoryEntryService.fetchByHref(plantHref);
+	private BigDecimal calculateCost(Long supplierId, String plantHref, BusinessPeriod rentalPeriod) {
+		PlantInventoryEntryDTO plantDTO = plantInventoryEntryService.fetchByHref(supplierId, plantHref);
 
 		BigDecimal rentalCost = plantDTO.getPricePerDay().multiply(BigDecimal.valueOf(rentalPeriod.getNoOfDays()));
 
@@ -172,7 +173,7 @@ public class PlantHireRequestService {
 		requireNonNull(plantHref);
 
 		RentItPurchaseOrderDTO remotePurchaseOrder =
-				rentItService.createPurchaseOrder(plantHref, businessPeriodAssembler.toResource(request.getRentalPeriod()), request.getConstructionSite().getId());
+				integrationService.createPurchaseOrder(request.getSupplier().getId(), plantHref, businessPeriodAssembler.toResource(request.getRentalPeriod()), request.getConstructionSite().getId());
 
 		String href = remotePurchaseOrder.get_links().get("self").get("href");
 
@@ -249,7 +250,7 @@ public class PlantHireRequestService {
 		Long purchaseOrderExternalId = request.getPurchaseOrder().getExternalId();
 
 		RentItExtensionRequestDTO remoteResponse =
-				rentItService.sendExtensionRequest(
+				integrationService.sendExtensionRequest(
 						request.getSupplier().getId(),
 						purchaseOrderExternalId,
 						extensionRequestDTO.getNewEndDate()

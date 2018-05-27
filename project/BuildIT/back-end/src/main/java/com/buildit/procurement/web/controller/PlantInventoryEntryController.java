@@ -31,8 +31,8 @@ public class PlantInventoryEntryController {
 	}
 
 	@GetMapping("/{p.id}")
-	public PlantInventoryEntryDTO findPlant(@PathVariable(name = "p.id") String href){
-        PlantInventoryEntryDTO plant = service.fetchByHref(href);
+	public PlantInventoryEntryDTO findPlant(Long supplierId, @PathVariable(name = "p.id") String href){
+        PlantInventoryEntryDTO plant = service.fetchByHref(supplierId, href);
         plant.removeLinks();
         return plant;
 	}

@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 
-import static com.buildit.procurement.application.services.RentItService.RENTAL_PARTNER_NAME_1;
-
 // TODO delete before going live!
 @Service
 public class TestDataProvider {
@@ -38,9 +36,6 @@ public class TestDataProvider {
 	@Autowired
 	EmployeeService employeeService;
 
-	@Autowired
-	RentItService rentItService;
-
 	@PostConstruct
 	public void init() {
 		System.out.println("== Adding test data ==");
@@ -54,7 +49,7 @@ public class TestDataProvider {
 		ConstructionSite constructionSite3 =
 				constructionSiteService.create("Kase 12, Narva");
 
-		SupplierDTO supplier = supplierService.findOrCreateByName(RENTAL_PARTNER_NAME_1);
+		SupplierDTO supplier = supplierService.findOrCreateByName("LocalRentIt");
 
 		// Supplier supplier = supplierService.readModel(supplierAsDTO.get_id());
 
@@ -71,7 +66,7 @@ public class TestDataProvider {
 				plantHireRequestService.addRequest(
 						constructionSite1.getId(),
 						supplier.get_id(),
-						rentItService.getRentItUrl() + "/api/plants/3",
+						"http://localhost:8090/api/plants/3",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(1),
 								LocalDate.now().plusDays(5)
@@ -93,7 +88,7 @@ public class TestDataProvider {
 				plantHireRequestService.addRequest(
 						constructionSite2.getId(),
 						supplier.get_id(),
-						rentItService.getRentItUrl() + "/api/plants/6",
+						"http://localhost:8090/api/plants/6",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(1),
 								LocalDate.now().plusDays(5)
@@ -107,7 +102,7 @@ public class TestDataProvider {
 				plantHireRequestService.addRequest(
 						constructionSite1.getId(),
 						supplier.get_id(),
-						rentItService.getRentItUrl() + "/api/plants/3",
+						"http://localhost:8090/api/plants/3",
 						BusinessPeriod.of(
 								LocalDate.now().plusDays(10),
 								LocalDate.now().plusDays(12)
