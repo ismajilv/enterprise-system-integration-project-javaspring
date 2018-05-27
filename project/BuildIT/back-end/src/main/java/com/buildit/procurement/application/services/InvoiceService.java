@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,8 +70,8 @@ public class InvoiceService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<InvoiceDTO> readAll() {
-		List<Invoice> all;
+	public Collection<InvoiceDTO> readAll() {
+		Collection<Invoice> all;
 
 		all = repository.findAll();
 

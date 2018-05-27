@@ -17,7 +17,7 @@
             <td id="plantStartDateHire">{{orderStatus.rentalPeriod.startDate}}</td>
             <td id="plantEndDateHire">{{orderStatus.rentalPeriod.endDate}}</td>
             <td id="plantTotalCostHire">{{orderStatus.rentalCost}}</td>
-            <td id="plantStatusHire">{{orderStatus.status.replace(/_/g, ' ')}}</td>
+            <td id="plantStatusHire">{{orderStatus.status ? orderStatus.status.replace(/_/g, ' ') : null }}</td>
         </tr>
     </tbody>
 </table>

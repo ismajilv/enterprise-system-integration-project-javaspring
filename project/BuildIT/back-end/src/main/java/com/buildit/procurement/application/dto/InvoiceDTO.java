@@ -17,6 +17,6 @@ public class InvoiceDTO extends ResourceSupport {
 
 	Boolean latePayment;
 
-	RemittanceAdviceDTO advice;
+	PurchaseOrderDTO purchaseOrder;
 
 }

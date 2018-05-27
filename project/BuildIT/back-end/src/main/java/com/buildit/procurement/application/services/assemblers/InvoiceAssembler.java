@@ -15,14 +15,13 @@ public class InvoiceAssembler extends ResourceAssemblerSupport<Invoice, InvoiceD
     public InvoiceDTO toResource(Invoice invoice) {
         InvoiceDTO dto = createResourceWithId(invoice.getId(), invoice);
 
-        //RemittanceAdviceDTO remittanceAdviceDTO = new RemittanceAdviceDTO();
-        //remittanceAdviceDTO.set_id(invoice.getRemittanceAdvice().getId());
-        //remittanceAdviceDTO.setNote(invoice.getRemittanceAdvice().getNote());
-
         dto.set_id(invoice.getId());
         dto.setDueDate(invoice.getDueDate());
         dto.setLatePayment(invoice.getLatePayment());
         dto.setStatus(invoice.getStatus());
+
+        PurchaseOrderAssembler poAssembler = new PurchaseOrderAssembler();
+        dto.setPurchaseOrder(poAssembler.toResource(invoice.getPurchaseOrder()));
 
         return dto;
     }
