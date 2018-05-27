@@ -64,11 +64,11 @@ export default {
       //      return orderInfo;
       // },const poId = this.allrequest[inputOrder]._id;
       accept: function(inputOrder){
-           let poId= this.allrequest[inputOrder];
-           let params = poId + "/accept?"
-           piiId={piiId}
-           console.log("Accept", i);
-        axios.post("http:/localhost:8090/api/orders", params)
+           let poId= this.allrequest[inputOrder]._id;
+              console.log("Input id", poId);
+           let piiId = this.allrequest[inputOrder].plant._id;
+           console.log("piiId plant ID", piiId);
+        axios.post("http://localhost:8090/api/orders/"+ poId +"/accept?"+ "piiId="+ piiId )
         .then(response => {
            this.$snackbar.open("You have accepted this plant request.");
            var acceptStatus;
@@ -81,7 +81,7 @@ export default {
            let i= this.allrequest[inputOrder]._id;
            let params = i + "/reject"
            console.log("Reject", i);
-        axios.post("http://localhost:8080/api/requests/", params)
+        axios.post("http://localhost:8090/api/orders/" + params)
         .then(response => {
           this.$snackbar.open("You have rejected this plant request.");
         });
