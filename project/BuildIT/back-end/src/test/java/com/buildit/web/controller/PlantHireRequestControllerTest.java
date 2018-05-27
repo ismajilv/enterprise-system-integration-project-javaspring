@@ -172,4 +172,10 @@ public class PlantHireRequestControllerTest {
 
         assertThat(dto2.getStatus()).isEqualTo(PHRStatus.PENDING_WORKS_ENGINEER_APPROVAL);
     }
+
+    @Test
+    @Sql("/plants-dataset.sql")
+    public void rejectPlantHireRequestTest_CC5() throws Exception {
+        
+    }
 }
