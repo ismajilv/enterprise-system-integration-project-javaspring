@@ -41,7 +41,7 @@ public class TestDataProvider {
 	EmployeeService employeeService;
 
 
-	@PostConstruct
+	//@PostConstruct
 	public void init() {
 		System.out.println("== Adding test data ==");
 
