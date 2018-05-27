@@ -114,12 +114,12 @@ public class TestDataProvider {
 						)
 				);
 
-		plantHireRequestService.accept(acceptedPlantHireRequest.get_id());
+		PlantHireRequestDTO accepted = plantHireRequestService.accept(acceptedPlantHireRequest.get_id());
 
 		PlantHireRequestDTO extended = plantHireRequestService.extend(
 				acceptedPlantHireRequest.get_id(),
 				new ExtensionRequestDTO(
-						null,
+						accepted.getPurchaseOrder().getExternalId(),
 						acceptedPlantHireRequest.getRentalPeriod().getEndDate().plusDays(3),
 						null
 				)
