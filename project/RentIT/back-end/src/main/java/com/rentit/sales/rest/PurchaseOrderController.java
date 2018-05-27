@@ -4,7 +4,7 @@ import com.rentit.inventory.application.exceptions.PlantNotFoundException;
 import com.rentit.inventory.application.services.InventoryService;
 import com.rentit.inventory.application.services.PlantInventoryEntryAssembler;
 import com.rentit.sales.application.dto.CreatePORequestDTO;
-import com.rentit.sales.application.dto.POExtensionDTO;
+import com.rentit.sales.application.dto.ExtensionRequestDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.exceptions.POStatusException;
 import com.rentit.sales.application.services.PurchaseOrderAssembler;
@@ -240,17 +240,18 @@ public class PurchaseOrderController {
                 HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}/extensions")
-    public Resources<Resource<POExtensionDTO>> retrievePurchaseOrderExtensions(@PathVariable("id") Long id) {
-        List<Resource<POExtensionDTO>> result = new ArrayList<>();
-        POExtensionDTO extension = new POExtensionDTO();
-        extension.setEndDate(LocalDate.now().plusWeeks(1));
-        result.add(new Resource<>(extension));
-        return new Resources<>(result, linkTo(methodOn(PurchaseOrderController.class).retrievePurchaseOrderExtensions(id)).withSelfRel().andAffordance(afford(methodOn(PurchaseOrderController.class).requestPurchaseOrderExtension(null, id))));
-    }
+    // Add extension into purchase order dto instead?
+//    @GetMapping("/{id}/extension")
+//    public Resources<Resource<ExtensionRequestDTO>> retrievePurchaseOrderExtension(@PathVariable("id") Long id) {
+//        ExtensionRequestDTO extension = new ExtensionRequestDTO();
+//        extension.setNewEndDate(LocalDate.now().plusWeeks(1));
+//        return new Resources<>(extension, linkTo(methodOn(PurchaseOrderController.class).retrievePurchaseOrderExtensions(id)).withSelfRel().andAffordance(afford(methodOn(PurchaseOrderController.class).requestPurchaseOrderExtension(null, id))));
+//    }
 
-    @PostMapping("/{id}/extensions")
-    public Resource<?> requestPurchaseOrderExtension(@RequestBody POExtensionDTO extension, @PathVariable("id") Long id) {
+    @PostMapping("/{id}/requestExtension")
+    public ExtensionRequestDTO requestPurchaseOrderExtension(@RequestBody ExtensionRequestDTO request, @PathVariable("id") Long purchaseOrderId) {
+        // incoming ExtensionRequestDTO only contains new end date
+        // resolve and return decision with additional data
         return null;
     }
 
