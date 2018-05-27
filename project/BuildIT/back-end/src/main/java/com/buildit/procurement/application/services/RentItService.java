@@ -45,7 +45,7 @@ public class RentItService {
 
 			headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-			final String url = entry.getValue() + "/api/sales/plants";
+			final String url = entry.getValue() + "/api/plants";
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
 					.queryParam("name", name)
 					.queryParam("startDate", startDate)
@@ -124,7 +124,7 @@ public class RentItService {
 
 		ResponseEntity<RentItPurchaseOrderDTO> response =
 				restTemplate.exchange(
-						supplier2Url.entrySet().iterator().next().getValue() + "/api/sales/orders",
+						supplier2Url.entrySet().iterator().next().getValue() + "/api/orders",
 						HttpMethod.POST,
 						entity,
 						new ParameterizedTypeReference<RentItPurchaseOrderDTO>() {

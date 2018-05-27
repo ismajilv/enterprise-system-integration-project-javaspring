@@ -19,7 +19,4 @@ public class Customer {
 	@Column
 	String companyName;
 
-	@ElementCollection
-	Collection<CustomerContactPerson> representatives = new ArrayList<>();
-
 }

@@ -42,7 +42,7 @@ To create plant hire request, send a POST to http://localhost:8080/api/requests
 {
 	"constructionSiteId": 2,
 	"supplierId": 4,
-	"plantHref": "http://localhost:8090/api/sales/plants/3",
+	"plantHref": "http://localhost:8090/api/plants/3",
 	"rentalPeriod" : {
 	    "startDate" : "2018-05-25",
 	    "endDate" : "2018-05-30"

@@ -117,7 +117,7 @@ public class TestDataProvider {
 						)
 				);
 
-//		plantHireRequestService.accept(acceptedPlantHireRequest.get_id());
+		plantHireRequestService.accept(acceptedPlantHireRequest.get_id());
 
 //		ExtensionRequestDTO extension = extensionRequestService.create(acceptedPlantHireRequest.get_id(), acceptedPlantHireRequest.getRentalPeriod().getEndDate().plusDays(3));
 
