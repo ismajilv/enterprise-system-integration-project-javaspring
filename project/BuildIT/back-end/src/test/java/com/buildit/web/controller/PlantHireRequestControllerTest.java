@@ -58,14 +58,21 @@ public class PlantHireRequestControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
 
-    @Test
-    @Sql("/plants-dataset.sql")
-    public void createPlantHireRequestTest() throws Exception{
+    public CreatePlantHireRequestDTO createPHRDTO() {
         CreatePlantHireRequestDTO dto = new CreatePlantHireRequestDTO();
         dto.setConstructionSiteId(10L);
         dto.setPlantHref("http://localhost:8090/api/plants/3");
         dto.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now().plusDays(1), LocalDate.now().plusDays(3)));
         dto.setSupplierId(1L);
+
+        return dto;
+    }
+
+    @Test
+    @Sql("/plants-dataset.sql")
+    public void createPlantHireRequestTest_CC1() throws Exception{
+
+        CreatePlantHireRequestDTO dto = createPHRDTO();
 
         MvcResult result = mockMvc.perform(post("/api/requests")
                 .content(mapper.writeValueAsString(dto))
@@ -81,5 +88,13 @@ public class PlantHireRequestControllerTest {
         assertThat(plantHireRequestDTO.getRentalPeriod().getEndDate()).isEqualTo("2018-05-30");
         assertThat(plantHireRequestDTO.getPlant().getHref()).isEqualTo("http://localhost:8090/api/plants/3");
         assertThat(plantHireRequestDTO.getSupplier().getName()).isEqualTo("LocalRentIt");
+    }
+
+    @Test
+    @Sql("/plants-dataset.sql")
+    public void approvePlantHireRequestTest_CC2() throws Exception{
+        CreatePlantHireRequestDTO dto = createPHRDTO();
+
+        
     }
 }
