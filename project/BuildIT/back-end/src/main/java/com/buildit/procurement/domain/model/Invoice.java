@@ -4,6 +4,7 @@ import com.buildit.procurement.domain.enums.InvoiceStatus;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -28,8 +29,11 @@ public class Invoice {
 	@Column(nullable = false)
 	Boolean latePayment;
 
-	@JoinColumn(name = "invoice_id")
+	@JoinColumn(name = "remittance_advice_id")
 	@OneToOne
 	RemittanceAdvice remittanceAdvice;
+
+	@Column(nullable = false)
+	BigDecimal payableAmount;
 
 }

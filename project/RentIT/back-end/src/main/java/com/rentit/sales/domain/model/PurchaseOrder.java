@@ -12,6 +12,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Entity
 @Getter
 @NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
@@ -19,13 +21,11 @@ public class PurchaseOrder {
     @Id @GeneratedValue
     Long id;
 
-    @OneToMany
-    List<PlantReservation> reservations = new ArrayList<>();
+    @OneToOne(mappedBy = "purchaseOrder")
+    PlantReservation reservation;
+
     @ManyToOne
     PlantInventoryEntry plant;
-
-    LocalDate issueDate;
-    LocalDate paymentSchedule;
 
     @Column(precision = 8, scale = 2)
     BigDecimal total;
@@ -36,83 +36,100 @@ public class PurchaseOrder {
     @Embedded
     BusinessPeriod rentalPeriod;
 
-    @ElementCollection
-    List<POExtension> extensions = new ArrayList<>();
+    @OneToOne(mappedBy = "purchaseOrder")
+    ExtensionRequest extensionRequest;
+
+    @Column
+    String deliveryAddress;
+
+    @JoinColumn(name = "customer_id") // , nullable = false)
+    @ManyToOne // (optional = false)
+    Customer customer;
+
+    @Embedded
+    @Column // (nullable = false)
+    CustomerContactPerson contact;
 
     public static PurchaseOrder of(PlantInventoryEntry plant,
-                                   BusinessPeriod rentalPeriod) {
+                                   BusinessPeriod rentalPeriod,
+                                   String deliveryAddress) {
         PurchaseOrder po = new PurchaseOrder();
         po.plant = plant;
         po.rentalPeriod = rentalPeriod;
-        po.status = POStatus.PENDING;
+        po.status = POStatus.PENDING_APPROVAL;
+        po.deliveryAddress = deliveryAddress;
         return po;
     }
 
-    public void requestExtension(POExtension extension) {
-        extensions.add(extension);
-        status = POStatus.PENDING_EXTENSION;
+    public void setStatus(POStatus status) {
+        if (!this.status.isTransitionAllowed(status)) {
+            throw new IllegalArgumentException("Purchase order transition not allowed: " + this.status + "=>" + status);
+        }
+        this.status = status;
+    }
+
+    public void requestExtension(ExtensionRequest extension) {
+        this.extensionRequest = extension;
+        setStatus(POStatus.PENDING_EXTENSION);
     }
 
     public LocalDate pendingExtensionEndDate() {
-        if (extensions.size() > 0) {
-            POExtension openExtension = extensions.get(extensions.size() - 1);
-            return openExtension.getEndDate();
+        if (!isNull(extensionRequest)) {
+            return extensionRequest.newEndDate;
         }
         return null;
     }
 
     public void acceptExtension(PlantReservation reservation) {
-        reservations.add(reservation);
-        status = POStatus.OPEN;
-        rentalPeriod = BusinessPeriod.of(rentalPeriod.getStartDate(), reservation.getSchedule().getEndDate());
+        setStatus(POStatus.ACCEPTED);
+        this.rentalPeriod = BusinessPeriod.of(rentalPeriod.getStartDate(), reservation.getSchedule().getEndDate());
+        this.reservation.setSchedule(this.rentalPeriod);
         Long nrOfDaysExtendedFor = ChronoUnit.DAYS.between(reservation.getSchedule().getStartDate(), reservation.getSchedule().getEndDate());
         total = total.add(new BigDecimal(nrOfDaysExtendedFor));
     }
 
     public void registerFirstAllocation(PlantReservation reservation) {
-        reservations.add(reservation);
-        status = POStatus.OPEN;
+        this.reservation = reservation;
+        setStatus(POStatus.ACCEPTED);
         rentalPeriod = BusinessPeriod.of(reservation.getSchedule().getStartDate(), reservation.getSchedule().getEndDate());
         Long nrOfDaysRented = ChronoUnit.DAYS.between(rentalPeriod.getStartDate(), rentalPeriod.getEndDate());
         total = plant.getPrice().multiply(new BigDecimal(nrOfDaysRented));
     }
 
     public void reject() {
-        status = POStatus.REJECTED;
+        setStatus(POStatus.REJECTED);
     }
 
     public void cancel() {
-        status = POStatus.CANCELLED;
+        setStatus(POStatus.CANCELLED);
     }
 
     public void dispatch() {
-        status = POStatus.DISPATCHED;
+        setStatus(POStatus.PLANT_DISPATCHED);
     }
 
     public void deliver() {
-        status = POStatus.DELIVERED;
+        setStatus(POStatus.PLANT_DELIVERED);
     }
 
     public void customerReject() {
-        status = POStatus.REJECTED_BY_CUSTOMER;
+        setStatus(POStatus.REJECTED_BY_CUSTOMER);
     }
 
     public void markAsReturned() {
-        status = POStatus.RETURNED;
+        setStatus(POStatus.PLANT_RETURNED);
     }
 
     @Override
     public String toString() {
         return "PurchaseOrder{" +
                 "id=" + id +
-                ", reservations=" + reservations +
+                ", reservation=" + reservation +
                 ", plant=" + plant +
-                ", issueDate=" + issueDate +
-                ", paymentSchedule=" + paymentSchedule +
                 ", total=" + total +
                 ", status=" + status +
                 ", rentalPeriod=" + rentalPeriod +
-                ", extensions=" + extensions +
+                ", extension=" + extensionRequest +
                 '}';
     }
 }

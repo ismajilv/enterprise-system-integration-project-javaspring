@@ -43,21 +43,21 @@ public class PurchaseOrderValidator implements Validator {
 		}
 
 		switch (po.getStatus()) {
-			case PENDING:
+			case PENDING_APPROVAL:
 				if (!isNull(po.getRentalPeriod())
 						&& !isNull(po.getRentalPeriod().getStartDate())
 						&& po.getRentalPeriod().getStartDate().isBefore(LocalDate.now())) {
 					errors.rejectValue("rentalPeriod", "past", "Purchase order must be for future");
 				}
 				break;
-			case OPEN:
-			case CLOSED:
+			case ACCEPTED:
+			case CANCELLED:
 				if (isNull(po.getTotal())) {
 					errors.rejectValue("total", "null.for.open.closed", "Purchase order is in state " + po.getStatus() + " but has null for total");
 				}
 				// falls through
 			default:
-				// anything but PENDING should already have an Id
+				// anything but PENDING_APPROVAL should already have an Id
 				if (isNull(po.getId())) {
 					errors.rejectValue("id", "null", "Purchase order has null for Id");
 				}

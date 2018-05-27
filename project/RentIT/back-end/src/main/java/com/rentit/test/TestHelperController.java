@@ -1,7 +1,5 @@
 package com.rentit.test;
 
-import com.rentit.common.domain.model.BusinessPeriod;
-import com.rentit.inventory.domain.model.EquipmentCondition;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.inventory.domain.model.PlantInventoryItem;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
@@ -54,7 +52,7 @@ public class TestHelperController {
         entries = plantInventoryEntryRepository.saveAll(entries);
 
         List<PlantInventoryItem> items = entries.stream()
-                .map(entry -> PlantInventoryItem.of(null, "sn-" + entry.getId(), EquipmentCondition.SERVICEABLE, entry))
+                .map(entry -> PlantInventoryItem.of(null, "sn-" + entry.getId(), entry))
                 .collect(Collectors.toList());
 
         plantInventoryItemRepository.saveAll(items);

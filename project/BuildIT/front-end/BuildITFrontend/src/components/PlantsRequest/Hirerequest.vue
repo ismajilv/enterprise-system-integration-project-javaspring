@@ -37,24 +37,20 @@ export default {
   },
   mounted: function(){
     this.statusofOrder();
+    console.log('[orderStatus]', this.orderStatus);
   },
   methods: {
      statusofOrder: function(){
         let changeStatus = {
         "href": this.orderStatus.plant.href,
         "value": "APPROVED"
-      }
+      };
        axios.get(" http://localhost:8080/callbacks/orderStateChanged", changeStatus)
       .then(response => {
-          console.log("Status Response", response)
+          console.log("[Status Response]", response);
           return response.data;
       })
      }
   }
 }
 </script>
-
-<style>
-
-</style>
-

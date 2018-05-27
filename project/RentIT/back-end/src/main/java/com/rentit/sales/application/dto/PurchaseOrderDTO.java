@@ -20,4 +20,6 @@ public class PurchaseOrderDTO extends ResourceSupport{
     BigDecimal total;
 
     POStatus status;
+
+    String deliveryAddress;
 }

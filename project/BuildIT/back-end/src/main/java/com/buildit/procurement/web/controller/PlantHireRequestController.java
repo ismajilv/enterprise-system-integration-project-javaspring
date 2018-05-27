@@ -16,6 +16,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.buildit.procurement.domain.enums.PHRStatus;
+import com.buildit.procurement.application.dto.ExtensionRequestDTO;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -89,7 +91,7 @@ public class PlantHireRequestController {
 	}
 
 	@PostMapping("/{id}/cancel")
-	public ResponseEntity<Resource<PlantHireRequestDTO>> cancel(@PathVariable Long id) {
+	public ResponseEntity<Resource<PlantHireRequestDTO>> cancel(@PathVariable Long id) throws Exception {
 		PlantHireRequestDTO cancelledRequest = service.cancel(id);
 
 		return transformIntoResponse(cancelledRequest, HttpStatus.OK);
@@ -101,6 +103,14 @@ public class PlantHireRequestController {
 
 		return transformIntoResponse(rejectedRequest, HttpStatus.OK);
 	}
+
+    @PostMapping("/{id}/requestExtension")
+    public ResponseEntity<Resource<PlantHireRequestDTO>> extend(@PathVariable Long id,
+                                                                @RequestBody ExtensionRequestDTO extensionRequestDTO) {
+		PlantHireRequestDTO extendRequest = service.extend(id, extensionRequestDTO);
+
+        return transformIntoResponse(extendRequest, HttpStatus.OK);
+    }
 
 	private ResponseEntity<Resources<PlantHireRequestDTO>> transformIntoResponse(Collection<PlantHireRequestDTO> requestDTOs) {
 		Collection<PlantHireRequestDTO> requestDTOsWithLinksFixed =

@@ -1,6 +1,6 @@
 package com.rentit.sales.application.services;
 
-import com.rentit.common.application.exceptions.PlantNotFoundException;
+import com.rentit.inventory.application.exceptions.PlantNotFoundException;
 import com.rentit.common.domain.model.BusinessPeriod;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.inventory.domain.model.PlantInventoryItem;
@@ -12,7 +12,6 @@ import com.rentit.inventory.domain.repository.PlantReservationRepository;
 import com.rentit.sales.application.dto.POCallbackDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.exceptions.POStatusException;
-import com.rentit.sales.domain.model.Address;
 import com.rentit.sales.domain.model.POStatus;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
@@ -21,7 +20,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -29,7 +27,6 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Service
 public class SalesService {
@@ -79,7 +76,7 @@ public class SalesService {
 
     public PurchaseOrder cancelPurchaseOrder(Long id) throws POStatusException {
         PurchaseOrder po = findPurchaseOrder(id);
-        if(!(po.getStatus().equals(POStatus.OPEN)||po.getStatus().equals(POStatus.PENDING))){
+        if(!(po.getStatus().equals(POStatus.ACCEPTED)||po.getStatus().equals(POStatus.PENDING_APPROVAL))){
             throw new POStatusException("cancel", po.getStatus());
         }
         po.cancel();
@@ -104,11 +101,12 @@ public class SalesService {
         return save(po);
     }
 
-    public PurchaseOrder preparePurchaseOrderForSave(Long plantId, LocalDate startDate, LocalDate endDate) throws PlantNotFoundException {
+    public PurchaseOrder preparePurchaseOrderForSave(Long plantId, LocalDate startDate, LocalDate endDate, String deliveryAddress) throws PlantNotFoundException {
         PlantInventoryEntry plant = plantInventoryEntryRepository.getOne(plantId);
         PurchaseOrder po = PurchaseOrder.of(
                 plant,
-                BusinessPeriod.of(startDate, endDate));
+                BusinessPeriod.of(startDate, endDate),
+                deliveryAddress);
 
 
 // batch allocation ->

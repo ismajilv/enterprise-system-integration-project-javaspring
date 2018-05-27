@@ -4,7 +4,7 @@ import com.rentit.common.application.dto.BusinessPeriodDTO;
 import com.rentit.inventory.application.services.PlantInventoryEntryAssembler;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.domain.model.PurchaseOrder;
-import com.rentit.sales.rest.SalesRestController;
+import com.rentit.sales.rest.PurchaseOrderController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class PurchaseOrderAssembler extends ResourceAssemblerSupport<PurchaseOrd
     PlantInventoryEntryAssembler plantInventoryEntryAssembler;
 
     public PurchaseOrderAssembler() {
-        super(SalesRestController.class, PurchaseOrderDTO.class);
+        super(PurchaseOrderController.class, PurchaseOrderDTO.class);
     }
 
     public PurchaseOrderDTO toResource(PurchaseOrder purchaseOrder) {
@@ -28,6 +28,7 @@ public class PurchaseOrderAssembler extends ResourceAssemblerSupport<PurchaseOrd
         dto.setRentalPeriod(BusinessPeriodDTO.of(purchaseOrder.getRentalPeriod().getStartDate(),purchaseOrder.getRentalPeriod().getEndDate()));
         dto.setTotal(purchaseOrder.getTotal());
         dto.setStatus(purchaseOrder.getStatus());
+        dto.setDeliveryAddress(purchaseOrder.getDeliveryAddress());
         return dto;
     }
 }
