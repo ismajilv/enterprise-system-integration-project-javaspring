@@ -35,7 +35,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
-@CrossOrigin
+@CrossOrigin("http://localhost:7070")
 @RequestMapping("/api/orders")
 public class PurchaseOrderController {
 
