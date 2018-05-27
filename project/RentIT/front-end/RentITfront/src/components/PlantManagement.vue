@@ -22,10 +22,10 @@
             <td id = "plantStartDateWE2" class="has-text-center">{{pending.rentalPeriod.startDate}}</td>
             <td id = "plantEndDateWE2" class="has-text-center">{{pending.rentalPeriod.endDate}}</td>
             <td>{{pending.status}}</td>
-            <td><button v-on:click="markDispatched(index)" :disabled="pending.status != 'PENDING'" class="button is-success is-outlined">Dispatch</button> </td>
-            <td><a v-on:click="markDelivered(index)" :disabled="pending.status != 'DISPATCHED'" class="button is-success is-outlined">Deliver</a> </td>
-            <td><button v-on:click="markRejectedByCustomer(index)" :disabled="pending.status != 'DISPATCHED'" class="button is-danger is-outlined">Rejected by customer</button> </td>
-            <td><a v-on:click="markReturned(index)" :disabled="pending.status != 'DELIVERED'" class="button is-success is-outlined">Return</a> </td>
+            <td><button v-on:click="markDispatched(index)" :disabled="pending.status != 'ACCEPTED'" class="button is-success is-outlined">Dispatch</button> </td>
+            <td><a v-on:click="markDelivered(index)" :disabled="pending.status != 'PLANT_DISPATCHED'" class="button is-success is-outlined">Deliver</a> </td>
+            <td><button v-on:click="markRejectedByCustomer(index)" :disabled="pending.status != 'PLANT_DISPATCHED'" class="button is-danger is-outlined">Rejected by customer</button> </td>
+            <td><a v-on:click="markReturned(index)" :disabled="pending.status != 'PLANT_DELIVERED'" class="button is-success is-outlined">Return</a> </td>
         </tr>
     </tbody>
 </table>

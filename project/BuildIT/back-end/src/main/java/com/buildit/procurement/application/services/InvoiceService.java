@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,7 +34,7 @@ public class InvoiceService {
 	public InvoiceDTO add(RentItInvoiceDTO invoice) {
         PurchaseOrder po;
 	    try {
-            po = purchaseOrderService.readModel(invoice.get_links().get("self").get("href"));
+            po = purchaseOrderService.findByExternalId(invoice.getPurchaseOrderId());
         }
         catch (IllegalArgumentException ex) {
 	        return null;
@@ -48,6 +46,7 @@ public class InvoiceService {
 		localInvoice.setDueDate(invoice.getDueDate());
 		localInvoice.setLatePayment(false);
 		localInvoice.setStatus(InvoiceStatus.PENDING);
+		localInvoice.setPayableAmount(invoice.getPayableAmount());
 
 		localInvoice = repository.save(localInvoice);
 
