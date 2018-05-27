@@ -64,7 +64,7 @@ public class PlantHireRequestController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Resource<PlantHireRequestDTO>> create(@RequestBody @Valid CreatePlantHireRequestDTO createRequest) {
+	public ResponseEntity<Resource<PlantHireRequestDTO>> create(@RequestBody CreatePlantHireRequestDTO createRequest) {
 		PlantHireRequestDTO newlyCreatedPHR = service.addRequest(
 				createRequest.getConstructionSiteId(),
 				createRequest.getSupplierId(),
