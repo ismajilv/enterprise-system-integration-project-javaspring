@@ -11,7 +11,7 @@
       </thead>
       <tbody>
         <tr class="table-row-we2" v-for="invoice in invoices" :key="invoice._id" >
-          
+
         </tr>
       </tbody>
     </table>
@@ -27,10 +27,12 @@
       invoices: []
     }),
     mounted: function() {
-
+      this.fetchAllInvoices();
     },
     methods: function () {
-
+      fetchAllInvoices: function() {
+        axios.get()
+      }
     }
   }
 </script>
