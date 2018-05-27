@@ -9,7 +9,6 @@
             <th class="has-text-center">End Date</th>
             <th class="has-text-center">Total Price</th>
             <th class="has-text-center">Current Order Status</th>
-            <th class="has-text-center">Updated Order Status</th>
         </tr>
     </thead>
     <tbody>
@@ -18,7 +17,7 @@
             <td id="plantStartDateHire">{{orderStatus.rentalPeriod.startDate}}</td>
             <td id="plantEndDateHire">{{orderStatus.rentalPeriod.endDate}}</td>
             <td id="plantTotalCostHire">{{orderStatus.rentalCost}}</td>
-            <td id="plantStatusHire">{{orderStatus.status}}</td>
+            <td id="plantStatusHire">{{orderStatus.status.replace(/_/g, ' ')}}</td>
         </tr>
     </tbody>
 </table>
@@ -27,7 +26,7 @@
 
 <script>
 export default {
-  name: "Hirerequest",
+  name: "HireRequest",
   props: ["orderStatus"]
 }
 </script>

@@ -12,8 +12,8 @@
           </order-data>
         </b-tab-item>
        <b-tab-item label="Review order">
-         <hirerequest :orderStatus= "orderStatus">
-         </hirerequest>
+         <hire-request :orderStatus= "orderStatus">
+         </hire-request>
         </b-tab-item>
     </b-tabs>
     </div>
@@ -23,7 +23,7 @@
 import CatalogQuery from "./CatalogQuery.vue";
 import QueryResult from "./QueryResult.vue";
 import OrderData from "./OrderData.vue";
-import Hirerequest from "./Hirerequest.vue";
+import HireRequest from "./HireRequest.vue";
 
 import axios from 'axios';
 import moment from "moment";
@@ -34,7 +34,7 @@ export default {
     CatalogQuery,
     QueryResult,
     OrderData,
-    Hirerequest
+    HireRequest
   },
   data: function(){
     return {

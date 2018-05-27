@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2> Lists of plants</h2>
+    <h2> Lists of Orders</h2>
     <label class="checkbox">
       <input type="checkbox" v-model="checkbox" v-on:click="fetchHireRequests()">
       Show only pending
