@@ -46,21 +46,21 @@ public class InventoryRepositoryTest {
         assertThat(plantInventoryEntryRepo.finderMethod("Mini").size()).isEqualTo(2);
         assertThat(plantInventoryEntryRepo.finderMethodV2("mini").size()).isEqualTo(2);
     }
-
-    @Test
-    public void findAvailableTest() {
-        PlantInventoryEntry entry = plantInventoryEntryRepo.findOneById(14);
-        PlantInventoryItem item = plantInventoryItemRepo.findOneByPlantInfo(entry);
-
-        assertThat(inventoryRepo.findAvailablePlants("Mini excavator",LocalDate.of(2017,2,25), LocalDate.of(2017,05,15)))
-                .contains(entry);
-
-        PlantReservation po = new PlantReservation();
-        po.setPlant(item);
-        po.setSchedule(BusinessPeriod.of(LocalDate.of(2017, 2, 20), LocalDate.of(2017, 2, 25)));
-        plantReservationRepo.save(po);
-
-        assertThat(inventoryRepo.findAvailablePlants("Mini excavator", LocalDate.of(2017,2,20), LocalDate.of(2017,2,25)))
-                .doesNotContain(entry);
-    }
+//
+//    @Test
+//    public void findAvailableTest() {
+//        PlantInventoryEntry entry = plantInventoryEntryRepo.findOneById(14);
+//        PlantInventoryItem item = plantInventoryItemRepo.findOneByPlantInfo(entry);
+//
+//        assertThat(inventoryRepo.findAvailablePlants("Mini excavator",LocalDate.of(2017,2,25), LocalDate.of(2017,05,15)))
+//                .contains(entry);
+//
+//        PlantReservation po = new PlantReservation();
+//        po.setPlant(item);
+//        po.setSchedule(BusinessPeriod.of(LocalDate.of(2017, 2, 20), LocalDate.of(2017, 2, 25)));
+//        plantReservationRepo.save(po);
+//
+//        assertThat(inventoryRepo.findAvailablePlants("Mini excavator", LocalDate.of(2017,2,20), LocalDate.of(2017,2,25)))
+//                .doesNotContain(entry);
+//    }
 }

@@ -70,7 +70,7 @@ export default {
           startDate: moment(String(query.startDate)).format("YYYY-MM-DD"),
           endDate: moment(String(query.endDate)).format("YYYY-MM-DD")
         }
-        axios.get("http://localhost:8090//api/sales/plants", { params: params})
+        axios.get("http://localhost:8090/api/plants", { params: params})
         .then(response => {
           console.log(response);
            this.order.rentalPeriod.startDate = params.startDate;
@@ -95,7 +95,7 @@ export default {
             }
         };
         console.log("Plant submission before", obj);
-              axios.post("http://localhost:8080/api/requests", obj)
+              axios.get("http://localhost:8080/api/requests", obj)
                 .then(response => {
                     this.$snackbar.open("Plant hire request. Waiting for confirmation from works engineer.");
                  this.orderStatus = response.data;

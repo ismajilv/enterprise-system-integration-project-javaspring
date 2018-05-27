@@ -32,7 +32,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
-@CrossOrigin()
+@CrossOrigin
 @RequestMapping("/api/orders")
 public class PurchaseOrderController {
 
