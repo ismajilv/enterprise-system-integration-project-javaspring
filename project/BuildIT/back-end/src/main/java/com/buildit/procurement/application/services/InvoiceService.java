@@ -51,7 +51,7 @@ public class InvoiceService {
 	}
 
 	@Transactional
-	public void accept(Long invoiceId) {
+	public InvoiceDTO accept(Long invoiceId) {
 		Optional<Invoice> maybeInvoice = repository.findById(invoiceId);
 
 		if (!maybeInvoice.isPresent()) {
@@ -64,9 +64,11 @@ public class InvoiceService {
 			remittanceAdviceService.create(invoiceId, "Paid to bank account");
 			invoice.setStatus(InvoiceStatus.ACCEPTED);
 			invoice = repository.save(invoice);
+			// TODO: send remittance advice to RentIt
 		} else {
 			throw new IllegalStateException("Cannot shift invoice from state " + invoice.getStatus() + " to state " + InvoiceStatus.ACCEPTED);
 		}
+		return assembler.toResource(invoice);
 	}
 
 	@Transactional(readOnly = true)

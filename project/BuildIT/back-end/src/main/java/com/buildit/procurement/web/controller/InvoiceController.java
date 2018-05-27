@@ -37,17 +37,29 @@ public class InvoiceController {
     }
 
     @GetMapping("/{id}")
-    public InvoiceDTO readOne(@PathVariable Long id) {
+    public ResponseEntity<Resource<InvoiceDTO>> readOne(@PathVariable Long id) {
         InvoiceDTO invoiceDTO = service.readOne(id);
 
         fixLinks(invoiceDTO);
 
-        return invoiceDTO;
+        return new ResponseEntity<>(
+                new Resource<>(invoiceDTO),
+                new HttpHeaders(),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping("/{id}/accept")
-    public void accept(@PathVariable Long id) {
-        service.accept(id);
+    public ResponseEntity<Resource<InvoiceDTO>> accept(@PathVariable Long id) {
+        InvoiceDTO invoiceDTO = service.accept(id);
+
+        fixLinks(invoiceDTO);
+
+        return new ResponseEntity<>(
+                new Resource<>(invoiceDTO),
+                new HttpHeaders(),
+                HttpStatus.OK
+        );
     }
 
     private void fixLinks(InvoiceDTO invoice) {
