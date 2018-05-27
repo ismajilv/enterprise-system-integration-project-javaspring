@@ -15,7 +15,6 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import com.buildit.procurement.domain.enums.PHRStatus;
 import com.buildit.procurement.application.dto.ExtensionRequestDTO;
@@ -41,7 +40,6 @@ public class PlantHireRequestController {
 	CommentService commentService;
 
 	@GetMapping
-	@Secured({"ROLE_WORK_ENGINEER", "ROLE_SITE_ENGINEER"})
 	public ResponseEntity<Resources<PlantHireRequestDTO>> readAll() {
 		List<PlantHireRequestDTO> requests = service.getAll();
 
