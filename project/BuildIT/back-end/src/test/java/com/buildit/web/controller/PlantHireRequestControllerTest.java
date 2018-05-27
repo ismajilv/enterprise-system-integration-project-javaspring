@@ -8,6 +8,7 @@ import com.buildit.procurement.domain.model.Supplier;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.buildit.procurement.domain.enums.PHRStatus;
+import java.awt.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -199,5 +200,16 @@ public class PlantHireRequestControllerTest {
         assertThat(dto2.getStatus()).isEqualTo(PHRStatus.REJECTED);
     }
 
-
+//    @Test
+//    @Sql("/plants-dataset.sql")
+//    public void readAllPlantHireRequestTest() throws Exception {
+//        MvcResult result =  mockMvc.perform(get("/api/requests"))
+//                .andExpect(status().isOk())
+//                .andExpect(header().string("Location", isEmptyOrNullString()))
+//                .andReturn();
+//
+//        List<PlantHireRequestDTO> dtos = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<PlantHireRequestDTO>>(){});
+//
+//        assertThat(dtos.size()).isEqualTo(2);
+//    }
 }
