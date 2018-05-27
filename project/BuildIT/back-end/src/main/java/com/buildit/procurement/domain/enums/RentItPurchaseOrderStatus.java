@@ -39,8 +39,6 @@ public enum RentItPurchaseOrderStatus {
 			case PLANT_RETURNED:
 			case INVOICED:
 				return PHRStatus.PLANT_DELIVERED;
-			case PENDING_EXTENSION:
-				return PHRStatus.PENDING_EXTENSION;
 
 			default:
 				throw new IllegalArgumentException("Unknown PO status: " + this);

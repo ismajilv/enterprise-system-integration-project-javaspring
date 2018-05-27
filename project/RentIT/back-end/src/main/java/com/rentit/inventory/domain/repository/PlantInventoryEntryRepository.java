@@ -11,7 +11,7 @@ import java.util.List;
 public interface PlantInventoryEntryRepository extends JpaRepository<PlantInventoryEntry, Long> {
 
     @Query("select p from PlantInventoryEntry p where p.id = ?1")
-    PlantInventoryEntry findOneById(long id);
+    PlantInventoryEntry findOneById(Long id);
 
     List<PlantInventoryEntry> findByNameContaining(String str);
 

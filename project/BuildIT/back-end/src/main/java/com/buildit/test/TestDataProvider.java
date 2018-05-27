@@ -18,8 +18,6 @@ import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static com.buildit.procurement.application.services.RentItService.RENTAL_PARTNER_NAME_1;
-
 // TODO delete before going live!
 @Service
 public class TestDataProvider {
@@ -42,109 +40,90 @@ public class TestDataProvider {
 	@Autowired
 	EmployeeService employeeService;
 
-	@Autowired
-	ExtensionRequestService extensionRequestService;
-
-	@Autowired
-	RentItService rentItService;
-
-	@Autowired
-	InvoiceService invoiceService;
-
-	@Autowired
-	PurchaseOrderService purchaseOrderService;
 
 	@PostConstruct
 	public void init() {
-//		System.out.println("== Adding test data ==");
-//
-//		ConstructionSite constructionSite1 =
-//				constructionSiteService.create("Pepleri 1, Tartu");
-//
-//		ConstructionSite constructionSite2 =
-//				constructionSiteService.create("Viru 1, Tallinn");
-//
-//		ConstructionSite constructionSite3 =
-//				constructionSiteService.create("Kase 12, Narva");
-//
-//		SupplierDTO supplier = supplierService.findOrCreateByName(RENTAL_PARTNER_NAME_1);
-//
-//		// Supplier supplier = supplierService.readModel(supplierAsDTO.get_id());
-//
-//		// Supplier supplierRamirent = supplierService.create("Ramirent");
-//
-//		// Supplier supplierCramo = supplierService.create("Cramo");
-//
-//		EmployeeDTO employee1 = employeeService.create(Role.SITE_ENGINEER, "James", "Dean");
-//
-//		EmployeeDTO employee2 = employeeService.create(Role.WORKS_ENGINEER, "Tom", "Cruise");
-//
-//		PlantHireRequestDTO pendingPlantHireRequest =
-//
-//				plantHireRequestService.addRequest(
-//						constructionSite1.getId(),
-//						supplier.get_id(),
-//						rentItService.getRentItUrl() + "/api/plants/3",
-//						BusinessPeriod.of(
-//								LocalDate.now().plusDays(1),
-//								LocalDate.now().plusDays(5)
-//						)
-//				);
-//
-//		commentService.create(
-//				pendingPlantHireRequest.get_id(),
-//				"This excavator is too expensive, take a smaller one - Regards, Tom"
-//		);
-//
-//		commentService.create(
-//				pendingPlantHireRequest.get_id(),
-//				"Close that request down than, will create a new one - James"
-//		);
-//
-//		PlantHireRequestDTO rejectedPlantHireRequest =
-//
-//				plantHireRequestService.addRequest(
-//						constructionSite2.getId(),
-//						supplier.get_id(),
-//						rentItService.getRentItUrl() + "/api/plants/6",
-//						BusinessPeriod.of(
-//								LocalDate.now().plusDays(1),
-//								LocalDate.now().plusDays(5)
-//						)
-//				);
-//
-//		plantHireRequestService.reject(rejectedPlantHireRequest.get_id());
-//
-//		PlantHireRequestDTO acceptedPlantHireRequest =
-//
-//				plantHireRequestService.addRequest(
-//						constructionSite1.getId(),
-//						supplier.get_id(),
-//						rentItService.getRentItUrl() + "/api/plants/3",
-//						BusinessPeriod.of(
-//								LocalDate.now().plusDays(10),
-//								LocalDate.now().plusDays(12)
-//						)
-//				);
-//
-//		plantHireRequestService.accept(acceptedPlantHireRequest.get_id());
-//
-////		ExtensionRequestDTO extension = extensionRequestService.create(acceptedPlantHireRequest.get_id(), acceptedPlantHireRequest.getRentalPeriod().getEndDate().plusDays(3));
-//
-//		//Purchase Order
-//		//PurchaseOrderDTO purchaseOrderDTO = purchaseOrderService.create();
-//
-//		//Invoice
-//		RentItInvoiceDTO rentItInvoiceDTO = new RentItInvoiceDTO();
-//		rentItInvoiceDTO.set_id(1L);
-//		rentItInvoiceDTO.setDueDate(LocalDate.now());
-//		rentItInvoiceDTO.setPayableAmount(BigDecimal.valueOf(40));
-//		//rentItInvoiceDTO.setPurchaseOrderId();
-//
-//
-//		//InvoiceDTO invoiceDTO = invoiceService.add();
-//
-//		// TODO add some seed data with PurchaseOrder Invoice RemittanceAdvice
+		System.out.println("== Adding test data ==");
+
+		ConstructionSite constructionSite1 =
+				constructionSiteService.create("Pepleri 1, Tartu");
+
+		ConstructionSite constructionSite2 =
+				constructionSiteService.create("Viru 1, Tallinn");
+
+		ConstructionSite constructionSite3 =
+				constructionSiteService.create("Kase 12, Narva");
+
+		SupplierDTO supplier = supplierService.findOrCreateByName("LocalRentIt");
+
+		// Supplier supplier = supplierService.readModel(supplierAsDTO.get_id());
+
+		// Supplier supplierRamirent = supplierService.create("Ramirent");
+
+		// Supplier supplierCramo = supplierService.create("Cramo");
+
+		EmployeeDTO employee1 = employeeService.create(Role.SITE_ENGINEER, "James", "Dean");
+
+		EmployeeDTO employee2 = employeeService.create(Role.WORKS_ENGINEER, "Tom", "Cruise");
+
+		PlantHireRequestDTO pendingPlantHireRequest =
+
+				plantHireRequestService.addRequest(
+						constructionSite1.getId(),
+						supplier.get_id(),
+						"http://localhost:8090/api/plants/3",
+						BusinessPeriod.of(
+								LocalDate.now().plusDays(1),
+								LocalDate.now().plusDays(5)
+						)
+				);
+
+		commentService.create(
+				pendingPlantHireRequest.get_id(),
+				"This excavator is too expensive, take a smaller one - Regards, Tom"
+		);
+
+		commentService.create(
+				pendingPlantHireRequest.get_id(),
+				"Close that request down than, will create a new one - James"
+		);
+
+		PlantHireRequestDTO rejectedPlantHireRequest =
+
+				plantHireRequestService.addRequest(
+						constructionSite2.getId(),
+						supplier.get_id(),
+						"http://localhost:8090/api/plants/6",
+						BusinessPeriod.of(
+								LocalDate.now().plusDays(1),
+								LocalDate.now().plusDays(5)
+						)
+				);
+
+		plantHireRequestService.reject(rejectedPlantHireRequest.get_id());
+
+		PlantHireRequestDTO acceptedPlantHireRequest =
+
+				plantHireRequestService.addRequest(
+						constructionSite1.getId(),
+						supplier.get_id(),
+						"http://localhost:8090/api/plants/3",
+						BusinessPeriod.of(
+								LocalDate.now().plusDays(10),
+								LocalDate.now().plusDays(12)
+						)
+				);
+
+		plantHireRequestService.accept(acceptedPlantHireRequest.get_id());
+
+		PlantHireRequestDTO extended = plantHireRequestService.extend(
+				acceptedPlantHireRequest.get_id(),
+				new ExtensionRequestDTO(
+						null,
+						acceptedPlantHireRequest.getRentalPeriod().getEndDate().plusDays(3),
+						null
+				)
+		);
 	}
 
 }

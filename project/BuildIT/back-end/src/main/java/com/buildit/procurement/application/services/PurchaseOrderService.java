@@ -27,7 +27,7 @@ public class PurchaseOrderService {
 	PlantHireRequestService plantHireRequestService;
 
 	@Transactional
-	public PurchaseOrder create(String href, Long plantHireRequestId) {
+	public PurchaseOrder create(String href, Long plantHireRequestId, Long externalId) {
 		requireNonNull(href);
 		if (href.length() < 10) throw new IllegalArgumentException("Illegal href: " + href);
 
@@ -37,6 +37,7 @@ public class PurchaseOrderService {
 
 		purchaseOrder.setHref(href);
 		purchaseOrder.setPlantHireRequest(plantHireRequest);
+		purchaseOrder.setExternalId(externalId);
 
 		purchaseOrder = repository.save(purchaseOrder);
 

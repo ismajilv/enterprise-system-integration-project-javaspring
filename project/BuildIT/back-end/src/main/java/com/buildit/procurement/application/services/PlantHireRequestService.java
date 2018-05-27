@@ -3,10 +3,9 @@ package com.buildit.procurement.application.services;
 import com.buildit.common.application.service.BusinessPeriodAssembler;
 import com.buildit.common.domain.model.BusinessPeriod;
 import com.buildit.common.domain.model.Employee;
-import com.buildit.procurement.application.dto.PlantHireRequestDTO;
-import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
-import com.buildit.procurement.application.dto.RentItPurchaseOrderDTO;
+import com.buildit.procurement.application.dto.*;
 import com.buildit.procurement.application.services.assemblers.PlantHireRequestAssembler;
+import com.buildit.procurement.application.services.integration.IntegrationService;
 import com.buildit.procurement.domain.enums.PHRStatus;
 import com.buildit.procurement.domain.enums.RentItPurchaseOrderStatus;
 import com.buildit.procurement.domain.enums.Role;
@@ -17,7 +16,6 @@ import com.buildit.common.application.exceptions.StatusChangeNotAllowedException
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.buildit.procurement.application.dto.ExtensionRequestDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -52,7 +50,7 @@ public class PlantHireRequestService {
 	BusinessPeriodAssembler businessPeriodAssembler;
 
 	@Autowired
-	RentItService rentItService;
+	IntegrationService integrationService;
 
 	@Autowired
 	PurchaseOrderService purchaseOrderService;
@@ -97,7 +95,7 @@ public class PlantHireRequestService {
 			}
 		}
 
-		BigDecimal cost = calculateCost(request.getPlant().getHref(), request.getRentalPeriod());
+		BigDecimal cost = calculateCost(request.getSupplier().getId(), request.getPlant().getHref(), request.getRentalPeriod());
 
 		request.setRentalCost(cost);
 
@@ -126,7 +124,7 @@ public class PlantHireRequestService {
 		plantHireRequest.setSupplier(supplier);
 		plantHireRequest.setPlant(plant);
 
-		plantHireRequest.setRentalCost(calculateCost(plantHref, rentalPeriod));
+		plantHireRequest.setRentalCost(calculateCost(supplierId, plantHref, rentalPeriod));
 
 		Employee requestingSiteEngineer = employeeService.getLoggedInEmployee(Role.SITE_ENGINEER);
 		plantHireRequest.setRequestingSiteEngineer(requestingSiteEngineer);
@@ -136,8 +134,8 @@ public class PlantHireRequestService {
 		return assembler.toResource(plantHireRequest);
 	}
 
-	private BigDecimal calculateCost(String plantHref, BusinessPeriod rentalPeriod) {
-		PlantInventoryEntryDTO plantDTO = plantInventoryEntryService.fetchByHref(plantHref);
+	private BigDecimal calculateCost(Long supplierId, String plantHref, BusinessPeriod rentalPeriod) {
+		PlantInventoryEntryDTO plantDTO = plantInventoryEntryService.fetchByHref(supplierId, plantHref);
 
 		BigDecimal rentalCost = plantDTO.getPricePerDay().multiply(BigDecimal.valueOf(rentalPeriod.getNoOfDays()));
 
@@ -174,17 +172,17 @@ public class PlantHireRequestService {
 		String plantHref = request.getPlant().getHref();
 		requireNonNull(plantHref);
 
-		RentItPurchaseOrderDTO createdPO =
-				rentItService.createPurchaseOrder(plantHref, businessPeriodAssembler.toResource(request.getRentalPeriod()), request.getConstructionSite().getId());
+		RentItPurchaseOrderDTO remotePurchaseOrder =
+				integrationService.createPurchaseOrder(request.getSupplier().getId(), plantHref, businessPeriodAssembler.toResource(request.getRentalPeriod()), request.getConstructionSite().getId());
 
-		String href = createdPO.get_links().get("self").get("href");
+		String href = remotePurchaseOrder.get_links().get("self").get("href");
 
-		PHRStatus status = createdPO.getStatus().convertToPHRStatus();
+		PHRStatus status = remotePurchaseOrder.getStatus().convertToPHRStatus();
 		request.setStatus(status);
 
 		request.setApprovingWorksEngineer(employeeService.getLoggedInEmployee(Role.WORKS_ENGINEER));
 
-		PurchaseOrder purchaseOrder = purchaseOrderService.create(href, id);
+		PurchaseOrder purchaseOrder = purchaseOrderService.create(href, id, remotePurchaseOrder.get_id());
 
 		request.setPurchaseOrder(purchaseOrder);
 
@@ -249,20 +247,30 @@ public class PlantHireRequestService {
 	public PlantHireRequestDTO extend(Long id, ExtensionRequestDTO extensionRequestDTO) {
 		PlantHireRequest request = readModel(id);
 
+		Long purchaseOrderExternalId = request.getPurchaseOrder().getExternalId();
+
+		RentItExtensionRequestDTO remoteResponse =
+				integrationService.sendExtensionRequest(
+						request.getSupplier().getId(),
+						purchaseOrderExternalId,
+						extensionRequestDTO.getNewEndDate()
+				);
+
+		// add extension request to db
 		ExtensionRequest extensionRequest = new ExtensionRequest();
-		extensionRequest.setComment(extensionRequestDTO.getComment());
+		extensionRequest.setRejectionComment(remoteResponse.getRejectionComment());
 		extensionRequest.setNewEndDate(extensionRequestDTO.getNewEndDate());
 		extensionRequest.setPlantHireRequest(request);
-
-        request.setRentalPeriod(BusinessPeriod.of(request.getRentalPeriod().getStartDate(), extensionRequest.getNewEndDate()));
+		request.setExtensionRequest(extensionRequest);
 		extensionRequest = extensionRequestRepository.save(extensionRequest);
 
-		request.setExtensionRequest(extensionRequest);
-		request.setStatus(PHRStatus.PENDING_EXTENSION);
+		if (remoteResponse.getAccepted()) {
+			// rental partner agreed to extend, update plant hire
+			request.setRentalPeriod(BusinessPeriod.of(request.getRentalPeriod().getStartDate(), extensionRequest.getNewEndDate()));
+			request.setRentalCost(remoteResponse.getNewRentalCost());
+		}
 
 		request = repository.save(request);
-
-		//TODO sending extension request to rentit
 
 		return assembler.toResource(request);
 	}

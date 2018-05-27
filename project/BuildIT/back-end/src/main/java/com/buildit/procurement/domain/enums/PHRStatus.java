@@ -14,8 +14,6 @@ public enum PHRStatus {
 
 	PLANT_DELIVERED,
 
-	PENDING_EXTENSION,
-
 	PAID
 
 }

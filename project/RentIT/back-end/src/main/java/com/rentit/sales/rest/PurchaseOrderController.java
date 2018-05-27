@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
@@ -32,7 +33,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
-@CrossOrigin()
+@CrossOrigin
 @RequestMapping("/api/orders")
 public class PurchaseOrderController {
 
@@ -252,7 +253,7 @@ public class PurchaseOrderController {
     public ExtensionRequestDTO requestPurchaseOrderExtension(@RequestBody ExtensionRequestDTO request, @PathVariable("id") Long purchaseOrderId) {
         // incoming ExtensionRequestDTO only contains new end date
         // resolve and return decision with additional data
-        return null;
+        return ExtensionRequestDTO.of(request.getNewEndDate(), Boolean.TRUE, null, new BigDecimal("1234.56"));
     }
 
     @ExceptionHandler(PlantNotFoundException.class)
