@@ -4,6 +4,7 @@ import com.buildit.procurement.domain.enums.InvoiceStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -13,13 +14,12 @@ public class RentItInvoiceDTO {
 
     Long _id;
 
-    InvoiceStatus status;
+    Long purchaseOrderId;
 
     LocalDate dueDate;
 
-    Boolean latePayment;
-
-    RentItPurchaseOrderDTO purchaseOrderDTO;
+    BigDecimal payableAmount;
 
     Map<String, Map<String, String>> _links; // self->href->"http://..."
+
 }
