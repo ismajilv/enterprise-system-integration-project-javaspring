@@ -69,8 +69,8 @@ export default {
           name: query.name,
           startDate: moment(String(query.startDate)).format("YYYY-MM-DD"),
           endDate: moment(String(query.endDate)).format("YYYY-MM-DD")
-        }
-        axios.get("http://localhost:8090/api/plants", { params: params})
+        };
+        axios.get("http://localhost:8080/api/plants", { params: params})
         .then(response => {
           console.log(response);
            this.order.rentalPeriod.startDate = params.startDate;
