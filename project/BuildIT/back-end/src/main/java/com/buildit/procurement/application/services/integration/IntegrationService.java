@@ -64,7 +64,9 @@ public class IntegrationService {
 	}
 
 	public RentItExtensionRequestDTO sendExtensionRequest(Long supplierId, Long purchaseOrderExternalId, LocalDate newEndDate) {
-		return getServiceBySupplierId(supplierId).sendExtensionRequest(supplierId, purchaseOrderExternalId, newEndDate);
+		RentItExtensionRequestDTO ret = getServiceBySupplierId(supplierId).sendExtensionRequest(supplierId, purchaseOrderExternalId, newEndDate);
+		requireNonNull(ret, "Received null from remote for extension request reply");
+		return ret;
 	}
 
 	private RentalPartnerService getServiceBySupplierId(Long supplierId) {

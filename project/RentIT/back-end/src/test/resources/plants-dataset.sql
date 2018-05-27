@@ -33,3 +33,6 @@ insert into plant_inventory_item (id, plant_info_id, serial_number)
     values (2, 2, 'A02');
 insert into plant_inventory_item (id, plant_info_id, serial_number)
     values (3, 3, 'A03');
+
+insert into supplier (id, name)
+    values (10, 'RentIt');
