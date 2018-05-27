@@ -33,21 +33,18 @@ public class InvoiceService {
 
 	@Transactional
 	public InvoiceDTO add(String purchaseOrderHref, LocalDate dueDate) {
-		PurchaseOrder plantHireRequest = purchaseOrderService.readModel(purchaseOrderHref);
+		PurchaseOrder po = purchaseOrderService.readModel(purchaseOrderHref);
 
 		Invoice invoice = new Invoice();
 
-		invoice.setPurchaseOrder(plantHireRequest);
-
+		invoice.setPurchaseOrder(po);
 		invoice.setDueDate(dueDate);
-
 		invoice.setLatePayment(false);
-
 		invoice.setStatus(InvoiceStatus.PENDING);
 
 		invoice = repository.save(invoice);
 
-		return null; // TODO assemblers.toResource(invoice);
+		return assembler.toResource(invoice);
 	}
 
 	@Transactional
