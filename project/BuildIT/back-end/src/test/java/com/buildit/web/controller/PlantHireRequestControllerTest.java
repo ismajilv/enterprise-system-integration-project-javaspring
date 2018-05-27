@@ -2,6 +2,9 @@ package com.buildit.web.controller;
 
 import com.buildit.common.application.dto.BusinessPeriodDTO;
 import com.buildit.procurement.application.dto.PlantHireRequestDTO;
+import com.buildit.procurement.application.dto.PlantInventoryEntryDTO;
+import com.buildit.procurement.application.dto.SupplierDTO;
+import com.buildit.procurement.domain.model.Supplier;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -23,6 +26,7 @@ import com.buildit.procurement.domain.model.PlantHireRequest;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.text.IsEmptyString.isEmptyOrNullString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -77,6 +82,8 @@ public class PlantHireRequestControllerTest {
         MvcResult result = mockMvc.perform(post("/api/requests")
                 .content(mapper.writeValueAsString(dto))
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", isEmptyOrNullString()))
                 .andReturn();
 
         PlantHireRequestDTO plantHireRequestDTO = mapper.readValue(result.getResponse().getContentAsString(), PlantHireRequestDTO.class);
@@ -84,8 +91,8 @@ public class PlantHireRequestControllerTest {
         //Some of the details are checked
         assertThat(plantHireRequestDTO.get_id()).isEqualTo(2);
         assertThat(plantHireRequestDTO.getRentalCost()).isEqualTo("400.00");
-        assertThat(plantHireRequestDTO.getRentalPeriod().getStartDate()).isEqualTo("2018-05-28");
-        assertThat(plantHireRequestDTO.getRentalPeriod().getEndDate()).isEqualTo("2018-05-30");
+        assertThat(plantHireRequestDTO.getRentalPeriod().getStartDate()).isEqualTo(LocalDate.now().plusDays(1));
+        assertThat(plantHireRequestDTO.getRentalPeriod().getEndDate()).isEqualTo(LocalDate.now().plusDays(3));
         assertThat(plantHireRequestDTO.getPlant().getHref()).isEqualTo("http://localhost:8090/api/plants/3");
         assertThat(plantHireRequestDTO.getSupplier().getName()).isEqualTo("LocalRentIt");
     }
@@ -95,6 +102,30 @@ public class PlantHireRequestControllerTest {
     public void approvePlantHireRequestTest_CC2() throws Exception{
         CreatePlantHireRequestDTO dto = createPHRDTO();
 
-        
+        MvcResult result = mockMvc.perform(post("/api/requests")
+                .content(mapper.writeValueAsString(dto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        PlantHireRequestDTO plantHireRequestDTO = mapper.readValue(result.getResponse().getContentAsString(), PlantHireRequestDTO.class);
+
+        //Change details of CreatePlantHireRequestDTO
+        dto.setPlantHref("http://localhost:8090/api/plants/4");
+        dto.setConstructionSiteId(11L);
+        dto.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now().plusDays(4), LocalDate.now().plusDays(6)));
+
+        MvcResult result2 = mockMvc.perform(put("/api/requests/" + plantHireRequestDTO.get_id())
+                .content(mapper.writeValueAsString(dto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Location", isEmptyOrNullString()))
+                .andReturn();
+
+        PlantHireRequestDTO plantHireRequestDTO2 = mapper.readValue(result2.getResponse().getContentAsString(), PlantHireRequestDTO.class);
+
+        assertThat(plantHireRequestDTO2.getPlant().getHref()).isEqualTo("http://localhost:8090/api/plants/4");
+        assertThat(plantHireRequestDTO2.getSite().get_id()).isEqualTo(11L);
+        assertThat(plantHireRequestDTO2.getRentalPeriod().getStartDate()).isEqualTo(LocalDate.now().plusDays(4));
+        assertThat(plantHireRequestDTO2.getRentalPeriod().getEndDate()).isEqualTo(LocalDate.now().plusDays(6));
     }
 }
