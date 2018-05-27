@@ -21,9 +21,9 @@
             <td id = "plantStartDateWE2" class="has-text-center">{{pending.rentalPeriod.startDate}}</td>
             <td id = "plantEndDateWE2" class="has-text-center">{{pending.rentalPeriod.endDate}}</td>
             <td id = "plantPriceWE2" class="has-text-center">{{pending.plant.price}}</td>
-            <td id = "plantStatusWE2" class="has-text-center">{{pending.status}}</td>
-            <td><button v-on:click="accept(index)" :disabled="pending.status != 'PENDING_APPROVAL'" class="button is-success is-outlined">Accept</button> </td>
-            <td><button v-on:click="reject(index)" :disabled="pending.status != 'PENDING_APPROVAL'" class="button is-danger is-outlined">Reject</button> </td>
+            <td id = "plantPriceWE2" class="has-text-center">{{pending.status}}</td>
+            <td><a v-on:click="accept(index)" class="button is-success is-outlined">Accept</a> </td>
+            <td><a v-on:click="reject(index)" class="button is-danger is-outlined">Reject</a> </td>
         </tr>
     </tbody>
 </table>
@@ -51,7 +51,7 @@ export default {
   },
   methods: {
       pendingpurchaseOrder: function(){
-         axios.get("http://localhost:8090/api/orders?status=ALL")
+         axios.get("http://localhost:8090/api/orders")
         .then(response => {
           console.log("Response", response);
           if(response.data != null && response.data._embedded != null){
@@ -92,8 +92,6 @@ export default {
             }
           }
         );
-
-
       },
       reject: function(inputOrder){
            let i= this.allrequest[inputOrder]._id;
@@ -102,7 +100,6 @@ export default {
         axios.post("http://localhost:8090/api/orders/" + params)
         .then(response => {
           this.$snackbar.open("You have rejected this plant request.");
-          this.$set(this.allrequest, inputOrder, response.data);
         });
       },
   }
