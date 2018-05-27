@@ -51,7 +51,7 @@ export default {
   },
   methods: {
       pendingpurchaseOrder: function(){
-         axios.get("http://localhost:8090/api/sales/orders")
+         axios.get("http://localhost:8090/api/orders")
         .then(response => {
           this.allrequest = response.data._embedded.purchaseOrderDTOList;
           console.log("Response", this.allrequest);

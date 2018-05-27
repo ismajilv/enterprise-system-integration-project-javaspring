@@ -46,7 +46,7 @@ public class PurchaseOrderController {
     PurchaseOrderAssembler purchaseOrderAssembler;
 
     @GetMapping()
-    public ResponseEntity<?> getOrders(@RequestParam String status) {
+    public ResponseEntity<?> getOrders(@RequestParam(required = false) String status) {
 
         List<PurchaseOrder> orders;
         if(status != null && status.equalsIgnoreCase("ALL")){
