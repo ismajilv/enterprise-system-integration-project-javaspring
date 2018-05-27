@@ -53,8 +53,10 @@ export default {
       pendingpurchaseOrder: function(){
          axios.get("http://localhost:8090/api/orders")
         .then(response => {
-          this.allrequest = response.data._embedded.purchaseOrderDTOList;
-          console.log("Response", this.allrequest);
+          console.log("Response", response);
+          if(response.data != null && response.data._embedded != null){
+            this.allrequest = response.data._embedded.purchaseOrderDTOList;
+          }
         });
       },
       // orderDetails: function(inputOrder){
