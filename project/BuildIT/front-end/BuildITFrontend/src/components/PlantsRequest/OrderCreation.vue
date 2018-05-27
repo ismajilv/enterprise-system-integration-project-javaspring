@@ -84,10 +84,6 @@ export default {
             this.order.plant = plant;
             this.activeTab = 2;
         },
-     handleStatusOrder: function(plant) {
-            this.order.plant = plant;
-            this.activeTab = 2;
-        },
      handlePOCreation: function() {
          let obj = {
            "constructionSiteId": this.order.siteid,

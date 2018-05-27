@@ -65,7 +65,7 @@ public class SalesRestControllerTests {
     @Test
     @Sql("/plants-dataset.sql")
     public void testFindAvailablePlants() throws Exception {
-        MvcResult result = mockMvc.perform(get("/api/sales/plants?name=Exc&startDate=2017-04-14&endDate=2017-04-25"))
+        MvcResult result = mockMvc.perform(get("/api/plants?name=Exc&startDate=2017-04-14&endDate=2017-04-25"))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Location", isEmptyOrNullString()))
                 .andReturn();
@@ -86,7 +86,7 @@ public class SalesRestControllerTests {
 
         order.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now(), LocalDate.now().plusWeeks(1)));
 
-        MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/sales/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+        MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
 
@@ -126,7 +126,7 @@ public class SalesRestControllerTests {
 
         order.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now(), LocalDate.now().plusWeeks(1)));
 
-        MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/sales/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+        MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
 
@@ -134,7 +134,7 @@ public class SalesRestControllerTests {
 
         Long itemId = findAnyItemForPlant(plantToBeReserved.get_id(), order.getRentalPeriod());
 
-        MvcResult canceledPOAsMvcResult = mockMvc.perform(post("/api/sales/orders/" + createdPO.get_id() + "/cancel").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
+        MvcResult canceledPOAsMvcResult = mockMvc.perform(post("/api/orders/" + createdPO.get_id() + "/cancel").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
@@ -205,7 +205,7 @@ public class SalesRestControllerTests {
 
         order.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now(), LocalDate.now().plusWeeks(1)));
 
-        MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/sales/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+        MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
 
@@ -213,14 +213,14 @@ public class SalesRestControllerTests {
 
         Long itemId = findAnyItemForPlant(plantToBeReserved.get_id(), order.getRentalPeriod());
 
-        MvcResult acceptedPOAsMvcResult = mockMvc.perform(post("/api/sales/orders/" + createdPO.get_id() + "/accept").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
+        MvcResult acceptedPOAsMvcResult = mockMvc.perform(post("/api/orders/" + createdPO.get_id() + "/accept").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
         PurchaseOrderDTO acceptedPO = mapper.readValue(acceptedPOAsMvcResult.getResponse().getContentAsString(), new TypeReference<PurchaseOrderDTO>() {});
 
 
-        MvcResult canceledPOAsMvcResult = mockMvc.perform(post("/api/sales/orders/" + acceptedPO.get_id() + "/cancel").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
+        MvcResult canceledPOAsMvcResult = mockMvc.perform(post("/api/orders/" + acceptedPO.get_id() + "/cancel").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
@@ -246,7 +246,7 @@ public class SalesRestControllerTests {
 
         order.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now(), LocalDate.now().plusWeeks(1)));
 
-        MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/sales/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+        MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
 
@@ -254,7 +254,7 @@ public class SalesRestControllerTests {
 
         Long itemId = findAnyItemForPlant(plantToBeReserved.get_id(), order.getRentalPeriod());
 
-        MvcResult acceptedPOAsMvcResult = mockMvc.perform(post("/api/sales/orders/" + createdPO.get_id() + "/accept").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
+        MvcResult acceptedPOAsMvcResult = mockMvc.perform(post("/api/orders/" + createdPO.get_id() + "/accept").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
@@ -299,7 +299,7 @@ public class SalesRestControllerTests {
         order.setPlant(plantToBeReserved);
         order.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now(), LocalDate.now().plusWeeks(1)));
 
-        mockMvc.perform(post("/api/sales/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andReturn();
     }
@@ -312,25 +312,25 @@ public class SalesRestControllerTests {
 
         order.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now().plusWeeks(1), LocalDate.now().plusDays(3)));
 
-        mockMvc.perform(post("/api/sales/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andReturn();
 
         order.setRentalPeriod(BusinessPeriodDTO.of(null, LocalDate.now().plusWeeks(1)));
 
-        mockMvc.perform(post("/api/sales/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andReturn();
 
         order.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now(), null));
 
-        mockMvc.perform(post("/api/sales/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andReturn();
 
         order.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now().minusWeeks(1), LocalDate.now().minusDays(3)));
 
-        mockMvc.perform(post("/api/sales/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andReturn();
     }
@@ -351,7 +351,7 @@ public class SalesRestControllerTests {
 	}
 
     public PlantInventoryEntryDTO findAnyPlant() throws Exception {
-        MvcResult result = mockMvc.perform(get("/api/sales/plants?name=Exc&startDate=2017-04-14&endDate=2017-04-25")).andReturn();
+        MvcResult result = mockMvc.perform(get("/api/plants?name=Exc&startDate=2017-04-14&endDate=2017-04-25")).andReturn();
 
         List<PlantInventoryEntryDTO> plants = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<PlantInventoryEntryDTO>>() {});
 
