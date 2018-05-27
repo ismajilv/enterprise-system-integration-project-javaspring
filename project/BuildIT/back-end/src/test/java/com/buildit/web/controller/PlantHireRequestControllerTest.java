@@ -128,4 +128,18 @@ public class PlantHireRequestControllerTest {
         assertThat(plantHireRequestDTO2.getRentalPeriod().getStartDate()).isEqualTo(LocalDate.now().plusDays(4));
         assertThat(plantHireRequestDTO2.getRentalPeriod().getEndDate()).isEqualTo(LocalDate.now().plusDays(6));
     }
+
+    @Test
+    @Sql("/plants-dataset.sql")
+    public void cancelPlantHireRequestTest_CC3() throws Exception{
+        CreatePlantHireRequestDTO dto = createPHRDTO();
+
+        MvcResult result = mockMvc.perform(post("/api/requests")
+                .content(mapper.writeValueAsString(dto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        PlantHireRequestDTO dto = mapper.readValue(result.getResponse().getContentAsString(), PlantHireRequestDTO.class);
+        
+    }
 }
