@@ -28,10 +28,21 @@
             </td>
             <td>{{request.status.replace(/_/g, ' ')}}</td>
             <td>
-              <button v-on:click="accept(request._id)" class="button is-success is-outlined">Accept</button>
-              <button v-on:click="reject(request._id)" @click="isActiveReject = !isActiveReject" class="button is-danger is-outlined">Reject</button>
-              <button v-on:click="focus(request._id)" @click="isActiveExtend = !isActiveExtend" class="button is-warning is-outlined">Extend</button>
-              <button v-on:click="cancel(request._id)" class="button is-danger is-outlined">Cancel</button>
+              <button v-on:click="accept(request._id)"
+                      v-if="request.status === 'PENDING_WORKS_ENGINEER_APPROVAL'"
+                      class="button is-success is-outlined">
+                Accept</button>
+              <button v-on:click="reject(request._id)"
+                      v-if="request.status === 'PENDING_WORKS_ENGINEER_APPROVAL'"
+                      @click="isActiveReject = !isActiveReject"
+                      class="button is-danger is-outlined">Reject</button>
+              <button v-on:click="focus(request._id)"
+                      v-if="request.status === 'ACCEPTED_BY_RENTAL_PARTNER'"
+                      @click="isActiveExtend = !isActiveExtend"
+                      class="button is-warning is-outlined">Extend</button>
+              <button v-on:click="cancel(request._id)"
+                      v-if="request.status === 'ACCEPTED_BY_RENTAL_PARTNER'"
+                      class="button is-danger is-outlined">Cancel</button>
             </td>
         </tr>
     </tbody>
