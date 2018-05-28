@@ -24,4 +24,6 @@ interface RentalPartnerService {
 
 	RentItExtensionRequestDTO sendExtensionRequest(Long supplierId, Long purchaseOrderExternalId, LocalDate newEndDate);
 
+	boolean cancelPurchaseOrder(Long supplierId, Long purchaseOrderExternalId);
+
 }

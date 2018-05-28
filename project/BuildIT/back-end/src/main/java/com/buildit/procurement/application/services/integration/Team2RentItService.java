@@ -118,7 +118,47 @@ class Team2RentItService implements RentalPartnerService {
 	}
 
 	public Pair<PurchaseOrderDTO, PHRStatus> createPurchaseOrder(String href, BusinessPeriodDTO businessPeriodDTO, Long constructionSiteId) {
-		throw new NotImplementedException();
+		Team2CreatePORequestDTO createPORequest = new Team2CreatePORequestDTO();
+		Team2CustomerWrapper customer = new Team2CustomerWrapper();
+		ConstructionSiteDTO site = constructionSiteService.readOne(constructionSiteId);
+		customer.setSiteAddress(site.getAddress());
+		customer.setContactPerson("James Dean");
+		customer.setEmail("veskimae.k@gmail.com");
+		customer.setContactPerson("Kristjan Veskimae");
+		createPORequest.setCustomer(customer);
+		Team2IdWrapper plant = new Team2IdWrapper();
+		PlantInventoryEntryDTO plantEntry = fetchPlantEntry(href);
+		plant.set_id(plantEntry.getExternalId());
+		createPORequest.setPlant(plant);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+		headers.set("Authorization", "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwYW5kYSIsImV4cCI6MTUyODA0MDIwMywiaWF0IjoxNTI3NDM1NDAzfQ.TK5D4DY9q5q3Q-5x5exX53jV-jnnlscjcEYovAzFIEbc6eZG8NQbePjWVhU0aKTVySUkYvSomn8jFJWkYqM5qQ");
+
+		HttpEntity<Team2CreatePORequestDTO> entity = new HttpEntity<>(createPORequest, headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		ResponseEntity<Team2PurchaseOrderDTO> response =
+				restTemplate.exchange(
+						getApiUrl() + "/api/sales/orders",
+						HttpMethod.POST,
+						entity,
+						new ParameterizedTypeReference<Team2PurchaseOrderDTO>() {
+						}
+				);
+
+		Team2PurchaseOrderDTO createdRemotePO = response.getBody();
+
+		PHRStatus newPHRStatus = createdRemotePO.getStatus().convertToPHRStatus();
+
+		PurchaseOrderDTO po = new PurchaseOrderDTO();
+
+		po.setExternalId(createdRemotePO.get_id());
+		po.setHref(createdRemotePO.get_links().get("self").get("href"));
+
+		Pair<PurchaseOrderDTO,PHRStatus> ret = Pair.of(po, newPHRStatus);
+
+		return ret;
 	}
 
 	public void sendRemittanceAdvice(Long supplierId, RemittanceAdviceDTO remittanceAdvice) {
@@ -126,6 +166,11 @@ class Team2RentItService implements RentalPartnerService {
 	}
 
 	public RentItExtensionRequestDTO sendExtensionRequest(Long supplierId, Long purchaseOrderExternalId, LocalDate newEndDate) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean cancelPurchaseOrder(Long supplierId, Long purchaseOrderExternalId) {
 		throw new NotImplementedException();
 	}
 

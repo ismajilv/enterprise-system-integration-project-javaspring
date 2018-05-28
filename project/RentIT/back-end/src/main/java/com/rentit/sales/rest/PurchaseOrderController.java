@@ -125,9 +125,10 @@ public class PurchaseOrderController {
 
         final PurchaseOrder po = salesService.cancelPurchaseOrder(poId);
         PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(po);
-        salesService.notifyCustomer(poDTO);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(poDTO.getRequiredLink("self").getHref()));
+
         return new ResponseEntity<>(
                 new Resource<PurchaseOrderDTO>(poDTO),
                 headers,

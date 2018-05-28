@@ -216,7 +216,13 @@ public class PlantHireRequestService {
 			request.setStatus(PHRStatus.CANCELLED);
 		} else if (request.getStatus() == PHRStatus.PENDING_RENTAL_PARTNER_APPROVAL ||
 				request.getStatus() == PHRStatus.ACCEPTED_BY_RENTAL_PARTNER) {
-			// TODO: Send cancellation to RentIt
+			boolean success = integrationService.cancelPurchaseOrder(request.getSupplier().getId(), request.getPurchaseOrder().getExternalId());
+
+			if (success) {
+				request.setStatus(PHRStatus.CANCELLED);
+			} else {
+				throw new StatusChangeNotAllowedException("Cancellation was rejected from partner");
+			}
 		} else {
 			throw new StatusChangeNotAllowedException("Cancellation is rejected");
 		}
@@ -270,4 +276,5 @@ public class PlantHireRequestService {
 
 		return assembler.toResource(request);
 	}
+
 }
