@@ -26,7 +26,7 @@
 
 <script>
 export default {
-  name: "HireRequest",
+  name: "OrderReview",
   props: ["orderStatus"]
 }
 </script>

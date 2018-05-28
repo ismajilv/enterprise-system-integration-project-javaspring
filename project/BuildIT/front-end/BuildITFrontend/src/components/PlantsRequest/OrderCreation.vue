@@ -7,13 +7,11 @@
         <b-tab-item label="Select plant">
           <query-result :plants= "plants" @selectPlant="handlePlantSelection"></query-result>
         </b-tab-item>
-        <b-tab-item label="Plant hire">
-          <order-data :order="order" @submitPurchaseOrder="handlePOCreation">
-          </order-data>
+        <b-tab-item label="Submit order">
+          <submit-order :order="order" @submitOrder="handlePHRsubmission"></submit-order>
         </b-tab-item>
        <b-tab-item label="Review order">
-         <hire-request :orderStatus= "orderStatus">
-         </hire-request>
+         <order-review :orderStatus= "order"></order-review>
         </b-tab-item>
     </b-tabs>
     </div>
@@ -22,8 +20,8 @@
 <script>
 import CatalogQuery from "./CatalogQuery.vue";
 import QueryResult from "./QueryResult.vue";
-import OrderData from "./OrderData.vue";
-import HireRequest from "./HireRequest.vue";
+import SubmitOrder from "./SubmitOrder.vue";
+import OrderReview from "./OrderReview.vue";
 
 import axios from 'axios';
 import moment from "moment";
@@ -33,33 +31,27 @@ export default {
   components: {
     CatalogQuery,
     QueryResult,
-    OrderData,
-    HireRequest
+    SubmitOrder,
+    OrderReview
   },
   data: function(){
     return {
       activeTab: 0,
       plants: [],
-      orderStatus: {
-        plant: {name: null},
+      order: {
+        plant: {
+          name: null,
+          supplier: {name: null},
+          href: null
+        },
         rentalPeriod: {
           startDate: null,
             endDate: null
         },
         rentalCost: null,
-          status: null
-      },
-      order: {
-          id: 1,
-          plant: {},
-          rentalPeriod: {},
-        moreInfo: {
-            name: '',
-            suppliersid: 0 ,
-            siteid: 0,
-            index: 0
-        }
-      },
+        status: null,
+        site: {id: null}
+      }
     }
   },
   methods:{
@@ -83,39 +75,39 @@ export default {
      handlePlantSelection: function(plant) {
             this.order.plant = plant;
             this.activeTab = 2;
-        },
-     handlePOCreation: function() {
-         let obj = {
-           "constructionSiteId": this.order.siteid,
-           "supplierId": this.order.suppliersid,
-          //  "plantHref":  this.order.plant._links.self.href,
+     },
+    handlePHRsubmission: function() {
+         const params = {
+           "constructionSiteId": this.order.site.id,
+           "supplierId": 1,
+           "plantHref": this.order.plant.href,
            "rentalPeriod" : {
              "startDate" : this.order.rentalPeriod.startDate,
              "endDate" : this.order.rentalPeriod.endDate
-            }
+           }
         };
-        console.log("Plant submission before", obj);
-              axios.get("http://localhost:8080/api/requests", obj)
-                .then(response => {
-                    this.$snackbar.open("Plant hire request. Waiting for confirmation from works engineer.");
-                 this.orderStatus = response.data;
-                   console.log("Plant submission after", this.orderStatus);
-                }).catch(error => {
-                    this.$snackbar.open({
-                        type: 'is-danger',
-                        message: "Something went wrong with purchase order submission."
-                    });
-                });
-          this.activeTab = 3;
-    },
-}
+        console.log('[Create PHR obj]', params);
+        axios.post("http://localhost:8080/api/requests", params)
+          .then(response => {
+              this.$snackbar.open("Plant hire request. Waiting for confirmation from works engineer.");
+              this.order = response.data;
+              console.log('[Create PHR]', response);
+          }).catch(error => {
+              console.log('[Create PHR error]', error);
+              this.$snackbar.open({
+                  type: 'is-danger',
+                  message: "Something went wrong with purchase order submission."
+              });
+          });
+        this.activeTab = 3;
+    }
+  }
 }
 </script>
 
-<style>
-.order{
-  width: 80%;
-  margin-left: 7%;
-  margin-bottom: 50%;
-}
+<style>  .order{
+    width: 80%;
+    margin-left: 7%;
+    margin-bottom: 50%;
+  }
 </style>
