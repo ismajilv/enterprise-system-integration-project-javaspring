@@ -27,13 +27,6 @@ import static java.util.Objects.requireNonNull;
 
 @Component
 public class Team1RentItService implements RentalPartnerService {
-    static class Team1PlantCatalogInner2DTO implements Serializable {
-        List<Team1PlantInventoryEntryDTO> plants;
-    }
-
-    static class Team1PlantCatalogInner1DTO implements Serializable {
-        Team1PlantCatalogInner2DTO _embedded;
-    }
 
     @Autowired
     Team1ToBuildItPlantInventoryEntryAssembler team1ToBuildItPlantInventoryEntryAssembler;
@@ -65,26 +58,16 @@ public class Team1RentItService implements RentalPartnerService {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<String> response =
+        ResponseEntity<List<Team1PlantInventoryEntryDTO>> response =
                 restTemplate.exchange(
                         builder.toUriString(),
                         HttpMethod.GET,
                         entity,
-                        new ParameterizedTypeReference<String>() {
+                        new ParameterizedTypeReference<List<Team1PlantInventoryEntryDTO>>() {
                         }
                 );
 
-        String dto = response.getBody();
-
-        Gson gson = new Gson();
-
-        Team1RentItService.Team1PlantCatalogInner1DTO wrappedCatalog = gson.fromJson(dto, Team1RentItService.Team1PlantCatalogInner1DTO.class);
-
-        requireNonNull(wrappedCatalog);
-        requireNonNull(wrappedCatalog._embedded);
-        requireNonNull(wrappedCatalog._embedded.plants);
-
-        List<Team1PlantInventoryEntryDTO> entries = wrappedCatalog._embedded.plants;
+        List<Team1PlantInventoryEntryDTO> entries = response.getBody();
 
         List<PlantInventoryEntryDTO> ret = team1ToBuildItPlantInventoryEntryAssembler.toResources(entries);
 
