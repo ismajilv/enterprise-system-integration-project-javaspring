@@ -44,10 +44,10 @@ public class TestDataProvider {
 	@PostConstruct
 	public void init() {
 		// try integrations right away
-		plantInventoryEntryService.findAvailable("exc",
+		/*plantInventoryEntryService.findAvailable("exc",
 				LocalDate.now().plusDays(1),
 				LocalDate.now().plusDays(5)
-		);
+		);*/
 
 		System.out.println("== Adding test data ==");
 
