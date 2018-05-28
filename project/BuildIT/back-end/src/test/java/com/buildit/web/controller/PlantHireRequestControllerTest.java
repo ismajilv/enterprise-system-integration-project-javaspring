@@ -8,6 +8,7 @@ import com.buildit.procurement.domain.model.Supplier;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.buildit.procurement.domain.enums.PHRStatus;
+import java.awt.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,7 +91,7 @@ public class PlantHireRequestControllerTest {
         PlantHireRequestDTO plantHireRequestDTO = mapper.readValue(result.getResponse().getContentAsString(), PlantHireRequestDTO.class);
 
         //Some of the details are checked
-        assertThat(plantHireRequestDTO.get_id()).isEqualTo(2);
+        assertThat(plantHireRequestDTO.get_id()).isEqualTo(14);
         assertThat(plantHireRequestDTO.getRentalCost()).isEqualTo("400.00");
         assertThat(plantHireRequestDTO.getRentalPeriod().getStartDate()).isEqualTo(LocalDate.now().plusDays(1));
         assertThat(plantHireRequestDTO.getRentalPeriod().getEndDate()).isEqualTo(LocalDate.now().plusDays(3));
@@ -138,6 +139,8 @@ public class PlantHireRequestControllerTest {
         MvcResult result = mockMvc.perform(post("/api/requests")
                 .content(mapper.writeValueAsString(dto))
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", isEmptyOrNullString()))
                 .andReturn();
 
         PlantHireRequestDTO dto2 = mapper.readValue(result.getResponse().getContentAsString(), PlantHireRequestDTO.class);
@@ -145,10 +148,68 @@ public class PlantHireRequestControllerTest {
         MvcResult result2 = mockMvc.perform(post("/api/requests/" + dto2.get_id() + "/cancel")
                 .content(mapper.writeValueAsString(dto2))
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Location", isEmptyOrNullString()))
                 .andReturn();
 
         dto2 = mapper.readValue(result2.getResponse().getContentAsString(), PlantHireRequestDTO.class);
 
         assertThat(dto2.getStatus()).isEqualTo(PHRStatus.CANCELLED);
     }
+
+    @Test
+    @Sql("/plants-dataset.sql")
+    public void checkStatusPlantHireRequestTest_CC4() throws Exception {
+        CreatePlantHireRequestDTO dto = createPHRDTO();
+
+        MvcResult result = mockMvc.perform(post("/api/requests")
+                .content(mapper.writeValueAsString(dto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", isEmptyOrNullString()))
+                .andReturn();
+
+        PlantHireRequestDTO dto2 = mapper.readValue(result.getResponse().getContentAsString(), PlantHireRequestDTO.class);
+
+        assertThat(dto2.getStatus()).isEqualTo(PHRStatus.PENDING_WORKS_ENGINEER_APPROVAL);
+    }
+
+    @Test
+    @Sql("/plants-dataset.sql")
+    public void rejectPlantHireRequestTest_CC5() throws Exception {
+        CreatePlantHireRequestDTO dto = createPHRDTO();
+
+        MvcResult result = mockMvc.perform(post("/api/requests")
+                .content(mapper.writeValueAsString(dto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", isEmptyOrNullString()))
+                .andReturn();
+
+        PlantHireRequestDTO dto2 = mapper.readValue(result.getResponse().getContentAsString(), PlantHireRequestDTO.class);
+
+        MvcResult result2 = mockMvc.perform(post("/api/requests/" + dto2.get_id() + "/reject")
+                .content(mapper.writeValueAsString(dto2))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Location", isEmptyOrNullString()))
+                .andReturn();
+
+        dto2 = mapper.readValue(result2.getResponse().getContentAsString(), PlantHireRequestDTO.class);
+
+        assertThat(dto2.getStatus()).isEqualTo(PHRStatus.REJECTED);
+    }
+
+//    @Test
+//    @Sql("/plants-dataset.sql")
+//    public void readAllPlantHireRequestTest() throws Exception {
+//        MvcResult result =  mockMvc.perform(get("/api/requests"))
+//                .andExpect(status().isOk())
+//                .andExpect(header().string("Location", isEmptyOrNullString()))
+//                .andReturn();
+//
+//        List<PlantHireRequestDTO> dtos = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<PlantHireRequestDTO>>(){});
+//
+//        assertThat(dtos.size()).isEqualTo(2);
+//    }
 }

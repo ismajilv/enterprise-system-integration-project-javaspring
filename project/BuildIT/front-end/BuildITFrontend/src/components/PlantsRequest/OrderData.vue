@@ -134,12 +134,14 @@ export default {
       axios.get("http://localhost:8080/api/suppliers")
       .then(response => {
           this.suppliers = response.data;
+          return suppliers;
       })
     },
     sitelists: function() {
       axios.get("http://localhost:8080/api/sites")
       .then(response => {
           this.sites = response.data;
+          return sites;
       })
     },
     updatenewOrder: function(){
