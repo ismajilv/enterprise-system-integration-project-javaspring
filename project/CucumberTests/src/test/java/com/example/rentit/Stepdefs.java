@@ -14,6 +14,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,7 +42,9 @@ public class Stepdefs {
 
     @Before
     public void setup() {
-        rentItEmployee = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--start-maximized");
+        rentItEmployee = new ChromeDriver(options);
         //siteEngineer = new ChromeDriver();
         //workEngineer = new ChromeDriver();
     }
@@ -126,7 +129,7 @@ public class Stepdefs {
 
     @Then("^(\\d+) purchase orders are shown$")
     public void purchase_orders_are_shown(int arg1) throws Throwable {
-        Thread.sleep(3*waitForMs);
+        Thread.sleep(waitForMs);
         List<WebElement> rows = rentItEmployee.findElements(By.className("table-row-rentit"));
         assertThat(rows).hasSize(arg1);
     }
