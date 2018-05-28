@@ -37,7 +37,7 @@
                       @click="isActiveReject = !isActiveReject"
                       class="button is-danger is-outlined">Reject</button>
               <button v-on:click="focus(request._id)"
-                      v-if="request.status === 'ACCEPTED_BY_RENTAL_PARTNER' || request.status === 'PLANT_DELIVERED'"
+                      v-if="request.status === 'PLANT_DELIVERED' && !request.extensionRequest"
                       @click="isActiveExtend = !isActiveExtend"
                       class="button is-warning is-outlined">Extend</button>
               <button v-on:click="cancel(request._id)"
@@ -53,14 +53,14 @@
     </b-modal>
 
     <b-modal class="css-modal" title="Extension Request" :active.sync="isActiveExtend">
-      <div>
+      <form class="form_style">
         Enter End date:
         <input type="date"
                id="end-date"
                name="startdate"
                v-model="request.newEndDate"
                icon="calendar-today">
-      </div>
+      </form>
       <br>
       <textarea name="comment" form="usrform" v-model="request.comments" placeholder="Enter comment here..."></textarea>
       <br>
@@ -98,7 +98,7 @@ export default {
          axios.get("http://localhost:8080/api/requests")
         .then(response => {
           console.log('[Response]', response);
-          let requests = response.data._embedded.plantHireRequestDTOList;
+          let requests = response.data._embedded ? response.data._embedded.plantHireRequestDTOList : [];
           if (this.checkbox){
             requests = requests.filter(req => req.status === 'PENDING_WORKS_ENGINEER_APPROVAL');
           }
@@ -197,6 +197,9 @@ export default {
   textarea {
     width: 100%;
     height: 60px;
+  }
+  .modal-background {
+    background: #9e9e9e;
   }
 </style>
 

@@ -72,15 +72,15 @@ public class PurchaseOrder {
     }
 
     public void acceptExtension(PlantReservation reservation) {
-        if(this.reservation == null){
-            registerFirstAllocation(reservation);
-        } else {
-            // setStatus(POStatus.ACCEPTED);
+        //if(this.reservation == null){
+        //    registerFirstAllocation(reservation);
+        //} else {
+          //  setStatus(POStatus.ACCEPTED);
             this.rentalPeriod = BusinessPeriod.of(rentalPeriod.getStartDate(), reservation.getSchedule().getEndDate());
-            this.reservation.setSchedule(this.rentalPeriod);
+            //this.reservation.setSchedule(this.rentalPeriod);
             Long nrOfDaysExtendedFor = ChronoUnit.DAYS.between(reservation.getSchedule().getStartDate(), reservation.getSchedule().getEndDate());
             total = total.add(new BigDecimal(nrOfDaysExtendedFor));
-        }
+        // }
     }
 
     public void registerFirstAllocation(PlantReservation reservation) {
