@@ -97,27 +97,27 @@ export default {
     props: ["order"],
     data: function(){
         return {
-        plants: [],
-        sites: [],
-        suppliers: [],
-        isupdateModalActive: false,
-        updatedOrder:{
-           id: 1,
-          plant: {},
-          rentalPeriod: {},
-        moreInfo: {
-            name: '',
-            suppliersid: 0 ,
-            siteid: 0,
-            index: 0
-        },
-         query: {
-         name: "",
-         startDate: undefined,
-         endDate: undefined
-        }
-        }
-    }
+          plants: [],
+          sites: [],
+          suppliers: [],
+          isupdateModalActive: false,
+          updatedOrder:{
+             id: 1,
+            plant: {},
+            rentalPeriod: {},
+          moreInfo: {
+              name: '',
+              suppliersid: 0 ,
+              siteid: 0,
+              index: 0
+          },
+           query: {
+             name: "",
+             startDate: undefined,
+             endDate: undefined
+            }
+          }
+      }
   },
   mounted: function(){
     this.supplierlists();
