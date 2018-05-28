@@ -4,11 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rentit.RentitApplication;
 import com.rentit.common.application.dto.BusinessPeriodDTO;
+import com.rentit.common.domain.model.BusinessPeriod;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.application.dto.PlantInventoryItemDTO;
 import com.rentit.inventory.application.dto.PlantReservationDTO;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
+import com.rentit.sales.domain.model.PurchaseOrder;
+import com.rentit.sales.domain.repository.PurchaseOrderRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +27,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -57,6 +61,12 @@ public class SalesRestControllerTests {
     @Autowired
     ObjectMapper mapper;
 
+    @Autowired
+    PlantInventoryEntryRepository plantInventoryEntryRepository;
+
+    @Autowired
+    PurchaseOrderRepository purchaseOrderRepository;
+
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
@@ -64,7 +74,7 @@ public class SalesRestControllerTests {
 
     @Test
     @Sql("/plants-dataset.sql")
-    public void testFindAvailablePlants() throws Exception {
+    public void PS1_testFindAvailablePlants() throws Exception {
         MvcResult result = mockMvc.perform(get("/api/plants?name=Exc&startDate=2017-04-14&endDate=2017-04-25"))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Location", isEmptyOrNullString()))
@@ -72,7 +82,13 @@ public class SalesRestControllerTests {
 
         List<PlantInventoryEntryDTO> plants = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<PlantInventoryEntryDTO>>() {});
 
-        assertThat(plants.size()).isEqualTo(3);
+        assertThat(plants.size()).isEqualTo(6);
+        assertThat(plants.get(0).getPrice()).isEqualTo("200.00");
+        assertThat(plants.get(1).getPrice()).isEqualTo("500.00");
+        assertThat(plants.get(2).getPrice()).isEqualTo("400.00");
+        assertThat(plants.get(3).getPrice()).isEqualTo("150.00");
+        assertThat(plants.get(4).getPrice()).isEqualTo("200.00");
+        assertThat(plants.get(5).getPrice()).isEqualTo("250.00");
     }
 
     @Test
@@ -115,9 +131,14 @@ public class SalesRestControllerTests {
         assertThat(createdPO.getRentalPeriod().getStartDate().isAfter(LocalDate.now().minusDays(1)));
     }
 
+    public PurchaseOrder createPO(Long id){
+        PurchaseOrder preparedForSavePO = PurchaseOrder.of(plantInventoryEntryRepository.findOneById(id), BusinessPeriod.of(LocalDate.now(), LocalDate.now().plusWeeks(1)), "ji");
+        return purchaseOrderRepository.save(preparedForSavePO);
+    }
+
     @Test
     @Sql("/plants-dataset.sql")
-    public void testCancelPODefaultScenario() throws Exception {
+    public void PS8_testCancelPODefaultScenario() throws Exception {
         PurchaseOrderDTO order = new PurchaseOrderDTO();
 
         PlantInventoryEntryDTO plantToBeReserved = findAnyPlant();
@@ -126,15 +147,16 @@ public class SalesRestControllerTests {
 
         order.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now(), LocalDate.now().plusWeeks(1)));
 
-        MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+        PurchaseOrder saved = createPO(plantToBeReserved.get_id());
+      /*  MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
 
         PurchaseOrderDTO createdPO = mapper.readValue(createdPOAsMvcResult.getResponse().getContentAsString(), new TypeReference<PurchaseOrderDTO>() {});
-
+*/
         Long itemId = findAnyItemForPlant(plantToBeReserved.get_id(), order.getRentalPeriod());
 
-        MvcResult canceledPOAsMvcResult = mockMvc.perform(post("/api/orders/" + createdPO.get_id() + "/cancel").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
+        MvcResult canceledPOAsMvcResult = mockMvc.perform(post("/api/orders/" + saved.getId() + "/cancel").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
@@ -142,7 +164,7 @@ public class SalesRestControllerTests {
 
         assertNotNull(canceledPO);
         assertNotNull(canceledPO.get_id());
-        assertEquals(createdPO.get_id(), canceledPO.get_id());
+        assertEquals(saved.getId(), canceledPO.get_id());
         assertNotNull(canceledPO.getStatus());
         assertEquals(CANCELLED, canceledPO.getStatus());
     }
@@ -196,7 +218,7 @@ public class SalesRestControllerTests {
 */
     @Test
     @Sql("/plants-dataset.sql")
-    public void testCancelAcceptedPOScenario() throws Exception {
+    public void PS8_testCancelAcceptedPOScenario() throws Exception {
         PurchaseOrderDTO order = new PurchaseOrderDTO();
 
         PlantInventoryEntryDTO plantToBeReserved = findAnyPlant();
@@ -205,15 +227,16 @@ public class SalesRestControllerTests {
 
         order.setRentalPeriod(BusinessPeriodDTO.of(LocalDate.now(), LocalDate.now().plusWeeks(1)));
 
-        MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
+        PurchaseOrder saved = createPO(plantToBeReserved.get_id());
+       /* MvcResult createdPOAsMvcResult = mockMvc.perform(post("/api/orders").content(mapper.writeValueAsString(order)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
 
         PurchaseOrderDTO createdPO = mapper.readValue(createdPOAsMvcResult.getResponse().getContentAsString(), new TypeReference<PurchaseOrderDTO>() {});
-
+*/
         Long itemId = findAnyItemForPlant(plantToBeReserved.get_id(), order.getRentalPeriod());
 
-        MvcResult acceptedPOAsMvcResult = mockMvc.perform(post("/api/orders/" + createdPO.get_id() + "/accept").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
+        MvcResult acceptedPOAsMvcResult = mockMvc.perform(post("/api/orders/" + saved.getId() + "/accept").content(mapper.writeValueAsString(itemId)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
@@ -228,7 +251,7 @@ public class SalesRestControllerTests {
 
         assertNotNull(canceledPO);
         assertNotNull(canceledPO.get_id());
-        assertEquals(createdPO.get_id(), canceledPO.get_id());
+        assertEquals(saved.getId(), canceledPO.get_id());
         assertNotNull(canceledPO.getStatus());
         assertEquals(CANCELLED, canceledPO.getStatus());
 
