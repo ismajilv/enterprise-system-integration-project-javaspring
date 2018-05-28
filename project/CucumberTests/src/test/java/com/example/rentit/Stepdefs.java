@@ -14,6 +14,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,7 +42,9 @@ public class Stepdefs {
 
     @Before
     public void setup() {
-        rentItEmployee = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--start-maximized");
+        rentItEmployee = new ChromeDriver(options);
         //siteEngineer = new ChromeDriver();
         //workEngineer = new ChromeDriver();
     }
@@ -54,15 +57,20 @@ public class Stepdefs {
        //workEngineer.close();
     }
 
+    @Given("^the test data has been set up$")
+    public void the_test_data_has_been_set_up() throws Throwable {
+        //TODO restore test data every time- currently need to restart rentit and buildit
+    }
+
     @Given("^the following plant catalog$")
     public void the_following_plant_catalog(DataTable table) throws Exception {
-        List<PlantInventoryEntry> entries = table.asMaps(String.class, String.class)
+        /*List<PlantInventoryEntry> entries = table.asMaps(String.class, String.class)
                 .stream()
                 .map(row -> PlantInventoryEntry.of(row.get("id"), row.get("name"), row.get("description"), row.get("price")))
                 .collect(Collectors.toList());
 
         PlantInventoryEntry[] result = restTemplate.postForObject(host+rentItBEPort+"/api/entries", entries, PlantInventoryEntry[].class);
-        assertThat(result).hasSize(11);
+        assertThat(result).hasSize(11);*/
     }
 
     /*
@@ -79,15 +87,15 @@ public class Stepdefs {
 
     @Given("^plant hire requests have been set up$")
     public void plant_hire_requests_have_been_set_up() throws Throwable {    // Write code here that turns the phrase above into concrete actions
-        PlantHireRequest[] result = restTemplate.postForObject(host+buildItBEPort+"/api/phr", 8, PlantHireRequest[].class);
-        assertThat(result).hasSize(11);
+        //PlantHireRequest[] result = restTemplate.postForObject(host+buildItBEPort+"/api/phr", 8, PlantHireRequest[].class);
+        //assertThat(result).hasSize(11);
     }
 
     @Given("^purchase orders have been set up$")
     public void purchase_orders_have_been_set_up() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        PurchaseOrder[] result = restTemplate.postForObject(host+rentItBEPort+"/api/pos",8, PurchaseOrder[].class);
-        assertThat(result).hasSize(11);
+       // PurchaseOrder[] result = restTemplate.postForObject(host+rentItBEPort+"/api/pos",8, PurchaseOrder[].class);
+       // assertThat(result).hasSize(11);
     }
 
     @Given("^the following inventory$")
@@ -121,21 +129,26 @@ public class Stepdefs {
 
     @Then("^(\\d+) purchase orders are shown$")
     public void purchase_orders_are_shown(int arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        Thread.sleep(waitForMs);
+        List<WebElement> rows = rentItEmployee.findElements(By.className("table-row-rentit"));
+        assertThat(rows).hasSize(arg1);
     }
 
-    @Then("^(\\d+) of them has status \"([^\"]*)\"$")
-    public void of_them_has_status(int arg1, String arg2) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @Then("^po with for \"([^\"]*)\" of them has status \"([^\"]*)\"$")
+    public void po_with_for_of_them_has_status(String arg1, String arg2) throws Throwable {
+        Thread.sleep(waitForMs);
+        WebElement row = rentItEmployee.findElement(By.xpath(String.format("//tr/td[contains(text(), '%s')]", arg1)));
+        WebElement parentElement = row.findElement(By.xpath("./.."));
+        assertThat(arg2).isEqualToIgnoringWhitespace(parentElement.findElement(By.id("poStatus")).getText());
     }
 
-    @When("^employee dispatches \"([^\"]*)\" purchase order with id (\\d+)$")
-    public void employee_dispatches_purchase_order_with_id(String arg1, int arg2) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @When("^employee clicks \"([^\"]*)\" button PO with name \"([^\"]*)\"$")
+    public void employee_clicks_button_PO_with_name(String arg1, String arg2) throws Throwable {
+        WebElement row = rentItEmployee.findElement(By.xpath(String.format("//tr/td[contains(text(), '%s')]", arg2)));
+        WebElement parentElement = row.findElement(By.xpath("./.."));
+        parentElement.findElement(By.id(arg1)).click();
     }
+
 
     @Then("^the status of po with id (\\d+) changes to \"([^\"]*)\"$")
     public void the_status_of_po_with_id_changes_to(int arg1, String arg2) throws Throwable {
@@ -182,23 +195,23 @@ public class Stepdefs {
 
     @Given("^the following suppliers$")
     public void the_following_suppliers(DataTable table) throws Throwable {
-        List<Supplier> suppliers = table.asMaps(String.class, String.class)
+/*        List<Supplier> suppliers = table.asMaps(String.class, String.class)
                 .stream()
                 .map(row -> Supplier.of(row.get("id"), row.get("name")))
                 .collect(Collectors.toList());
         Supplier[] result = restTemplate.postForObject(host+buildItBEPort+"/api/suppliers", suppliers, Supplier[].class);
         assertThat(result).hasSize(2);
-    }
+  */  }
 
     @Given("^the following construction sites$")
     public void the_following_construction_sites(DataTable table) throws Throwable {
-        List<ConstructionSite> constructionSites = table.asMaps(String.class, String.class)
+    /*    List<ConstructionSite> constructionSites = table.asMaps(String.class, String.class)
                 .stream()
                 .map(row -> ConstructionSite.of(row.get("id"), row.get("address")))
                 .collect(Collectors.toList());
         ConstructionSite[] result = restTemplate.postForObject(host+buildItBEPort+"/api/constructionsites", constructionSites, ConstructionSite[].class);
         assertThat(result).hasSize(3);
-    }
+    */}
 
     @Given("^site engineer is in the BuildIt webpage \"([^\"]*)\" tab$")
     public void site_engineer_is_in_the_BuildIt_webpage_tab(String arg1) throws Throwable {
