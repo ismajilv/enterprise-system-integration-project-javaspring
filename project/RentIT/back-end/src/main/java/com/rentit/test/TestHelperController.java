@@ -2,8 +2,11 @@ package com.rentit.test;
 
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.inventory.domain.model.PlantInventoryItem;
+import com.rentit.inventory.domain.model.PlantReservation;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import com.rentit.inventory.domain.repository.PlantInventoryItemRepository;
+import com.rentit.inventory.domain.repository.PlantReservationRepository;
+import com.rentit.invoicing.domain.repository.InvoiceRepository;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.exceptions.POStatusException;
 import com.rentit.sales.application.services.PurchaseOrderAssembler;
@@ -30,6 +33,11 @@ public class TestHelperController {
     PurchaseOrderAssembler purchaseOrderAssembler;
 
     @Autowired
+    PlantReservationRepository plantReservationRepository;
+    @Autowired
+    InvoiceRepository invoiceRepository;
+
+    @Autowired
     void setup(PlantInventoryEntryRepository entryRepository,
                PlantInventoryItemRepository itemRepository,
                PurchaseOrderRepository purchaseOrderRepository,
@@ -44,6 +52,8 @@ public class TestHelperController {
 
     @PostMapping("/api/entries")
     public List<PlantInventoryEntry> setupInventory(@RequestBody List<PlantInventoryEntry> entries) {
+        invoiceRepository.deleteAll();
+        plantReservationRepository.deleteAll();
         purchaseOrderRepository.deleteAll();
         plantInventoryItemRepository.deleteAll();
         plantInventoryEntryRepository.deleteAll();
