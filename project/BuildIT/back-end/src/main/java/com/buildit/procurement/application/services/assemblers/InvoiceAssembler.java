@@ -19,6 +19,7 @@ public class InvoiceAssembler extends ResourceAssemblerSupport<Invoice, InvoiceD
         dto.setDueDate(invoice.getDueDate());
         dto.setLatePayment(invoice.getLatePayment());
         dto.setStatus(invoice.getStatus());
+        dto.setPayableAmount(invoice.getPayableAmount());
 
         PurchaseOrderAssembler poAssembler = new PurchaseOrderAssembler();
         dto.setPurchaseOrder(poAssembler.toResource(invoice.getPurchaseOrder()));

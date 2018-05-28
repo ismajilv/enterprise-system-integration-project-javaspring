@@ -75,6 +75,9 @@ public class IntegrationService {
 		requireNonNull(ret, "Received null from remote for extension request reply");
 		return ret;
 	}
+	public boolean cancelPurchaseOrder(Long supplierId, Long purchaseOrderExternalId) {
+		return getServiceBySupplierId(supplierId).cancelPurchaseOrder(supplierId, purchaseOrderExternalId);
+	}
 
 	private RentalPartnerService getServiceBySupplierId(Long supplierId) {
 		requireNonNull(supplierId);

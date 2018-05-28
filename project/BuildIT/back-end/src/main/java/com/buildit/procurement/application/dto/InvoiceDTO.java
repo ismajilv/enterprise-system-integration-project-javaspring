@@ -4,6 +4,7 @@ import com.buildit.procurement.domain.enums.InvoiceStatus;
 import lombok.Data;
 import org.springframework.hateoas.ResourceSupport;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -16,6 +17,8 @@ public class InvoiceDTO extends ResourceSupport {
 	LocalDate dueDate;
 
 	Boolean latePayment;
+
+	BigDecimal payableAmount;
 
 	PurchaseOrderDTO purchaseOrder;
 

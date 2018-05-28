@@ -138,7 +138,7 @@ class LocalRentItService implements RentalPartnerService {
 	}
 
 	public void sendRemittanceAdvice(Long supplierId, RemittanceAdviceDTO remittanceAdvice) {
-		throw new NotImplementedException();
+//		throw new NotImplementedException();
 	}
 
 	public RentItExtensionRequestDTO sendExtensionRequest(Long supplierId, Long purchaseOrderExternalId, LocalDate newEndDate) {
@@ -168,6 +168,36 @@ class LocalRentItService implements RentalPartnerService {
 		RentItExtensionRequestDTO rentItExtensionRequestDTO = response.getBody();
 
 		return rentItExtensionRequestDTO;
+	}
+
+	@Override
+	public boolean cancelPurchaseOrder(Long supplierId, Long purchaseOrderExternalId) {
+		HttpHeaders headers = new HttpHeaders();
+
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+		HttpEntity<Object> entity = new HttpEntity<>(headers);
+
+		RestTemplate restTemplate = new RestTemplate();
+
+		String url = getApiUrl() + "/api/orders/" + purchaseOrderExternalId + "/cancel";
+
+		try {
+			ResponseEntity<Object> response =
+					restTemplate.exchange(
+							url,
+							HttpMethod.POST,
+							entity,
+							new ParameterizedTypeReference<Object>() {
+							}
+					);
+			if (!response.getStatusCode().is2xxSuccessful()) {
+				return false;
+			}
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 }
