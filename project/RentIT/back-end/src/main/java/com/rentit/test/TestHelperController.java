@@ -1,120 +1,96 @@
 package com.rentit.test;
 
+import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
+import com.rentit.inventory.application.services.InventoryService;
+import com.rentit.inventory.application.services.PlantInventoryEntryAssembler;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.inventory.domain.model.PlantInventoryItem;
-import com.rentit.inventory.domain.model.PlantReservation;
+import com.rentit.inventory.domain.repository.InventoryRepository;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import com.rentit.inventory.domain.repository.PlantInventoryItemRepository;
 import com.rentit.inventory.domain.repository.PlantReservationRepository;
+import com.rentit.invoicing.application.dto.InvoiceDTO;
 import com.rentit.invoicing.domain.repository.InvoiceRepository;
-import com.rentit.sales.application.dto.PurchaseOrderDTO;
-import com.rentit.sales.application.exceptions.POStatusException;
-import com.rentit.sales.application.services.PurchaseOrderAssembler;
-import com.rentit.sales.application.services.SalesService;
-import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class TestHelperController {
-    PlantInventoryEntryRepository plantInventoryEntryRepository;
-    PlantInventoryItemRepository plantInventoryItemRepository;
-    PurchaseOrderRepository purchaseOrderRepository;
-    SalesService salesService;
-    PurchaseOrderAssembler purchaseOrderAssembler;
 
     @Autowired
     PlantReservationRepository plantReservationRepository;
+
+    @Autowired
+    PlantInventoryEntryRepository plantInventoryEntryRepository;
+
+    @Autowired
+    PlantInventoryItemRepository plantInventoryItemRepository;
+
+   // @Autowired
+    //InventoryRepository inventoryRepository;
+
+    @Autowired
+    PurchaseOrderRepository purchaseOrderRepository;
+
     @Autowired
     InvoiceRepository invoiceRepository;
 
     @Autowired
-    void setup(PlantInventoryEntryRepository entryRepository,
-               PlantInventoryItemRepository itemRepository,
-               PurchaseOrderRepository purchaseOrderRepository,
-               SalesService salesService,
-    PurchaseOrderAssembler purchaseOrderAssembler) {
-        this.plantInventoryEntryRepository = entryRepository;
-        this.plantInventoryItemRepository = itemRepository;
-        this.purchaseOrderRepository = purchaseOrderRepository;
-        this.salesService = salesService;
-        this.purchaseOrderAssembler = purchaseOrderAssembler;
-    }
+    InventoryRepository inventoryRepository;
 
-    @PostMapping("/api/entries")
-    public List<PlantInventoryEntry> setupInventory(@RequestBody List<PlantInventoryEntry> entries) {
+    @Autowired
+    TestDataProvider testDataProvider;
+
+    @Autowired
+    EntityManager entityManager;
+
+    @Autowired
+    InventoryService inventoryService;
+
+    @Autowired
+    PlantInventoryEntryAssembler plantInventoryEntryAssembler;
+
+    @PostMapping("/test/initData")
+    @Transactional
+    public List<PlantInventoryEntry> initTestDataForCucumber(){
+
+        System.out.println("INIT TEST DATA");
         invoiceRepository.deleteAll();
         plantReservationRepository.deleteAll();
         purchaseOrderRepository.deleteAll();
-        plantInventoryItemRepository.deleteAll();
-        plantInventoryEntryRepository.deleteAll();
-//        return plantInventoryEntryRepository.saveAll(entries);
 
-        entries = plantInventoryEntryRepository.saveAll(entries);
+        List<PlantInventoryEntry> entries = inventoryRepository.findAvailablePlants("excavator type 2", LocalDate.now().plusDays(1), LocalDate.now().plusDays(5));
+        List<PlantInventoryItem> items = inventoryRepository.findAvailableItems(entries.get(0), LocalDate.now().plusDays(1), LocalDate.now().plusDays(5));
+        HttpHeaders headers = new HttpHeaders();
 
-        List<PlantInventoryItem> items = entries.stream()
-                .map(entry -> PlantInventoryItem.of(null, "sn-" + entry.getId(), entry))
-                .collect(Collectors.toList());
+        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        PlantInventoryEntryDTO plantInventoryEntryDTO = new PlantInventoryEntryDTO();
+        HttpEntity<PlantInventoryEntryDTO> entity = new HttpEntity<>(plantInventoryEntryDTO, headers);
 
-        plantInventoryItemRepository.saveAll(items);
+        RestTemplate restTemplate = new RestTemplate();
 
-        return entries;
+        restTemplate.exchange("http://localhost:8080/test/initData?accepted=3&rejected=6",
+                HttpMethod.POST,
+                entity,
+                new ParameterizedTypeReference<String>() {}
+        );
+        return null;
     }
 
-    @PostMapping("/api/pos")
-    public List<PurchaseOrder> setupPOs() {
-        List<PurchaseOrder> pos = purchaseOrderRepository.findAll();
-        List<PlantInventoryItem> pii = plantInventoryItemRepository.findAll();
 
-        for(int i= 0; i < pos.size(); i++){
-            if(i==0){
-                try {
-                    final PurchaseOrder cancelPurchaseOrder = salesService.cancelPurchaseOrder(pos.get(i).getId());
-                    PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(cancelPurchaseOrder);
-                    salesService.notifyCustomer(poDTO);
-                } catch (POStatusException e) {
-                    e.printStackTrace();
-                }
-            } else if (i>1){
-                PurchaseOrder acceptedPO = salesService.acceptPurchaseOrder(pos.get(i).getId(), pii.get(i).getId());
-                PurchaseOrderDTO poDTO = purchaseOrderAssembler.toResource(acceptedPO);
-                salesService.notifyCustomer(poDTO);
-                if(i==3){
-                    PurchaseOrder rejectedByCustomer = salesService.customerRejectPurchaseOrder(pos.get(i).getId());
-                    PurchaseOrderDTO rejDTO = purchaseOrderAssembler.toResource(rejectedByCustomer);
-                    salesService.notifyCustomer(rejDTO);
-                }
-                if(i>3){
-                    PurchaseOrder deliverPurchaseOrder = salesService.deliverPurchaseOrder(pos.get(i).getId());
-                    PurchaseOrderDTO deliveredDTO = purchaseOrderAssembler.toResource(deliverPurchaseOrder);
-                    salesService.notifyCustomer(deliveredDTO);
-                    if(i>4){
-                        PurchaseOrder returnedPO = salesService.markAsReturned(pos.get(i).getId());
-                        PurchaseOrderDTO returnedDTO = purchaseOrderAssembler.toResource(returnedPO);
-                        salesService.notifyCustomer(returnedDTO);
-                    }
-                }
-            }
-        }
-        return purchaseOrderRepository.findAll();
-    }
-
-    @PostMapping("/api/items")
-    public List<PlantInventoryItem> setupItems(@RequestBody List<PlantInventoryItem> items) {
-        return plantInventoryItemRepository.saveAll(items);
-    }
-
-    @GetMapping("/api/po/count")
-    public Integer countPurchaseOrders(){
-        return purchaseOrderRepository.findAll().size();
-    }
 }

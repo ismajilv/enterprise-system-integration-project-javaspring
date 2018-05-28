@@ -17,7 +17,7 @@ public class PurchaseOrder {
 	Long externalId;
 
 	@JoinColumn(name = "plant_hire_request_id", nullable = false)
-	@OneToOne(optional = false)
+	@OneToOne(optional = false, cascade = CascadeType.ALL)
 	PlantHireRequest plantHireRequest;
 
 	@JoinColumn(name = "invoice_id")

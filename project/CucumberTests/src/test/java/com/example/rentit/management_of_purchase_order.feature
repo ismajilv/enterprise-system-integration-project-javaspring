@@ -25,5 +25,5 @@ Feature: Management of Purchase Order
     When employee clicks "dispatch" button PO with name "excavator type 2"
     Then po with for "excavator type 2" of them has status "PLANT_DISPATCHED"
     When employee clicks "reject" button PO with name "excavator type 2"
-    Then po with for "excavator type 2" of them has status "REJECTED_BY_CLIENT"
+    Then po with for "excavator type 2" of them has status "REJECTED_BY_CUSTOMER"
 
