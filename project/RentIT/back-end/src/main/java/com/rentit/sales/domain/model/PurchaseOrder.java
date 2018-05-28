@@ -75,7 +75,7 @@ public class PurchaseOrder {
         if(this.reservation == null){
             registerFirstAllocation(reservation);
         } else {
-            setStatus(POStatus.ACCEPTED);
+            // setStatus(POStatus.ACCEPTED);
             this.rentalPeriod = BusinessPeriod.of(rentalPeriod.getStartDate(), reservation.getSchedule().getEndDate());
             this.reservation.setSchedule(this.rentalPeriod);
             Long nrOfDaysExtendedFor = ChronoUnit.DAYS.between(reservation.getSchedule().getStartDate(), reservation.getSchedule().getEndDate());

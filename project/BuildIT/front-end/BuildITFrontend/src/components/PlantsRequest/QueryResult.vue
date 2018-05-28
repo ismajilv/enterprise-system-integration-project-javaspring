@@ -3,6 +3,7 @@
     <thead>
         <tr>
             <th class="has-text-center">Name</th>
+            <th class="has-text-center">Supplier</th>
             <th class="has-text-center">Price</th>
             <th class="has-text-center">Action</th>
         </tr>
@@ -10,6 +11,7 @@
     <tbody>
         <tr v-for="plant in plants" :key="plant.id" class="table-row">
             <td class="has-text-center">{{ plant.name }}</td>
+            <td class="has-text-center">{{plant.supplier.name}}</td>
             <td class="has-text-center">{{ plant.pricePerDay }}</td>
             <td class="has-text-center">
                 <button class="button is-link is-small is-outlined"

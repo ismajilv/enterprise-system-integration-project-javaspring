@@ -37,7 +37,7 @@
                       @click="isActiveReject = !isActiveReject"
                       class="button is-danger is-outlined">Reject</button>
               <button v-on:click="focus(request._id)"
-                      v-if="request.status === 'ACCEPTED_BY_RENTAL_PARTNER'"
+                      v-if="request.status === 'ACCEPTED_BY_RENTAL_PARTNER' || request.status === 'PLANT_DELIVERED'"
                       @click="isActiveExtend = !isActiveExtend"
                       class="button is-warning is-outlined">Extend</button>
               <button v-on:click="cancel(request._id)"
@@ -47,12 +47,12 @@
         </tr>
     </tbody>
 </table>
-    <b-modal title="You have rejected this order, Why?" :active.sync="isActiveReject">
+    <b-modal class="css-modal" title="You have rejected this order, Why?" :active.sync="isActiveReject">
        <textarea name="comment" form="usrform" v-model="request.comments" placeholder="Enter comment here..."></textarea>
        <button v-on:click="comment" class="button is-success"> Comment </button>
     </b-modal>
 
-    <b-modal title="Extension Request" :active.sync="isActiveExtend">
+    <b-modal class="css-modal" title="Extension Request" :active.sync="isActiveExtend">
       <div>
         Enter End date:
         <input type="date"

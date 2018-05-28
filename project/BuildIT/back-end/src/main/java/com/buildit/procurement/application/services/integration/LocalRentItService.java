@@ -138,7 +138,7 @@ class LocalRentItService implements RentalPartnerService {
 	}
 
 	public void sendRemittanceAdvice(Long supplierId, RemittanceAdviceDTO remittanceAdvice) {
-		throw new NotImplementedException();
+//		throw new NotImplementedException();
 	}
 
 	public RentItExtensionRequestDTO sendExtensionRequest(Long supplierId, Long purchaseOrderExternalId, LocalDate newEndDate) {
