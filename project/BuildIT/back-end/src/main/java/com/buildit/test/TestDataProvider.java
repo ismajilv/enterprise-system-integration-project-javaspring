@@ -121,7 +121,9 @@ public class TestDataProvider {
 				);
 
 		PlantHireRequestDTO accepted = plantHireRequestService.accept(acceptedPlantHireRequest.get_id());
-/*
+
+
+		/*
 		PlantHireRequestDTO extended = plantHireRequestService.extend(
 				acceptedPlantHireRequest.get_id(),
 				new ExtensionRequestDTO(
@@ -130,6 +132,15 @@ public class TestDataProvider {
 						null
 				)
 		);*/
+/*
+		integrationService.createPurchaseOrder(supplierService.findOrCreateByName("Team 2 Rentit").get_id(),
+				"https://team-2-rentit.herokuapp.com/api/inventory/plants/1",
+				BusinessPeriodDTO.of(
+						LocalDate.now().plusDays(1),
+						LocalDate.now().plusDays(5)
+				),
+				constructionSite1.getId()
+		); */
 	}
 
 }

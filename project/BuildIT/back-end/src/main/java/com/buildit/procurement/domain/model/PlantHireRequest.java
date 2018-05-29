@@ -57,7 +57,7 @@ public class PlantHireRequest {
 	@JoinColumn(name = "approving_works_engineer_id")
 	@ManyToOne
 	Employee approvingWorksEngineer;
-	@OneToOne(mappedBy = "plantHireRequest")
+	@OneToOne(mappedBy = "plantHireRequest", cascade = CascadeType.ALL)
 	ExtensionRequest extensionRequest;
 	//</editor-fold>
 
