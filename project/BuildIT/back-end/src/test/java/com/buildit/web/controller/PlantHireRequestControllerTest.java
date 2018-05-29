@@ -48,7 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = BuilditApplication.class) // Check if the name of this class is correct or not
 @WebAppConfiguration
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class PlantHireRequestControllerTest {
     @Autowired
     private PlantHireRequestService plantHireRequestService;
@@ -199,17 +199,4 @@ public class PlantHireRequestControllerTest {
 
         assertThat(dto2.getStatus()).isEqualTo(PHRStatus.REJECTED);
     }
-
-//    @Test
-//    @Sql("/plants-dataset.sql")
-//    public void readAllPlantHireRequestTest() throws Exception {
-//        MvcResult result =  mockMvc.perform(get("/api/requests"))
-//                .andExpect(status().isOk())
-//                .andExpect(header().string("Location", isEmptyOrNullString()))
-//                .andReturn();
-//
-//        List<PlantHireRequestDTO> dtos = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<PlantHireRequestDTO>>(){});
-//
-//        assertThat(dtos.size()).isEqualTo(2);
-//    }
 }
